@@ -1,7 +1,7 @@
 package com.musify.app.domain.models
 
 data class Playlist(
-    var id: String,
+    var id: Long,
     var name: String,
-    var songsCount: Int? = 0
+    var songsCount: Int = 0
 )

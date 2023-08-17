@@ -1,6 +1,7 @@
 package com.musify.app.player
 
-import com.musify.app.models.Track
+import com.musify.app.domain.models.Song
+
 
 /**
  * An interface for handling player events such as play, pause, next, previous, and seek bar position changes.
@@ -23,11 +24,11 @@ interface PlayerEvents {
     fun onNextClick()
 
     /**
-     * Invoked when a track is clicked. The clicked [Track] is provided as a parameter.
+     * Invoked when a track is clicked. The clicked [Song] is provided as a parameter.
      *
-     * @param track The track that was clicked.
+     * @param song The track that was clicked.
      */
-    fun onTrackClick(track: Track)
+    fun onTrackClick(song: Song)
 
     /**
      * Invoked when the position of the seek bar has changed. The new position is provided as a parameter.

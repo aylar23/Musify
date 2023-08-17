@@ -5,7 +5,8 @@ data class Song(
     val title: String,
     val artist: Artist,
     val image: String,
-    val liked: String,
-    val albumId: String,
+    val likes: Int,
+    val isLiked: Boolean,
+    val albumId: Long,
     val duration: Long
 )
