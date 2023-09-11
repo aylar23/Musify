@@ -10,3 +10,4 @@ data class Song(
     val albumId: Long,
     val duration: Long
 )
+val defaultSong = Song(1L, "title", defaultArtist, "", 3, false, 1, 10000L  )

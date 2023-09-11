@@ -3,6 +3,8 @@ package com.musify.app
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -10,8 +12,22 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import com.musify.app.domain.models.Song
+import com.musify.app.domain.models.defaultAlbum
+import com.musify.app.domain.models.defaultArtist
+import com.musify.app.domain.models.defaultPlaylist
+import com.musify.app.domain.models.defaultSong
+import com.musify.app.navigation.AppNavGraph
+import com.musify.app.presentation.common.AlbumView
+import com.musify.app.presentation.common.ArtistView
+import com.musify.app.presentation.common.PlaylistView
+import com.musify.app.presentation.common.SongView
 import com.musify.app.ui.theme.MusifyTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -22,7 +38,16 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Greeting("Android")
+                    AppNavGraph()
+//                   Column (verticalArrangement = Arrangement.spacedBy(20.dp)){
+//                       SongView(song = defaultSong)
+//
+//                       AlbumView(album = defaultAlbum)
+//
+//                       PlaylistView(playlist = defaultPlaylist)
+//
+//                       ArtistView(artist = defaultArtist)
+//                   }
                 }
             }
         }

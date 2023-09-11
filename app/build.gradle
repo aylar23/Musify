@@ -9,12 +9,12 @@ plugins {
 
 android {
     namespace 'com.musify.app'
-    compileSdk 33
+    compileSdk 34
 
     defaultConfig {
         applicationId "com.musify.app"
         minSdk 24
-        targetSdk 33
+        targetSdk 34
         versionCode 1
         versionName "1.0"
 
@@ -65,7 +65,9 @@ dependencies {
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation 'androidx.compose.material3:material3'
+    implementation "androidx.compose.material3:material3:1.2.0-alpha07"
+    implementation "androidx.compose.material3:material3-window-size-class:1.2.0-alpha07"
+    implementation "androidx.navigation:navigation-compose:2.7.2"
 
     //test
     testImplementation 'junit:junit:4.13.2'
@@ -78,7 +80,7 @@ dependencies {
 
 
     //ExoPlayer
-    implementation "androidx.media3:media3-exoplayer:1.1.0"
+    implementation "androidx.media3:media3-exoplayer:1.1.1"
 
     //DI
     implementation "com.google.dagger:hilt-android:2.46"
@@ -93,10 +95,10 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-livedata-ktx:2.6.1"
 
     //Db
-    implementation "androidx.room:room-runtime:2.6.0-alpha01"
-    annotationProcessor "androidx.room:room-compiler:2.6.0-alpha01"
-    kapt 'androidx.room:room-compiler:2.6.0-alpha01'
-    implementation "androidx.room:room-ktx:2.6.0-alpha01"
+    implementation "androidx.room:room-runtime:2.6.0-beta01"
+    annotationProcessor "androidx.room:room-compiler:2.6.0-beta01"
+    kapt 'androidx.room:room-compiler:2.6.0-beta01'
+    implementation "androidx.room:room-ktx:2.6.0-beta01"
 
     //Retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
@@ -108,7 +110,10 @@ dependencies {
 
     //Paging
     def paging_version = "3.1.0"
-    implementation "androidx.paging:paging-runtime:$paging_version"
+    implementation "androidx.paging:paging-runtime-ktx:$paging_version"
     implementation "androidx.paging:paging-compose:1.0.0-alpha18"
+
+    //Coil
+    implementation "io.coil-kt:coil-compose:2.4.0"
 
 }

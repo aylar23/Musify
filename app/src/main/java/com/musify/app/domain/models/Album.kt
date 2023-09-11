@@ -8,3 +8,4 @@ data class Album(
     val tracks: Int = 0,
     val year: String = ""
 )
+val defaultAlbum = Album(1L, "Album", defaultArtist, "image", 5, "2020" )

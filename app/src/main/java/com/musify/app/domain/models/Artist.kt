@@ -6,3 +6,6 @@ data class Artist(
     val image: String,
     val songsCount: Int = 0
 )
+
+
+val defaultArtist = Artist(1L, "Artist", "image", 5)
