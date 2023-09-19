@@ -1,5 +1,6 @@
 package com.musify.app.presentation.topdetails
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -23,6 +24,8 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -33,8 +36,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
+import com.musify.app.domain.models.Song
 import com.musify.app.domain.models.defaultSong
 import com.musify.app.presentation.common.CustomButton
+import com.musify.app.presentation.common.MusicSettingsView
 import com.musify.app.presentation.common.SongView
 import com.musify.app.presentation.topdetails.components.CollapsingTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
@@ -45,6 +50,8 @@ import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
 
+
+private var selectedSong: Song? = null
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -72,6 +79,9 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
             )
         }
 
+        val settingsClicked = remember{
+            mutableStateOf(false)
+        }
 
         LazyColumn(
             modifier = Modifier
@@ -150,10 +160,21 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
             }
 
             items(50) { id ->
-                SongView(song = defaultSong)
+                SongView(song = defaultSong) {
+                    settingsClicked.value = true
+                    selectedSong = defaultSong
+                    Log.i("selectSongCheck", "${settingsClicked.value}")
+
+                }
             }
 
         }
+
+        MusicSettingsView(song = selectedSong, settingsClicked) {
+            settingsClicked.value = !settingsClicked.value
+        }
+
+
     }
 
 

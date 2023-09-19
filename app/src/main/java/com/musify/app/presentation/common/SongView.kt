@@ -18,20 +18,18 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.musify.app.R
 import com.musify.app.domain.models.Song
-import com.musify.app.domain.models.defaultSong
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
-fun SongView(song: Song) {
+fun SongView(song: Song, selectSong: () -> Unit) {
 
     val songImagePainter = rememberAsyncImagePainter(
         model = song.image,
@@ -77,7 +75,7 @@ fun SongView(song: Song) {
             )
         }
         IconButton(
-            onClick = { /*TODO*/ },
+            onClick = { selectSong() },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.song_setting),
@@ -86,10 +84,4 @@ fun SongView(song: Song) {
                 )
         }
     }
-}
-
-@Preview
-@Composable
-fun pre() {
-    SongView(defaultSong)
 }
