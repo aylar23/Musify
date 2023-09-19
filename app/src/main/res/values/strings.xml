@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">Musify</string>
+    <string name="lorem_ipsum">lorem ipsum</string>
+    <string name="new_york">album</string>
+    <string name="play_all">Play all</string>
+    <string name="shuffle">Shuffle</string>
 </resources>
