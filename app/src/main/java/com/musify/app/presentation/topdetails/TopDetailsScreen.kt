@@ -62,6 +62,11 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
 
+    val settingsClicked = remember{
+        mutableStateOf(false)
+    }
+
+    val sheetState = rememberModalBottomSheetState()
 
     Scaffold(modifier = Modifier.padding(paddingValues = paddingValues),
         topBar = { CollapsingTopAppBar(scrollBehaviour = scrollBehavior) }) { padding ->
@@ -81,9 +86,7 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
             )
         }
 
-        val settingsClicked = remember{
-            mutableStateOf(false)
-        }
+
 
         LazyColumn(
             modifier = Modifier
@@ -171,16 +174,7 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
 
         }
 
-        // Shular yaly edip bashga moduldan chagyramda composably bir gezek yasaya
-        // onnon hemme zat donya, sebabi bottomSheet bir gezek yasandan son ayrylanok shol composable
-        // ekrany tutup durya oydyan hic knopka click edilenni bilenok sebabi ustlerinde bir composable bar
-//        bottomSheet(settingsClicked) {
-//            settingsClicked.value = false
-//        }
 
-        val sheetState = rememberModalBottomSheetState()
-
-        // Shon uchin sheydip her screenda tazeden yazmaly bolyas sheydayelimi?
         if (settingsClicked.value){
             ModalBottomSheet(
                 containerColor = AlbumCoverBlackBG,
