@@ -18,7 +18,6 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -40,9 +39,9 @@ import androidx.compose.ui.unit.dp
 import com.musify.app.R
 import com.musify.app.domain.models.Song
 import com.musify.app.domain.models.defaultSong
-import com.musify.app.presentation.common.ActionsModelView
 import com.musify.app.presentation.common.CustomButton
 import com.musify.app.presentation.common.SongView
+import com.musify.app.presentation.common.bottomSheet
 import com.musify.app.presentation.topdetails.components.CollapsingTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Black
@@ -176,16 +175,7 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
 
 
         if (settingsClicked.value){
-            ModalBottomSheet(
-                containerColor = AlbumCoverBlackBG,
-                sheetState = sheetState,
-                onDismissRequest = { settingsClicked.value = false }) {
-                ActionsModelView(expandable = true, icon = R.drawable.library_add, text = "Pleyliste Gos")
-                ActionsModelView(expandable = false, icon = R.drawable.redo, text = "Indiki Edip Cal")
-                ActionsModelView(expandable = true, icon = R.drawable.account_circle, text = "Bagshyny Gor")
-                ActionsModelView(expandable = true, icon = R.drawable.album, text = "Albomy gor")
-                ActionsModelView(expandable = false, icon = R.drawable.share, text = "Paylashmak")
-            }
+            bottomSheet(sheetState, settingsClicked)
         }
 
     }
