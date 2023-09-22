@@ -4,4 +4,14 @@
     <string name="new_york">album</string>
     <string name="play_all">Play all</string>
     <string name="shuffle">Shuffle</string>
+    <string name="songs">songs</string>
+    <string name="add_to_playlist">Add to playlist</string>
+    <string name="play_next">Play next</string>
+    <string name="see_the_artist">See the artist</string>
+    <string name="see_the_album">See the Album</string>
+    <string name="share">Share</string>
+    <string name="create_new_playlist">Create New Playlist</string>
+    <string name="my_playlists">My Playlists</string>
+    <string name="go_back">Go back</string>
+    <string name="search">Search</string>
 </resources>
