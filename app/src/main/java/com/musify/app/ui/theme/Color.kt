@@ -12,7 +12,10 @@ val Pink40 = Color(0xFF7D5260)
 
 val DarkGray = Color(0x38545454)
 val Yellow = Color(0xFFFABB18)
-val black = Color(0xFF1F1F1F)
+val Black = Color(0xFF1F1F1F)
 val WhiteTextColor = Color(0xFFD3D3D3)
 val GrayTextColor = Color(0xFF8B8B8B)
 val AlbumCoverBlackBG = Color(0xFF0A0A0A)
+val TransparentColor = Color(0x00FFFFFF)
+val Background = Color(0xFF101010)
+

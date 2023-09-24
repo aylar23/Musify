@@ -6,30 +6,23 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
-import coil.compose.rememberImagePainter
-import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.defaultPlaylist
-import com.musify.app.domain.models.defaultSong
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.GrayTextColor
@@ -37,7 +30,7 @@ import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
-fun PlaylistView(playlist: Playlist) {
+fun MainPlaylistView(playlist: Playlist) {
 
     val playlistImagePainter = rememberAsyncImagePainter(
         model = playlist.image,
@@ -57,9 +50,11 @@ fun PlaylistView(playlist: Playlist) {
             contentDescription = "Album Cover",
             contentScale = ContentScale.Crop
         )
-        Column(modifier = Modifier
-            .padding(10.dp),
-            verticalArrangement = Arrangement.Center) {
+        Column(
+            modifier = Modifier
+                .padding(10.dp),
+            verticalArrangement = Arrangement.Center
+        ) {
             Text(
                 text = playlist.name,
                 fontFamily = SFFontFamily,
@@ -74,7 +69,7 @@ fun PlaylistView(playlist: Playlist) {
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = (playlist.songsCount ?: 0).toString(),
+                text = playlist.songsCount.toString(),
                 fontFamily = SFFontFamily,
                 fontSize = 12.sp,
                 lineHeight = 12.sp,
@@ -89,8 +84,9 @@ fun PlaylistView(playlist: Playlist) {
 
 }
 
+
 @Preview
 @Composable
-    fun PlaylistViewPre() {
-    PlaylistView(defaultPlaylist)
+fun PlaylistViewPre() {
+    MainPlaylistView(defaultPlaylist)
 }

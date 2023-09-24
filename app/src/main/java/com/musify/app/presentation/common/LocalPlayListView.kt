@@ -1,6 +1,5 @@
 package com.musify.app.presentation.common
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -8,53 +7,50 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import coil.compose.rememberAsyncImagePainter
 import com.musify.app.R
-import com.musify.app.domain.models.Song
-import com.musify.app.ui.theme.AlbumCoverBlackBG
+import com.musify.app.domain.models.Playlist
+import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
+
+
 @Composable
-fun SongView(song: Song, selectSong: () -> Unit) {
-
-    val songImagePainter = rememberAsyncImagePainter(
-        model = song.image,
-        placeholder = painterResource(id = R.drawable.mock_cover)
-
-    )
-
+fun LocalPlayListView(playlist: Playlist, selectPlaylist: () -> Unit){
     Row(
         modifier = Modifier
-            .background(AlbumCoverBlackBG)
-            .clickable {  }
-            .padding(start = 20.dp, top = 5.dp, bottom = 5.dp)
+            .clip(shape = MaterialTheme.shapes.large)
+            .background(color = DarkGray)
+            .clickable { selectPlaylist() }
+            .padding(vertical = 10.dp)
+            .padding(start = 20.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically) {
-        Image(
-            modifier = Modifier.size(50.dp),
-            painter = songImagePainter,
-            contentDescription = "song Image")
+
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.Center
+            verticalArrangement = Arrangement.spacedBy(8.dp),
+
         ) {
             Text(
-                text = song.title,
+                text = playlist.name,
                 fontFamily = SFFontFamily,
                 fontSize = 16.sp,
                 lineHeight = 16.sp,
@@ -64,7 +60,7 @@ fun SongView(song: Song, selectSong: () -> Unit) {
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = song.artist.name,
+                text = playlist.songsCount.toString() + stringResource(id = R.string.songs),
                 fontFamily = SFFontFamily,
                 fontSize = 14.sp,
                 lineHeight = 14.sp,
@@ -75,13 +71,13 @@ fun SongView(song: Song, selectSong: () -> Unit) {
             )
         }
         IconButton(
-            onClick = { selectSong() },
+            onClick = {  },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.song_setting),
-                contentDescription = "song setting",
+                contentDescription = "playlist setting",
                 tint = WhiteTextColor
-                )
+            )
         }
     }
 }
