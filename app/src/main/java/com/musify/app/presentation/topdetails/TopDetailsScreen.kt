@@ -24,6 +24,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color.Companion.White
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -50,6 +52,7 @@ import com.musify.app.presentation.topdetails.components.CollapsingTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Black
 import com.musify.app.ui.theme.DarkGray
+import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
@@ -131,7 +134,7 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
                             onClick = { /*TODO*/ },
                             shape = RoundedCornerShape(50.dp),
                             border = BorderStroke(
-                                width = 1.dp, color = WhiteTextColor
+                                width = 1.dp, color = Inactive
                             )
                         ) {
                             Icon(
@@ -162,7 +165,7 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
                             modifier = Modifier.weight(1f),
                             text = R.string.shuffle,
                             onClick = { },
-                            containerColor = DarkGray,
+                            containerColor = White.copy(alpha = 0.2f),
                             contentColor = WhiteTextColor,
                             leadingIcon = R.drawable.play
                         )
@@ -174,7 +177,9 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
             }
 
             items(50) { id ->
-                SongView(song = defaultSong) {
+                SongView(
+
+                    song = defaultSong) {
                     settingsClicked = true
                     selectedSong = defaultSong
                 }

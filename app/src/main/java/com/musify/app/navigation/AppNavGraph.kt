@@ -38,14 +38,31 @@ fun AppNavGraph() {
         ) {
             composable(NavScreen.Home.route) {
 
-                TopDetailsScreen(paddingValues)
+                HomeScreen(
+                    paddingValues =  paddingValues,
+                    homeViewModel = hiltViewModel(),
+                    navigateToSearch = {
+                        navController.navigate(NavScreen.Search.route) {
+
+                            navController.graph.startDestinationRoute?.let { screen_route ->
+                                popUpTo(screen_route) {
+                                    saveState = true
+                                }
+                            }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    }
+                )
 
             }
             composable(NavScreen.Search.route) {
-                SearchScreen(
-                    paddingValues =  paddingValues,
-                    searchViewModel = hiltViewModel()
-                )
+
+                TopDetailsScreen(paddingValues = paddingValues)
+//                SearchScreen(
+//                    paddingValues =  paddingValues,
+//                    searchViewModel = hiltViewModel()
+//                )
             }
             composable(NavScreen.MyPlaylists.route) {
 

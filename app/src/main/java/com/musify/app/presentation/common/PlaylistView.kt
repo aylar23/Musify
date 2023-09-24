@@ -30,7 +30,7 @@ import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
-fun MainPlaylistView(playlist: Playlist) {
+fun PlaylistView(playlist: Playlist) {
 
     val playlistImagePainter = rememberAsyncImagePainter(
         model = playlist.image,
@@ -88,5 +88,5 @@ fun MainPlaylistView(playlist: Playlist) {
 @Preview
 @Composable
 fun PlaylistViewPre() {
-    MainPlaylistView(defaultPlaylist)
+   PlaylistView(defaultPlaylist)
 }

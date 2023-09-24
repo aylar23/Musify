@@ -1,5 +1,6 @@
 package com.musify.app.presentation.common
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,12 +25,17 @@ import coil.compose.rememberAsyncImagePainter
 import com.musify.app.R
 import com.musify.app.domain.models.Song
 import com.musify.app.ui.theme.AlbumCoverBlackBG
+import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
-fun SongView(song: Song, selectSong: () -> Unit) {
+fun SongView(
+    @SuppressLint("ModifierParameter") modifier: Modifier? = null,
+    song: Song,
+    selectSong: () -> Unit
+) {
 
     val songImagePainter = rememberAsyncImagePainter(
         model = song.image,
@@ -38,17 +44,18 @@ fun SongView(song: Song, selectSong: () -> Unit) {
     )
 
     Row(
-        modifier = Modifier
-            .background(AlbumCoverBlackBG)
-            .clickable {  }
-            .padding(start = 20.dp, top = 5.dp, bottom = 5.dp)
-            .fillMaxWidth(),
+        modifier = modifier?.clickable {  }?.padding(5.dp) ?: Modifier
+            .clickable { }
+            .padding(start = 20.dp, top = 5.dp, bottom = 5.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically) {
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         Image(
-            modifier = Modifier.size(50.dp),
+            modifier = Modifier.size(50.dp).background(Background),
             painter = songImagePainter,
-            contentDescription = "song Image")
+            contentDescription = "song Image"
+
+        )
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center
@@ -81,7 +88,7 @@ fun SongView(song: Song, selectSong: () -> Unit) {
                 painter = painterResource(id = R.drawable.song_setting),
                 contentDescription = "song setting",
                 tint = WhiteTextColor
-                )
+            )
         }
     }
 }

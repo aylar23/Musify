@@ -35,6 +35,7 @@ import coil.compose.rememberImagePainter
 import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.defaultArtist
+import com.musify.app.ui.theme.Black
 import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
@@ -42,14 +43,16 @@ import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
 
 @Composable
-fun ArtistView(artist: Artist) {
+fun ArtistView(
+     artist: Artist,
+    ) {
 
     val artistImagePainter = rememberAsyncImagePainter(
         model = artist.image,
     )
 
     Row(
-        modifier = Modifier
+        modifier =  Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .clip(shape = MaterialTheme.shapes.large)
@@ -98,10 +101,14 @@ fun ArtistView(artist: Artist) {
                 .padding(end = 5.dp)
                 .size(25.dp),
             containerColor = Yellow,
-            onClick = { /*TODO*/ },
+            contentColor = Black,
+            onClick = {  },
         ) {
-            Icon(painter = painterResource(id = R.drawable.right_arrow),
-                contentDescription = "see more")
+            Icon(
+                painter = painterResource(id = R.drawable.right_arrow),
+                contentDescription = "see more",
+                tint = Black)
+
         }
 
 
