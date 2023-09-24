@@ -45,7 +45,8 @@ import com.musify.app.ui.theme.Yellow
 @Composable
 fun ArtistView(
      artist: Artist,
-    ) {
+     onClick :()->Unit
+) {
 
     val artistImagePainter = rememberAsyncImagePainter(
         model = artist.image,
@@ -56,7 +57,7 @@ fun ArtistView(
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .clip(shape = MaterialTheme.shapes.large)
-            .clickable {  }
+            .clickable { onClick() }
             .background(color = DarkGray)
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -115,8 +116,3 @@ fun ArtistView(
     }
 }
 
-@Preview
-@Composable
-fun ArtistViewPre() {
-    ArtistView(defaultArtist)
-}

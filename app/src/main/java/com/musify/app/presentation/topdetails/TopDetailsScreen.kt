@@ -24,7 +24,6 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.Recomposer
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -44,14 +43,13 @@ import com.musify.app.R
 import com.musify.app.domain.models.Song
 import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.domain.models.defaultSong
-import com.musify.app.presentation.common.AddToPlaylistBottomSheet
+import com.musify.app.presentation.common.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.presentation.common.CustomButton
 import com.musify.app.presentation.common.SongView
-import com.musify.app.presentation.common.TrackBottomSheet
+import com.musify.app.presentation.common.bottomsheet.TrackBottomSheet
 import com.musify.app.presentation.topdetails.components.CollapsingTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Black
-import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.TransparentColor
@@ -177,11 +175,12 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
             }
 
             items(50) { id ->
-                SongView(
+                SongView(song = defaultSong,
+                    onMoreClicked = {
+                        settingsClicked = true
+                    }
+                ) {
 
-                    song = defaultSong) {
-                    settingsClicked = true
-                    selectedSong = defaultSong
                 }
             }
 

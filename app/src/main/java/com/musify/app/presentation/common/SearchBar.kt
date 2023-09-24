@@ -39,14 +39,13 @@ import com.musify.app.ui.theme.Yellow
 
 @Composable
 fun SearchBar(
+    searchStr :MutableState<String> = mutableStateOf(""),
     enabled: Boolean,
     onClick: () -> Unit,
     onDone: () -> Unit
 ) {
 
-    var searchStr by rememberSaveable {
-        mutableStateOf("")
-    }
+
     TextField(
         modifier = Modifier
             .fillMaxWidth()
@@ -57,10 +56,10 @@ fun SearchBar(
                 if (!enabled) onClick()
             }
             .padding(horizontal = 20.dp),
-        value = searchStr,
+        value = searchStr.value,
         shape = MaterialTheme.shapes.medium,
         onValueChange = {
-            searchStr = it
+            searchStr.value = it
         },
         enabled = enabled,
         singleLine = true,

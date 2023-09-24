@@ -16,7 +16,5 @@ val mainScreenData = MainScreenData(
     listOf(defaultPlaylist),
     artists = listOf(defaultArtist, defaultArtist, defaultArtist, defaultArtist),
     playlists = listOf(defaultPlaylist),
-    hitSongs = listOf(
-        defaultSong
-    )
+    hitSongs = listOf(defaultSong,defaultSong,defaultSong,defaultSong, )
 )

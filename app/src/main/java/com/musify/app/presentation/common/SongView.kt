@@ -29,12 +29,14 @@ import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
+import com.musify.app.ui.theme.Yellow
 
 @Composable
 fun SongView(
     @SuppressLint("ModifierParameter") modifier: Modifier? = null,
     song: Song,
-    selectSong: () -> Unit
+    onMoreClicked: () -> Unit,
+    onClick: () -> Unit,
 ) {
 
     val songImagePainter = rememberAsyncImagePainter(
@@ -44,14 +46,14 @@ fun SongView(
     )
 
     Row(
-        modifier = modifier?.clickable {  }?.padding(5.dp) ?: Modifier
-            .clickable { }
+        modifier = modifier?.clickable { onClick() }?.padding(5.dp) ?: Modifier
+            .clickable { onClick() }
             .padding(start = 20.dp, top = 5.dp, bottom = 5.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Image(
-            modifier = Modifier.size(50.dp).background(Background),
+            modifier = Modifier.size(50.dp).background(Yellow),
             painter = songImagePainter,
             contentDescription = "song Image"
 
@@ -82,7 +84,7 @@ fun SongView(
             )
         }
         IconButton(
-            onClick = { selectSong() },
+            onClick = { onMoreClicked() },
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.song_setting),

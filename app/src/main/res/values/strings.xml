@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">Musify</string>
     <string name="lorem_ipsum">lorem ipsum</string>
-    <string name="new_york">album</string>
     <string name="play_all">Play all</string>
     <string name="shuffle">Shuffle</string>
     <string name="songs">songs</string>
@@ -14,8 +13,10 @@
     <string name="my_playlists">My Playlists</string>
     <string name="go_back">Go back</string>
     <string name="search">Search</string>
-    <string name="welcome">WeLcome!</string>
+    <string name="welcome">Welcome!</string>
     <string name="all_songs_in_one_place">All songs in one place!</string>
     <string name="top">Top</string>
     <string name="new_albums">New albums</string>
+    <string name="recent_searches">Recent searches</string>
+    <string name="artists">Artists</string>
 </resources>

@@ -52,17 +52,19 @@ fun AppNavGraph() {
                             launchSingleTop = true
                             restoreState = true
                         }
-                    }
+                    },
+                    navigateToArtist = {}
                 )
 
             }
             composable(NavScreen.Search.route) {
 
-                TopDetailsScreen(paddingValues = paddingValues)
-//                SearchScreen(
-//                    paddingValues =  paddingValues,
-//                    searchViewModel = hiltViewModel()
-//                )
+                SearchScreen(
+                    paddingValues =  paddingValues,
+                    searchViewModel = hiltViewModel(),
+                    navigateToArtist = {}
+
+                )
             }
             composable(NavScreen.MyPlaylists.route) {
 

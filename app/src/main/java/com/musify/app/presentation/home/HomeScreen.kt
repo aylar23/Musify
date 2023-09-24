@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -12,15 +11,14 @@ import androidx.compose.material3.Scaffold
 import com.musify.app.presentation.common.SearchBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalFocusManager
-import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
+import com.musify.app.R
 import com.musify.app.domain.models.mainScreenData
+import com.musify.app.presentation.common.listview.AlbumListView
+import com.musify.app.presentation.common.listview.ArtistListView
+import com.musify.app.presentation.common.listview.PlaylistListView
+import com.musify.app.presentation.common.listview.SongGridListView
 import com.musify.app.presentation.home.components.HomeTopAppBar
-import com.musify.app.presentation.home.components.NewAlbumsView
-import com.musify.app.presentation.home.components.TopArtistsView
-import com.musify.app.presentation.home.components.TopPlaylistsView
-import com.musify.app.presentation.home.components.TopSongsView
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,7 +26,8 @@ import com.musify.app.presentation.home.components.TopSongsView
 fun HomeScreen(
     paddingValues: PaddingValues,
     homeViewModel: HomeViewModel,
-    navigateToSearch: () -> Unit
+    navigateToSearch: () -> Unit,
+    navigateToArtist: () -> Unit
 ) {
 
     Scaffold(
@@ -53,15 +52,23 @@ fun HomeScreen(
             ) {}
 
 
-            TopPlaylistsView(mainScreenData.tops)
+            PlaylistListView(mainScreenData.tops)
 
-            TopArtistsView(mainScreenData.artists)
+            ArtistListView(
+                header =  R.string.top,
+                mainScreenData.artists
+            ){navigateToArtist()}
 
 
-            NewAlbumsView(mainScreenData.playlists)
+            AlbumListView(mainScreenData.playlists)
 
 
-            TopSongsView(mainScreenData.hitSongs)
+            SongGridListView(
+                mainScreenData.hitSongs,
+                onMoreClicked = {
+
+                }
+            ){}
 
 
         }

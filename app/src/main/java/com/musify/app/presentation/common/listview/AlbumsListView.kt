@@ -1,4 +1,4 @@
-package com.musify.app.presentation.home.components
+package com.musify.app.presentation.common.listview
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -16,14 +16,12 @@ import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.defaultAlbum
-import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.presentation.common.AlbumView
-import com.musify.app.presentation.common.PlaylistView
 import com.musify.app.ui.theme.SFFontFamily
 
 
 @Composable
-fun NewAlbumsView(playlists: List<Playlist>) {
+fun AlbumListView(playlists: List<Playlist>) {
 
     Column {
         Text(

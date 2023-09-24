@@ -31,10 +31,10 @@ import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.domain.models.defaultSong
-import com.musify.app.presentation.common.AddToPlaylistBottomSheet
+import com.musify.app.presentation.common.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.presentation.common.CustomButton
 import com.musify.app.presentation.common.SongView
-import com.musify.app.presentation.common.TrackBottomSheet
+import com.musify.app.presentation.common.bottomsheet.TrackBottomSheet
 import com.musify.app.presentation.songsinplaylist.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Black
@@ -130,8 +130,13 @@ fun SelectedPlaylistScreen(playlist: Playlist, goBack: () -> Unit) {
             }
 
             items(playlist.songsCount) { id ->
-                SongView(song = defaultSong) {
-                    settingsClicked = true
+                SongView(
+                    song = defaultSong,
+                    onMoreClicked = {
+                        settingsClicked = true
+                    }
+                ) {
+
                 }
             }
 

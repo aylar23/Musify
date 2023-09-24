@@ -55,11 +55,7 @@ fun MyPlaylistsScreen(
                 IconButton(
                     onClick = navigateToNewPlaylistScreen,
                 ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.add),
-                        contentDescription = "add playlist",
-                        tint = WhiteTextColor
-                    )
+
                 }
             }
         }
