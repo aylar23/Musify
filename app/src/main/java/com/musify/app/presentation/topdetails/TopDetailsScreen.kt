@@ -43,12 +43,13 @@ import com.musify.app.R
 import com.musify.app.domain.models.Song
 import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.domain.models.defaultSong
-import com.musify.app.presentation.common.bottomsheet.AddToPlaylistBottomSheet
-import com.musify.app.presentation.common.CustomButton
-import com.musify.app.presentation.common.SongView
-import com.musify.app.presentation.common.bottomsheet.TrackBottomSheet
+import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
+import com.musify.app.ui.components.CustomButton
+import com.musify.app.ui.components.SongView
+import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.presentation.topdetails.components.CollapsingTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
+import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.Black
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
@@ -82,7 +83,7 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
         topBar = { CollapsingTopAppBar(scrollBehaviour = scrollBehavior) }) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()
-            .background(AlbumCoverBlackBG)
+            .background(Background)
             .graphicsLayer {
                 translationY = scrollBehavior.state.contentOffset
             }) {

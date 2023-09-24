@@ -1,4 +1,4 @@
-package com.musify.app.presentation.common
+package com.musify.app.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues

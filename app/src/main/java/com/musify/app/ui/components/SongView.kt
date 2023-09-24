@@ -1,4 +1,4 @@
-package com.musify.app.presentation.common
+package com.musify.app.ui.components
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
@@ -7,7 +7,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -24,8 +23,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.musify.app.R
 import com.musify.app.domain.models.Song
-import com.musify.app.ui.theme.AlbumCoverBlackBG
-import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor

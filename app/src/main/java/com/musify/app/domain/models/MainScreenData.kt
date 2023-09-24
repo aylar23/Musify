@@ -6,7 +6,7 @@ data class MainScreenData(
     val tops: List<Playlist>,
     @SerializedName("artists_of_the_week")
     val artists: List<Artist>,
-    val playlists: List<Playlist>,
+    val albums: List<Album>,
     @SerializedName("hit_songs")
     val hitSongs: List<Song>,
 
@@ -15,6 +15,6 @@ data class MainScreenData(
 val mainScreenData = MainScreenData(
     listOf(defaultPlaylist),
     artists = listOf(defaultArtist, defaultArtist, defaultArtist, defaultArtist),
-    playlists = listOf(defaultPlaylist),
+    albums = listOf(defaultAlbum, defaultAlbum, defaultAlbum, defaultAlbum),
     hitSongs = listOf(defaultSong,defaultSong,defaultSong,defaultSong, )
 )

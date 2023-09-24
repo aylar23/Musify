@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Scaffold
@@ -22,9 +21,9 @@ import androidx.compose.ui.unit.dp
 import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.mainScreenData
-import com.musify.app.presentation.common.SearchBar
-import com.musify.app.presentation.common.listview.ArtistListView
-import com.musify.app.presentation.common.listview.SongListView
+import com.musify.app.ui.components.SearchBar
+import com.musify.app.ui.components.listview.ArtistListView
+import com.musify.app.ui.components.listview.SongListView
 import com.musify.app.presentation.search.components.SearchKeysView
 
 @Composable

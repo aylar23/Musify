@@ -1,5 +1,6 @@
 package com.musify.app.navigation
 
+import android.util.Log
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalAbsoluteTonalElevation
@@ -49,6 +50,8 @@ fun BottomNavigationBar(navController: NavController) {
                     alwaysShowLabel = true,
                     selected = selected,
                     onClick = {
+                        Log.e("TAG", "BottomNavigationBar: "+currentRoute)
+                        Log.e("TAG", "BottomNavigationBar: "+item.route)
                         navController.navigate(item.route) {
 
                             navController.graph.startDestinationRoute?.let { screen_route ->

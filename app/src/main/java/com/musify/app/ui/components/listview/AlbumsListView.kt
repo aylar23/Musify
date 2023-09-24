@@ -1,10 +1,13 @@
-package com.musify.app.presentation.common.listview
+package com.musify.app.ui.components.listview
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -14,16 +17,23 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
+import com.musify.app.domain.models.Album
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.defaultAlbum
-import com.musify.app.presentation.common.AlbumView
+import com.musify.app.ui.components.AlbumView
+import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.SFFontFamily
 
 
 @Composable
-fun AlbumListView(playlists: List<Playlist>) {
+fun AlbumListView(
+    playlists: List<Album>,
+    onClick: (Album)->Unit
+) {
 
-    Column {
+    Column(
+        modifier = Modifier.background(Background)
+    ) {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp),
             text = stringResource(id = R.string.new_albums),
@@ -40,8 +50,8 @@ fun AlbumListView(playlists: List<Playlist>) {
             contentPadding = PaddingValues(20.dp, 15.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(10) {
-                AlbumView(defaultAlbum)
+            items(playlists) { playlist ->
+                AlbumView(playlist){onClick(playlist)}
             }
         }
     }

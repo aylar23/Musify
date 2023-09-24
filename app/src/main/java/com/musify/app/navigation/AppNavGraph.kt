@@ -12,6 +12,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.musify.app.presentation.artist.ArtistScreen
 import com.musify.app.presentation.home.HomeScreen
 import com.musify.app.presentation.myplaylist.MyPlaylistsScreen
 import com.musify.app.presentation.search.SearchScreen
@@ -36,42 +37,32 @@ fun AppNavGraph() {
             navController = navController,
             startDestination = NavScreen.Home.route
         ) {
-            composable(NavScreen.Home.route) {
 
-                HomeScreen(
-                    paddingValues =  paddingValues,
-                    homeViewModel = hiltViewModel(),
-                    navigateToSearch = {
-                        navController.navigate(NavScreen.Search.route) {
-
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
-                                }
-                            }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
-                    navigateToArtist = {}
-                )
-
+            composable(NavScreen.Home.route){
+                HomeNavGraph(paddingValues, navController)
             }
             composable(NavScreen.Search.route) {
 
-                SearchScreen(
-                    paddingValues =  paddingValues,
-                    searchViewModel = hiltViewModel(),
-                    navigateToArtist = {}
+//                SearchScreen(
+//                    paddingValues =  paddingValues,
+//                    searchViewModel = hiltViewModel(),
+//                    navigateToArtist = {}
+//
+//                )
 
+                ArtistScreen(
+                    paddingValues = paddingValues,
+                    artistViewModel = hiltViewModel(),
                 )
+
+
             }
             composable(NavScreen.MyPlaylists.route) {
 
                 MyPlaylistsScreen(
-                    paddingValues =  paddingValues,
+                    paddingValues = paddingValues,
                     myPlaylistsViewModel = hiltViewModel(),
-                ){
+                ) {
 
                 }
 

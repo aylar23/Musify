@@ -8,16 +8,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
-import com.musify.app.presentation.common.SearchBar
+import com.musify.app.ui.components.SearchBar
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
 import com.musify.app.domain.models.mainScreenData
-import com.musify.app.presentation.common.listview.AlbumListView
-import com.musify.app.presentation.common.listview.ArtistListView
-import com.musify.app.presentation.common.listview.PlaylistListView
-import com.musify.app.presentation.common.listview.SongGridListView
+import com.musify.app.ui.components.listview.AlbumListView
+import com.musify.app.ui.components.listview.ArtistListView
+import com.musify.app.ui.components.listview.PlaylistListView
+import com.musify.app.ui.components.listview.SongGridListView
 import com.musify.app.presentation.home.components.HomeTopAppBar
 
 
@@ -32,10 +32,8 @@ fun HomeScreen(
 
     Scaffold(
         modifier = Modifier.padding(paddingValues),
-        topBar = {
-
-        }
     ) { padding ->
+
 
 
         Column(
@@ -60,7 +58,9 @@ fun HomeScreen(
             ){navigateToArtist()}
 
 
-            AlbumListView(mainScreenData.playlists)
+            AlbumListView(mainScreenData.albums){
+
+            }
 
 
             SongGridListView(

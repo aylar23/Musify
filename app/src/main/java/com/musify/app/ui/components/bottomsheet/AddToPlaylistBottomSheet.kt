@@ -1,4 +1,4 @@
-package com.musify.app.presentation.common.bottomsheet
+package com.musify.app.ui.components.bottomsheet
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Spacer
@@ -14,8 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
-import com.musify.app.presentation.common.ActionsModelView
-import com.musify.app.presentation.common.CustomButton
+import com.musify.app.ui.components.ActionsModelView
+import com.musify.app.ui.components.CustomButton
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Yellow
 

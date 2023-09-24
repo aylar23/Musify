@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.ui.theme.AlbumCoverBlackBG
+import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
@@ -49,7 +50,7 @@ fun CollapsingTopAppBar(scrollBehaviour: TopAppBarScrollBehavior) {
                 )
             }
         },
-        colors = TopAppBarDefaults.topAppBarColors(containerColor = AlbumCoverBlackBG.copy(alpha = scrollBehaviour.state.overlappedFraction)),
+        colors = TopAppBarDefaults.topAppBarColors(containerColor = Background.copy(alpha = scrollBehaviour.state.overlappedFraction)),
     )
 
 }

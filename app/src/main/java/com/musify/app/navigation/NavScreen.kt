@@ -8,15 +8,14 @@ sealed class NavScreen(
     @DrawableRes val icon: Int,
 ) {
     object Home : NavScreen(
-        "home", R.drawable.ic_home
+        "nav_home", R.drawable.ic_home
     )
-
     object Search : NavScreen(
-        "search", R.drawable.ic_search
+        "nav_search", R.drawable.ic_search
     )
 
     object MyPlaylists : NavScreen(
-        "my_playlists", R.drawable.ic_grid
+        "nav_my_playlists", R.drawable.ic_grid
     )
 
 

@@ -1,4 +1,4 @@
-package com.musify.app.presentation.common.listview
+package com.musify.app.ui.components.listview
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -19,8 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Song
-import com.musify.app.domain.models.defaultSong
-import com.musify.app.presentation.common.SongView
+import com.musify.app.ui.components.SongView
 import com.musify.app.ui.theme.SFFontFamily
 
 
