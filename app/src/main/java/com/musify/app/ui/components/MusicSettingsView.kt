@@ -1,4 +1,3 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
 
 package com.musify.app.ui.components
 
@@ -43,7 +42,7 @@ fun ActionsModelView(icon: Int, text: String, expandable: Boolean, playlist: Pla
                 .fillMaxWidth()
                 .weight(1f)) {
                 Text(modifier = Modifier
-                    .padding(horizontal = 10.dp), text = playlist.image, fontSize = 16.sp, fontFamily = SFFontFamily, fontWeight = FontWeight.Bold, color = WhiteTextColor)
+                    .padding(horizontal = 10.dp), text = playlist.name, fontSize = 16.sp, fontFamily = SFFontFamily, fontWeight = FontWeight.Bold, color = WhiteTextColor)
                 Text(modifier = Modifier
                     .padding(horizontal = 10.dp), text = playlist.songsCount.toString() + " " + R.string.songs, fontSize = 10.sp, fontFamily = SFFontFamily, fontWeight = FontWeight.Normal, color = WhiteTextColor)
             }

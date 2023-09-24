@@ -19,4 +19,14 @@
     <string name="new_albums">New albums</string>
     <string name="recent_searches">Recent searches</string>
     <string name="artists">Artists</string>
+    <string name="name">Name</string>
+    <string name="playlist_name">Playlist Name</string>
+    <string name="save">Save</string>
+    <string name="premium_user">Premium user</string>
+    <string name="my_account">My Account</string>
+    <string name="language">Language</string>
+    <string name="version">Version</string>
+    <string name="write_to_us">Write to us</string>
+    <string name="english">English</string>
+    <string name="log_out">Log out</string>
 </resources>

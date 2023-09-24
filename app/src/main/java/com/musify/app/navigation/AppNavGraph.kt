@@ -12,10 +12,13 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.musify.app.domain.models.defaultUser
 import com.musify.app.presentation.artist.ArtistScreen
 import com.musify.app.presentation.home.HomeScreen
 import com.musify.app.presentation.myplaylist.MyPlaylistsScreen
+import com.musify.app.presentation.newplaylist.NewPlaylistScreen
 import com.musify.app.presentation.search.SearchScreen
+import com.musify.app.presentation.settings.SettingsScreen
 import com.musify.app.presentation.topdetails.TopDetailsScreen
 
 
@@ -50,21 +53,21 @@ fun AppNavGraph() {
 //
 //                )
 
-                ArtistScreen(
-                    paddingValues = paddingValues,
-                    artistViewModel = hiltViewModel(),
+                SettingsScreen(
+                    defaultUser
                 )
 
 
             }
             composable(NavScreen.MyPlaylists.route) {
 
-                MyPlaylistsScreen(
-                    paddingValues = paddingValues,
-                    myPlaylistsViewModel = hiltViewModel(),
-                ) {
-
-                }
+                NewPlaylistScreen()
+//                MyPlaylistsScreen(
+//                    paddingValues = paddingValues,
+//                    myPlaylistsViewModel = hiltViewModel(),
+//                ) {
+//
+//                }
 
             }
         }
