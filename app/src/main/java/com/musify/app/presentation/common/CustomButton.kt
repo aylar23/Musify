@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -26,11 +27,12 @@ fun CustomButton(
     onClick :()->Unit,
     containerColor : Color,
     contentColor : Color,
-    leadingIcon: Int? = null
+    leadingIcon: Int? = null,
+    shape: Shape? = null
 ) {
     Button(
         modifier = modifier,
-        shape =   MaterialTheme.shapes.large,
+        shape = shape ?: MaterialTheme.shapes.large,
         onClick = onClick,
         contentPadding = PaddingValues(vertical = 16.dp),
         colors = ButtonColors(
