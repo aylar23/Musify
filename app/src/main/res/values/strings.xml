@@ -29,4 +29,8 @@
     <string name="write_to_us">Write to us</string>
     <string name="english">English</string>
     <string name="log_out">Log out</string>
+    <string name="menu">Menu</string>
+    <string name="playing_on">Playing on </string>
+    <string name="pause">Pause</string>
+    <string name="repeat">repeat</string>
 </resources>

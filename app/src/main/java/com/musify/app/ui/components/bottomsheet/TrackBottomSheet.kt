@@ -32,8 +32,7 @@ fun TrackBottomSheet(
         ActionsModelView(
             expandable = true,
             icon = R.drawable.library_add,
-            text = stringResource(id = R.string.add_to_playlist),
-            playlist = null
+            mainText = stringResource(id = R.string.add_to_playlist)
         ) {
             onAddToPlaylist()
 
@@ -43,32 +42,28 @@ fun TrackBottomSheet(
         ActionsModelView(
             expandable = false,
             icon = R.drawable.redo,
-            text = stringResource(id = R.string.play_next),
-            playlist = null
+            mainText = stringResource(id = R.string.play_next)
         ) {
             onPlayNext()
         }
         ActionsModelView(
             expandable = true,
             icon = R.drawable.account_circle,
-            text = stringResource(id = R.string.see_the_artist),
-            playlist = null
+            mainText = stringResource(id = R.string.see_the_artist)
         ) {
             onNavigateToArtist()
         }
         ActionsModelView(
             expandable = true,
             icon = R.drawable.album,
-            text = stringResource(id = R.string.see_the_album),
-            playlist = null
+            mainText = stringResource(id = R.string.see_the_album)
         ) {
             onNavigateToAlbum()
         }
         ActionsModelView(
             expandable = false,
             icon = R.drawable.share,
-            text = stringResource(id = R.string.share),
-            playlist = null
+            mainText = stringResource(id = R.string.share)
         ) {
             onShare()
 

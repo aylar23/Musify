@@ -10,7 +10,6 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
@@ -31,7 +30,7 @@ fun AddToPlaylistBottomSheet(
         sheetState = playlistSheetState,
         onDismissRequest = onDismiss) {
         for(playlist in playlists){
-            ActionsModelView(icon = R.drawable.playlist_add_check, text = stringResource(id = R.string.songs), expandable = false, playlist = playlist){}
+            ActionsModelView(icon = R.drawable.playlist_add_check, mainText = playlist.name, grayText = playlist.songsCount.toString() + " " + R.string.songs, expandable = false){}
         }
         Box(modifier = Modifier.padding(10.dp)){
             CustomButton(
