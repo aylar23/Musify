@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -31,11 +32,11 @@ import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.domain.models.defaultSong
-import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
+import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.components.CustomButton
 import com.musify.app.ui.components.SongView
+import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
-import com.musify.app.presentation.songsinplaylist.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Black
 import com.musify.app.ui.theme.DarkGray
@@ -67,7 +68,12 @@ fun SelectedPlaylistScreen(playlist: Playlist, goBack: () -> Unit) {
         .background(
             AlbumCoverBlackBG
         ),
-        topBar = { CollapsingSmallTopAppBar(scrollBehaviour = scrollBehavior) { goBack() } })
+        topBar = { CollapsingSmallTopAppBar(
+            scrollBehaviour = scrollBehavior,
+            trailingIcon = R.drawable.search,
+            trailingIconDescription = stringResource(
+            id = R.string.search )) {
+            goBack() } })
     { padding ->
 
         LazyColumn(

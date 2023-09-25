@@ -1,25 +1,16 @@
 package com.musify.app.navigation
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.musify.app.domain.models.defaultUser
-import com.musify.app.presentation.artist.ArtistScreen
-import com.musify.app.presentation.home.HomeScreen
-import com.musify.app.presentation.myplaylist.MyPlaylistsScreen
-import com.musify.app.presentation.newplaylist.NewPlaylistScreen
-import com.musify.app.presentation.search.SearchScreen
+import com.musify.app.presentation.player.PlayerScreen
 import com.musify.app.presentation.settings.SettingsScreen
-import com.musify.app.presentation.topdetails.TopDetailsScreen
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -61,7 +52,8 @@ fun AppNavGraph() {
             }
             composable(NavScreen.MyPlaylists.route) {
 
-                NewPlaylistScreen()
+//                NewPlaylistScreen()
+                PlayerScreen()
 //                MyPlaylistsScreen(
 //                    paddingValues = paddingValues,
 //                    myPlaylistsViewModel = hiltViewModel(),

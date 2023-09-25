@@ -1,4 +1,4 @@
-package com.musify.app.presentation.songsinplaylist.components
+package com.musify.app.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -24,7 +24,9 @@ import com.musify.app.ui.theme.WhiteTextColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollapsingSmallTopAppBar(
-    scrollBehaviour: TopAppBarScrollBehavior,
+    scrollBehaviour: TopAppBarScrollBehavior? = null,
+    trailingIcon: Int,
+    trailingIconDescription: String,
     goBack: () -> Unit,
 //    navController: NavHostController
 ){
@@ -41,6 +43,7 @@ fun CollapsingSmallTopAppBar(
                 modifier = Modifier.clickable {
                     goBack()
                 },
+                tint = WhiteTextColor,
                 painter = painterResource(id = R.drawable.left_arrow),
                 contentDescription = stringResource(id = R.string.go_back)
             )
@@ -48,8 +51,8 @@ fun CollapsingSmallTopAppBar(
         colors = TopAppBarDefaults.topAppBarColors(containerColor = AlbumCoverBlackBG),
         actions = {
             Icon(
-                painter = painterResource(id = R.drawable.search),
-                contentDescription = stringResource(id = R.string.search)
+                painter = painterResource(id = trailingIcon),
+                contentDescription = trailingIconDescription
             )
         }
 
