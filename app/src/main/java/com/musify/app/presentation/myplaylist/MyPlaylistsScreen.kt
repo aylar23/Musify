@@ -6,18 +6,23 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
+import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.defaultPlaylist
+import com.musify.app.domain.models.mainScreenData
 import com.musify.app.ui.components.LocalPlayListView
 import com.musify.app.ui.theme.WhiteTextColor
 
@@ -26,7 +31,8 @@ import com.musify.app.ui.theme.WhiteTextColor
 fun MyPlaylistsScreen(
     paddingValues: PaddingValues,
     myPlaylistsViewModel: MyPlaylistsViewModel,
-    navigateToNewPlaylistScreen : () ->Unit,
+    navigateToNewPlaylist : () ->Unit,
+    navigateToLocalPlaylist : (Playlist) ->Unit,
 ) {
 
 
@@ -49,9 +55,13 @@ fun MyPlaylistsScreen(
                     fontWeight = FontWeight.Bold
                 )
                 IconButton(
-                    onClick = navigateToNewPlaylistScreen,
+                    onClick = navigateToNewPlaylist,
                 ) {
-
+                    Icon(
+                        painter = painterResource(id = R.drawable.add),
+                        contentDescription = "new playlist",
+                        tint = WhiteTextColor
+                    )
                 }
             }
         }
@@ -63,33 +73,13 @@ fun MyPlaylistsScreen(
         ) {
 
 
-            items(20) { playlist ->
-                LocalPlayListView(playlist = defaultPlaylist) {
-
+            items(mainScreenData.tops) { playlist ->
+                LocalPlayListView(playlist = playlist) {
+                    navigateToLocalPlaylist(playlist)
                 }
             }
         }
     }
-//    Box(modifier = Modifier
-//        .fillMaxSize()
-//        .padding(paddingValues)
-//        .background(AlbumCoverBlackBG)){
-//
-//
-//
-//        AnimatedVisibility(
-//            visible = playlistSelected,
-//            enter = slideInHorizontally(
-//                initialOffsetX = { it },
-//                animationSpec = tween(200)),
-//            exit = slideOutHorizontally(
-//                targetOffsetX = { it },
-//                animationSpec = tween(200))
-//        ) {
-//            SelectedPlaylistScreen(defaultPlaylist) { playlistSelected = false }
-//        }
-//
-//
-//
-//    }
+
 }
+

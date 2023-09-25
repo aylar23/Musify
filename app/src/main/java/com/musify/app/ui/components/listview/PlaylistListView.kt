@@ -16,8 +16,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
-import com.musify.app.domain.models.defaultPlaylist
-import com.musify.app.navigation.Screen
 import com.musify.app.ui.components.PlaylistView
 import com.musify.app.ui.theme.SFFontFamily
 

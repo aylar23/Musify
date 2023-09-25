@@ -6,6 +6,9 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.musify.app.R
+import com.musify.app.domain.models.Album
+import com.musify.app.domain.models.Artist
+import com.musify.app.navigation.screen.Screen
 import com.musify.app.ui.components.ActionsModelView
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 
@@ -34,6 +37,7 @@ fun TrackBottomSheet(
             icon = R.drawable.library_add,
             mainText = stringResource(id = R.string.add_to_playlist)
         ) {
+            onDismiss()
             onAddToPlaylist()
 
         }
@@ -44,6 +48,7 @@ fun TrackBottomSheet(
             icon = R.drawable.redo,
             mainText = stringResource(id = R.string.play_next)
         ) {
+            onDismiss()
             onPlayNext()
         }
         ActionsModelView(
@@ -51,6 +56,7 @@ fun TrackBottomSheet(
             icon = R.drawable.account_circle,
             mainText = stringResource(id = R.string.see_the_artist)
         ) {
+            onDismiss()
             onNavigateToArtist()
         }
         ActionsModelView(
@@ -58,6 +64,7 @@ fun TrackBottomSheet(
             icon = R.drawable.album,
             mainText = stringResource(id = R.string.see_the_album)
         ) {
+            onDismiss()
             onNavigateToAlbum()
         }
         ActionsModelView(
@@ -65,6 +72,7 @@ fun TrackBottomSheet(
             icon = R.drawable.share,
             mainText = stringResource(id = R.string.share)
         ) {
+            onDismiss()
             onShare()
 
         }

@@ -7,6 +7,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.musify.app.navigation.screen.NavScreen
+import com.musify.app.navigation.screen.Screen
 import com.musify.app.presentation.artist.ArtistScreen
 import com.musify.app.presentation.home.HomeScreen
 import com.musify.app.presentation.playlist.PlaylistScreen
@@ -68,6 +70,8 @@ fun HomeNavGraph(
                     innerNavController.navigate(Screen.Playlist.route)
                 },
                 navigateToNewPlaylist = {},
+                navigateUp = {innerNavController.navigateUp()}
+
             )
 
 
@@ -78,7 +82,13 @@ fun HomeNavGraph(
             PlaylistScreen(
                 paddingValues = paddingValues,
                 navigateToNewPlaylist = {},
-                navigateUp = {}
+                navigateToArtist = {
+                    innerNavController.navigate(Screen.Artist.route)
+                },
+                navigateToAlbum = {
+                    innerNavController.navigate(Screen.Playlist.route)
+                },
+                navigateUp = {innerNavController.navigateUp()}
             )
 
 

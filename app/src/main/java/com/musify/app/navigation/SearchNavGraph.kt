@@ -7,6 +7,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.musify.app.navigation.screen.Screen
 import com.musify.app.presentation.artist.ArtistScreen
 import com.musify.app.presentation.search.SearchScreen
 import com.musify.app.presentation.playlist.PlaylistScreen
@@ -37,6 +38,7 @@ fun SearchNavGraph(
                 navigateToPlaylist = {
                     innerNavController.navigate(Screen.Playlist.route)
                 },
+                navigateToNewPlaylist = {}
             )
 
 
@@ -54,8 +56,11 @@ fun SearchNavGraph(
                     innerNavController.navigate(Screen.Playlist.route)
                 },
                 navigateToNewPlaylist = {},
+                navigateUp = {
+                    innerNavController.navigateUp()
+                },
 
-                )
+            )
 
 
         }
@@ -65,7 +70,15 @@ fun SearchNavGraph(
             PlaylistScreen(
                 paddingValues = paddingValues,
                 navigateToNewPlaylist = {},
-                navigateUp = {}
+                navigateToArtist = {
+                    innerNavController.navigate(Screen.Artist.route)
+                },
+                navigateToAlbum = {
+                    innerNavController.navigate(Screen.Playlist.route)
+                },
+                navigateUp = {
+                    innerNavController.navigateUp()
+                }
             )
 
         }

@@ -34,6 +34,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
+import com.musify.app.domain.models.Album
+import com.musify.app.domain.models.Artist
+import com.musify.app.domain.models.Playlist
+import com.musify.app.domain.models.Song
+import com.musify.app.domain.models.defaultArtist
 import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.domain.models.mainScreenData
 import com.musify.app.presentation.playlist.components.CollapsingTopAppBar
@@ -53,9 +58,10 @@ import com.musify.app.ui.theme.WhiteTextColor
 fun ArtistScreen(
     paddingValues: PaddingValues,
     artistViewModel: ArtistViewModel,
-    navigateToArtist: () -> Unit,
-    navigateToAlbum: () -> Unit,
+    navigateToArtist: (Artist) -> Unit,
+    navigateToAlbum: (Album) -> Unit,
     navigateToNewPlaylist: () -> Unit,
+    navigateUp: () -> Unit,
 ) {
 
     val appBarState = rememberTopAppBarState()
@@ -69,12 +75,22 @@ fun ArtistScreen(
         mutableStateOf(false)
     }
 
+    lateinit var selectedSong :  Song
     val playlistSheetState = rememberModalBottomSheetState()
 
     val songSettingsSheetState = rememberModalBottomSheetState()
 
-    Scaffold(modifier = Modifier.padding(paddingValues = paddingValues),
-        topBar = { CollapsingTopAppBar(scrollBehaviour = scrollBehavior) }) { padding ->
+    Scaffold(
+        modifier = Modifier.padding(paddingValues = paddingValues),
+        topBar = {
+            CollapsingTopAppBar(
+                title = defaultArtist.name,
+                scrollBehaviour = scrollBehavior
+            ){
+                navigateUp()
+            }
+        }
+    ) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Background)
@@ -131,7 +147,8 @@ fun ArtistScreen(
 
             item {
                 SongListView(mainScreenData.hitSongs, onMoreClicked = {
-
+                    selectedSong = it
+                    settingsClicked = true
                 }) {
 
                 }
@@ -139,15 +156,16 @@ fun ArtistScreen(
 
 
             item {
-                AlbumListView(mainScreenData.albums) {
-
+                AlbumListView(mainScreenData.albums) { album ->
+                    navigateToAlbum(album)
                 }
             }
 
 
             item {
                 SongListView(mainScreenData.hitSongs, onMoreClicked = {
-
+                    selectedSong = it
+                    settingsClicked = true
                 }) {
 
                 }
@@ -165,10 +183,10 @@ fun ArtistScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    navigateToAlbum()
+                    navigateToAlbum(selectedSong.album)
                 },
                 onNavigateToArtist = {
-                    navigateToArtist()
+                    navigateToArtist(selectedSong.artist)
                 },
                 onPlayNext = {},
                 onShare = {},

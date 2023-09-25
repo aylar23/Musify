@@ -20,6 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
+import com.musify.app.domain.models.Album
+import com.musify.app.domain.models.Artist
+import com.musify.app.domain.models.Playlist
+import com.musify.app.domain.models.Song
 import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.domain.models.mainScreenData
 import com.musify.app.ui.components.listview.AlbumListView
@@ -37,13 +41,14 @@ fun HomeScreen(
     paddingValues: PaddingValues,
     homeViewModel: HomeViewModel,
     navigateToSearch: () -> Unit,
-    navigateToArtist: () -> Unit,
-    navigateToAlbum: () -> Unit,
-    navigateToPlaylist: () -> Unit,
+    navigateToArtist: (Artist) -> Unit,
+    navigateToAlbum: (Album) -> Unit,
+    navigateToPlaylist: (Playlist) -> Unit,
     navigateToSettings: () -> Unit,
     navigateToNewPlaylist: () -> Unit,
 ) {
 
+    lateinit var selectedSong: Song
     var settingsClicked by remember {
         mutableStateOf(false)
     }
@@ -76,24 +81,25 @@ fun HomeScreen(
             ) {}
 
 
-            PlaylistListView(mainScreenData.tops) {
-                navigateToPlaylist()
+            PlaylistListView(mainScreenData.tops) { playlist ->
+                navigateToPlaylist(playlist)
             }
 
             ArtistListView(
                 header = R.string.top,
                 mainScreenData.artists
-            ) { navigateToArtist() }
+            ) { artist ->  navigateToArtist(artist) }
 
 
-            AlbumListView(mainScreenData.albums) {
-                navigateToAlbum()
+            AlbumListView(mainScreenData.albums) { album ->
+                navigateToAlbum(album)
             }
 
 
             SongGridListView(
                 mainScreenData.hitSongs,
                 onMoreClicked = {
+                    selectedSong = it
                     settingsClicked = true
                 }
             ) {
@@ -111,10 +117,10 @@ fun HomeScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    navigateToAlbum()
+                    navigateToAlbum(selectedSong.album)
                 },
                 onNavigateToArtist = {
-                    navigateToArtist()
+                    navigateToArtist(selectedSong.artist)
                 },
                 onPlayNext = {},
                 onShare = {},

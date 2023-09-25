@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -40,9 +41,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
+import com.musify.app.domain.models.Album
+import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Song
+import com.musify.app.domain.models.defaultArtist
 import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.domain.models.defaultSong
+import com.musify.app.domain.models.mainScreenData
 import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.CustomButton
 import com.musify.app.ui.components.SongView
@@ -58,13 +63,14 @@ import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
 
 
-private var selectedSong: Song? = null
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistScreen(
     paddingValues: PaddingValues,
     navigateToNewPlaylist : () ->Unit,
+    navigateToArtist: (Artist) -> Unit,
+    navigateToAlbum: (Album) -> Unit,
     navigateUp : () ->Unit,
 ) {
 
@@ -78,13 +84,23 @@ fun PlaylistScreen(
     var addToPlaylistClicked by rememberSaveable {
         mutableStateOf(false)
     }
+    lateinit var selectedSong: Song
 
     val playlistSheetState = rememberModalBottomSheetState()
 
     val songSettingsSheetState = rememberModalBottomSheetState()
 
-    Scaffold(modifier = Modifier.padding(paddingValues = paddingValues),
-        topBar = { CollapsingTopAppBar(scrollBehaviour = scrollBehavior) }) { padding ->
+    Scaffold(
+        modifier = Modifier.padding(paddingValues = paddingValues),
+        topBar = {
+            CollapsingTopAppBar(
+                title = defaultArtist.name,
+                scrollBehaviour = scrollBehavior
+            ){
+                navigateUp()
+            }
+        }
+    ){ padding ->
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Background)
@@ -179,9 +195,10 @@ fun PlaylistScreen(
 
             }
 
-            items(50) { id ->
-                SongView(song = defaultSong,
+            items(mainScreenData.hitSongs) { song ->
+                SongView(song = song,
                     onMoreClicked = {
+                        selectedSong = song
                         settingsClicked = true
                     }
                 ) {
@@ -199,8 +216,12 @@ fun PlaylistScreen(
                     settingsClicked = false
                     addToPlaylistClicked = true
                 },
-                onNavigateToAlbum = {},
-                onNavigateToArtist = {},
+                onNavigateToAlbum = {
+                    navigateToAlbum(selectedSong.album)
+                },
+                onNavigateToArtist = {
+                    navigateToArtist(selectedSong.artist)
+                },
                 onPlayNext = {},
                 onShare = {},
             ) {

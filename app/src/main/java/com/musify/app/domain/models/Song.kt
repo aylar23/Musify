@@ -7,7 +7,7 @@ data class Song(
     val image: String,
     val likes: Int,
     val isLiked: Boolean,
-    val albumId: Long,
+    val album: Album,
     val duration: Long
 )
-val defaultSong = Song(1L, "title", defaultArtist, "", 3, false, 1, 10000L  )
+val defaultSong = Song(1L, "title", defaultArtist, "", 3, false, defaultAlbum, 10000L  )

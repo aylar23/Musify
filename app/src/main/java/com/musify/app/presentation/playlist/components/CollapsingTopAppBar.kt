@@ -23,12 +23,16 @@ import com.musify.app.ui.theme.WhiteTextColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CollapsingTopAppBar(scrollBehaviour: TopAppBarScrollBehavior) {
+fun CollapsingTopAppBar(
+    title:String,
+    scrollBehaviour: TopAppBarScrollBehavior,
+    navigateUp: () ->Unit
+) {
 
     LargeTopAppBar(
         title = {
             Text(
-                text = "TNT",
+                text = title,
                 color = WhiteTextColor.copy(alpha = scrollBehaviour.state.overlappedFraction),
                 fontSize = 16.sp,
                 fontFamily = SFFontFamily,
@@ -38,7 +42,7 @@ fun CollapsingTopAppBar(scrollBehaviour: TopAppBarScrollBehavior) {
         scrollBehavior = scrollBehaviour,
         navigationIcon = {
 
-            IconButton(onClick = { /*TODO*/ }) {
+            IconButton(onClick = navigateUp ) {
                 Icon(
                     painter = painterResource(id = R.drawable.left_arrow),
                     contentDescription = "profile button",

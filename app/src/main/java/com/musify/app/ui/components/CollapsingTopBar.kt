@@ -29,11 +29,15 @@ fun CollapsingSmallTopAppBar(
     trailingIconDescription: String,
     goBack: () -> Unit,
 //    navController: NavHostController
-){
-    TopAppBar(
-        title = {
-            Text(text = stringResource(id = R.string.go_back), color = WhiteTextColor, fontSize = 16.sp, fontWeight = FontWeight.Bold)
-        },
+) {
+    TopAppBar(title = {
+        Text(
+            text = stringResource(id = R.string.go_back),
+            color = WhiteTextColor,
+            fontSize = 16.sp,
+            fontWeight = FontWeight.Bold
+        )
+    },
         scrollBehavior = scrollBehaviour,
         modifier = Modifier
             .fillMaxWidth()
