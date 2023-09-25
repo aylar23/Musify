@@ -12,6 +12,11 @@ sealed class Screen(
     )
 
 
+    object Search : Screen(
+        "search"
+    )
+
+
     object Login : Screen(
         "login"
     )
@@ -21,5 +26,13 @@ sealed class Screen(
     )
 
 
+    object Playlist : Screen(
+        "playlist"
+    )
+
+
+    object Settings : Screen(
+        "playlist"
+    )
 
 }

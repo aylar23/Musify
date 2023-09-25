@@ -1,4 +1,4 @@
-package com.musify.app.presentation.topdetails
+package com.musify.app.presentation.playlist
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
@@ -47,7 +47,7 @@ import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.CustomButton
 import com.musify.app.ui.components.SongView
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
-import com.musify.app.presentation.topdetails.components.CollapsingTopAppBar
+import com.musify.app.presentation.playlist.components.CollapsingTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.Black
@@ -62,7 +62,11 @@ private var selectedSong: Song? = null
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TopDetailsScreen(paddingValues: PaddingValues) {
+fun PlaylistScreen(
+    paddingValues: PaddingValues,
+    navigateToNewPlaylist : () ->Unit,
+    navigateUp : () ->Unit,
+) {
 
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
@@ -210,6 +214,9 @@ fun TopDetailsScreen(paddingValues: PaddingValues) {
             AddToPlaylistBottomSheet(
                 playlists = mutableListOf(defaultPlaylist),
                 playlistSheetState = playlistSheetState,
+                onCreateNewPlaylist = {
+                    navigateToNewPlaylist()
+                }
             ) {
                 addToPlaylistClicked = false
             }

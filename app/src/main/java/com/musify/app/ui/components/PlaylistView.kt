@@ -17,12 +17,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.musify.app.domain.models.Playlist
-import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.GrayTextColor
@@ -30,7 +28,10 @@ import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
-fun PlaylistView(playlist: Playlist) {
+fun PlaylistView(
+    playlist: Playlist,
+    onClick: () -> Unit
+) {
 
     val playlistImagePainter = rememberAsyncImagePainter(
         model = playlist.image,
@@ -38,7 +39,7 @@ fun PlaylistView(playlist: Playlist) {
 
     Column(modifier = Modifier
         .clip(shape = MaterialTheme.shapes.medium)
-        .clickable { }
+        .clickable { onClick() }
         .background(AlbumCoverBlackBG)) {
 
         Image(
@@ -85,8 +86,3 @@ fun PlaylistView(playlist: Playlist) {
 }
 
 
-@Preview
-@Composable
-fun PlaylistViewPre() {
-   PlaylistView(defaultPlaylist)
-}

@@ -5,11 +5,14 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.musify.app.domain.models.defaultUser
+import com.musify.app.presentation.myplaylist.MyPlaylistsScreen
 import com.musify.app.presentation.player.PlayerScreen
+import com.musify.app.presentation.search.SearchScreen
 import com.musify.app.presentation.settings.SettingsScreen
 
 
@@ -35,31 +38,21 @@ fun AppNavGraph() {
             composable(NavScreen.Home.route){
                 HomeNavGraph(paddingValues, navController)
             }
-            composable(NavScreen.Search.route) {
 
-//                SearchScreen(
-//                    paddingValues =  paddingValues,
-//                    searchViewModel = hiltViewModel(),
-//                    navigateToArtist = {}
-//
-//                )
-
-                SettingsScreen(
-                    defaultUser
-                )
-
-
+            composable(NavScreen.Search.route){
+                SearchNavGraph(paddingValues, navController)
             }
+
+
+
             composable(NavScreen.MyPlaylists.route) {
 
-//                NewPlaylistScreen()
-                PlayerScreen()
-//                MyPlaylistsScreen(
-//                    paddingValues = paddingValues,
-//                    myPlaylistsViewModel = hiltViewModel(),
-//                ) {
-//
-//                }
+                MyPlaylistsScreen(
+                    paddingValues = paddingValues,
+                    myPlaylistsViewModel = hiltViewModel(),
+                ) {
+
+                }
 
             }
         }

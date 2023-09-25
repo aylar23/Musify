@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,12 +17,16 @@ import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.defaultPlaylist
+import com.musify.app.navigation.Screen
 import com.musify.app.ui.components.PlaylistView
 import com.musify.app.ui.theme.SFFontFamily
 
 
 @Composable
-fun PlaylistListView(playlists: List<Playlist>) {
+fun PlaylistListView(
+    playlists: List<Playlist>,
+    onClick: (Playlist) ->Unit
+) {
 
     Column {
         Text(
@@ -40,8 +45,10 @@ fun PlaylistListView(playlists: List<Playlist>) {
             contentPadding = PaddingValues(20.dp, 15.dp),
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-            items(10) {
-                PlaylistView(defaultPlaylist)
+            items(playlists) { playlist ->
+                PlaylistView(playlist){
+                    onClick(playlist)
+                }
             }
         }
     }

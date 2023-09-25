@@ -30,8 +30,9 @@ import com.musify.app.presentation.search.components.SearchKeysView
 fun SearchScreen(
     paddingValues: PaddingValues,
     searchViewModel: SearchViewModel,
-    navigateToArtist: (Artist) -> Unit
-
+    navigateToArtist: () -> Unit,
+    navigateToAlbum: () -> Unit,
+    navigateToPlaylist: () -> Unit,
 ) {
 
 
@@ -76,7 +77,7 @@ fun SearchScreen(
                 ArtistListView(
                     header = R.string.artists,
                     mainScreenData.artists
-                ) { artist -> navigateToArtist(artist) }
+                ) { artist -> navigateToArtist() }
 
 
 

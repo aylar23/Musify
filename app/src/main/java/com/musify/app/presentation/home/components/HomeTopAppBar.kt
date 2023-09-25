@@ -22,7 +22,9 @@ import com.musify.app.ui.theme.WhiteTextColor
 
 
 @Composable
-fun HomeTopAppBar() {
+fun HomeTopAppBar(
+    onSettingsClicked : () ->Unit
+) {
 
     Row(
         Modifier
@@ -54,7 +56,7 @@ fun HomeTopAppBar() {
         }
 
         IconButton(
-            onClick = { },
+            onClick = onSettingsClicked,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_settings),

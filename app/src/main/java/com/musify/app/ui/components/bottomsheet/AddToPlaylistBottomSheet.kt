@@ -24,6 +24,7 @@ import com.musify.app.ui.theme.Yellow
 fun AddToPlaylistBottomSheet(
     playlists: MutableList<Playlist>,
     playlistSheetState : SheetState,
+    onCreateNewPlaylist: ()->Unit,
     onDismiss: ()->Unit
 ) {
     ModalBottomSheet(containerColor = AlbumCoverBlackBG,
@@ -36,7 +37,7 @@ fun AddToPlaylistBottomSheet(
             CustomButton(
                 modifier = Modifier.fillMaxWidth(),
                 text = R.string.create_new_playlist,
-                onClick = { /*TODO*/ },
+                onClick = { onCreateNewPlaylist() },
                 containerColor = Yellow,
                 contentColor = AlbumCoverBlackBG
             )

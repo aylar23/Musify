@@ -46,7 +46,11 @@ import com.musify.app.ui.theme.Yellow
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SelectedPlaylistScreen(playlist: Playlist, goBack: () -> Unit) {
+fun SelectedPlaylistScreen(
+    playlist: Playlist,
+    navigateToNewPlaylist: () -> Unit,
+    navigateUp: () -> Unit,
+) {
 
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState)
@@ -73,7 +77,7 @@ fun SelectedPlaylistScreen(playlist: Playlist, goBack: () -> Unit) {
             trailingIcon = R.drawable.search,
             trailingIconDescription = stringResource(
             id = R.string.search )) {
-            goBack() } })
+            navigateUp() } })
     { padding ->
 
         LazyColumn(
@@ -170,7 +174,10 @@ fun SelectedPlaylistScreen(playlist: Playlist, goBack: () -> Unit) {
             AddToPlaylistBottomSheet(
                 playlists = mutableListOf(defaultPlaylist),
                 playlistSheetState = playlistSheetState,
-            ){
+                onCreateNewPlaylist = {
+                    navigateToNewPlaylist()
+                }
+            ) {
                 addToPlaylistClicked = false
             }
         }

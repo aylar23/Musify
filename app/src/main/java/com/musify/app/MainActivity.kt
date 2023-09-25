@@ -27,15 +27,7 @@ class MainActivity : ComponentActivity() {
                     color = MaterialTheme.colorScheme.background
                 ) {
                     AppNavGraph()
-//                   Column (verticalArrangement = Arrangement.spacedBy(20.dp)){
-//                       SongView(song = defaultSong)
-//
-//                       AlbumView(album = defaultAlbum)
-//
-//                       PlaylistView(playlist = defaultPlaylist)
-//
-//                       ArtistView(artist = defaultArtist)
-//                   }
+
                 }
             }
         }

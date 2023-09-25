@@ -4,13 +4,12 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
 import com.musify.app.presentation.artist.ArtistScreen
 import com.musify.app.presentation.home.HomeScreen
+import com.musify.app.presentation.playlist.PlaylistScreen
 
 @Composable
 fun HomeNavGraph(
@@ -42,7 +41,16 @@ fun HomeNavGraph(
                 },
                 navigateToArtist = {
                     innerNavController.navigate(Screen.Artist.route)
-                }
+                },
+                navigateToAlbum = {
+                    innerNavController.navigate(Screen.Playlist.route)
+
+                },
+                navigateToPlaylist = {
+                    innerNavController.navigate(Screen.Playlist.route)
+                },
+                navigateToSettings = {},
+                navigateToNewPlaylist = {},
             )
 
 
@@ -53,7 +61,24 @@ fun HomeNavGraph(
             ArtistScreen(
                 paddingValues = paddingValues,
                 artistViewModel = hiltViewModel(),
+                navigateToArtist = {
+                    innerNavController.navigate(Screen.Artist.route)
+                },
+                navigateToAlbum = {
+                    innerNavController.navigate(Screen.Playlist.route)
+                },
+                navigateToNewPlaylist = {},
+            )
 
+
+        }
+
+        composable(Screen.Playlist.route) {
+
+            PlaylistScreen(
+                paddingValues = paddingValues,
+                navigateToNewPlaylist = {},
+                navigateUp = {}
             )
 
 

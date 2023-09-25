@@ -16,7 +16,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.NoRippleTheme
+import com.musify.app.ui.theme.Yellow
 
 
 @Composable
@@ -50,8 +52,7 @@ fun BottomNavigationBar(navController: NavController) {
                     alwaysShowLabel = true,
                     selected = selected,
                     onClick = {
-                        Log.e("TAG", "BottomNavigationBar: "+currentRoute)
-                        Log.e("TAG", "BottomNavigationBar: "+item.route)
+
                         navController.navigate(item.route) {
 
                             navController.graph.startDestinationRoute?.let { screen_route ->
@@ -65,10 +66,8 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     colors = NavigationBarItemDefaults
                         .colors(
-                            selectedIconColor = Color.Black,
-                            indicatorColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                LocalAbsoluteTonalElevation.current
-                            )
+                            selectedIconColor = Yellow,
+                            indicatorColor = Background
                         )
                 )
             }

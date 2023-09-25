@@ -1,6 +1,5 @@
 package com.musify.app.presentation.artist
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,19 +7,12 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -35,7 +27,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
@@ -43,32 +34,28 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
-import com.musify.app.domain.models.defaultArtist
 import com.musify.app.domain.models.defaultPlaylist
-import com.musify.app.domain.models.defaultSong
 import com.musify.app.domain.models.mainScreenData
-import com.musify.app.presentation.topdetails.components.CollapsingTopAppBar
-import com.musify.app.ui.components.CustomButton
-import com.musify.app.ui.components.SongView
+import com.musify.app.presentation.playlist.components.CollapsingTopAppBar
 import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.components.listview.AlbumListView
 import com.musify.app.ui.components.listview.SongListView
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
-import com.musify.app.ui.theme.Black
-import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
-import com.musify.app.ui.theme.Yellow
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistScreen(
     paddingValues: PaddingValues,
-    artistViewModel: ArtistViewModel
+    artistViewModel: ArtistViewModel,
+    navigateToArtist: () -> Unit,
+    navigateToAlbum: () -> Unit,
+    navigateToNewPlaylist: () -> Unit,
 ) {
 
     val appBarState = rememberTopAppBarState()
@@ -142,32 +129,26 @@ fun ArtistScreen(
             }
 
 
-            item{
-                SongListView(
-                    mainScreenData.hitSongs,
-                    onMoreClicked = {
+            item {
+                SongListView(mainScreenData.hitSongs, onMoreClicked = {
 
-                    }
-                ) {
+                }) {
 
                 }
             }
 
 
-            item{
-                AlbumListView(mainScreenData.albums){
+            item {
+                AlbumListView(mainScreenData.albums) {
 
                 }
             }
 
 
-            item{
-                SongListView(
-                    mainScreenData.hitSongs,
-                    onMoreClicked = {
+            item {
+                SongListView(mainScreenData.hitSongs, onMoreClicked = {
 
-                    }
-                ) {
+                }) {
 
                 }
             }
@@ -183,8 +164,12 @@ fun ArtistScreen(
                     settingsClicked = false
                     addToPlaylistClicked = true
                 },
-                onNavigateToAlbum = {},
-                onNavigateToArtist = {},
+                onNavigateToAlbum = {
+                    navigateToAlbum()
+                },
+                onNavigateToArtist = {
+                    navigateToArtist()
+                },
                 onPlayNext = {},
                 onShare = {},
             ) {
@@ -195,10 +180,11 @@ fun ArtistScreen(
 
 
         if (addToPlaylistClicked) {
-            AddToPlaylistBottomSheet(
-                playlists = mutableListOf(defaultPlaylist),
+            AddToPlaylistBottomSheet(playlists = mutableListOf(defaultPlaylist),
                 playlistSheetState = playlistSheetState,
-            ) {
+                onCreateNewPlaylist = {
+                    navigateToNewPlaylist()
+                }) {
                 addToPlaylistClicked = false
             }
         }
