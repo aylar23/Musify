@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Scaffold
@@ -21,9 +20,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
-import com.musify.app.domain.models.defaultPlaylist
-import com.musify.app.domain.models.mainScreenData
-import com.musify.app.ui.components.LocalPlayListView
 import com.musify.app.ui.theme.WhiteTextColor
 
 
@@ -73,11 +69,11 @@ fun MyPlaylistsScreen(
         ) {
 
 
-            items(mainScreenData.tops) { playlist ->
-                LocalPlayListView(playlist = playlist) {
-                    navigateToLocalPlaylist(playlist)
-                }
-            }
+//            items(mainScreenData.tops) { playlist ->
+//                LocalPlayListView(playlist = playlist) {
+//                    navigateToLocalPlaylist(playlist)
+//                }
+//            }
         }
     }
 

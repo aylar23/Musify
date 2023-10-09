@@ -33,7 +33,7 @@ fun HomeTopAppBar(
             .padding(top = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Column {
+        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 text = stringResource(id = R.string.welcome),
                 style = TextStyle(

@@ -59,7 +59,7 @@ fun LocalPlayListView(playlist: Playlist, selectPlaylist: () -> Unit){
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = playlist.songsCount.toString() + stringResource(id = R.string.songs),
+                text = playlist.year.toString() + stringResource(id = R.string.songs),
                 fontFamily = SFFontFamily,
                 fontSize = 14.sp,
                 lineHeight = 14.sp,

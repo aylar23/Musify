@@ -5,8 +5,12 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
@@ -15,16 +19,21 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.SubcomposeAsyncImage
 import coil.compose.rememberAsyncImagePainter
 import com.musify.app.R
 import com.musify.app.domain.models.Song
+import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.GrayTextColor
+import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
+import com.musify.app.ui.theme.Surface
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
 
@@ -36,12 +45,6 @@ fun SongView(
     onClick: () -> Unit,
 ) {
 
-    val songImagePainter = rememberAsyncImagePainter(
-        model = song.image,
-        placeholder = painterResource(id = R.drawable.mock_cover)
-
-    )
-
     Row(
         modifier = modifier?.clickable { onClick() }?.padding(5.dp) ?: Modifier
             .clickable { onClick() }
@@ -49,10 +52,14 @@ fun SongView(
         horizontalArrangement = Arrangement.spacedBy(10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            modifier = Modifier.size(50.dp).background(Yellow),
-            painter = songImagePainter,
-            contentDescription = "song Image"
+        SubcomposeAsyncImage(
+            modifier = Modifier
+                .size(50.dp)
+                .aspectRatio(1f).background(Surface),
+            model = song.getSongImage(),
+            contentScale = ContentScale.Crop,
+            contentDescription = "",
+            alignment = Alignment.Center
 
         )
         Column(
@@ -60,7 +67,7 @@ fun SongView(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = song.title,
+                text = song.name,
                 fontFamily = SFFontFamily,
                 fontSize = 16.sp,
                 lineHeight = 16.sp,
@@ -70,7 +77,7 @@ fun SongView(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = song.artist.name,
+                text = song.getArtistsName(),
                 fontFamily = SFFontFamily,
                 fontSize = 14.sp,
                 lineHeight = 14.sp,

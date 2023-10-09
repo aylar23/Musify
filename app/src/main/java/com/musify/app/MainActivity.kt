@@ -32,6 +32,15 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+
+    companion object {
+
+        val TOPS = "tops"
+        val PLAYLISTS = "playlists"
+        val ALBUMS = "albums"
+
+    }
 }
 
 @Composable

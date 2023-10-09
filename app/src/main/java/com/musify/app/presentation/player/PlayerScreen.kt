@@ -48,7 +48,6 @@ import com.google.accompanist.pager.HorizontalPager
 import com.google.accompanist.pager.calculateCurrentOffsetForPage
 import com.google.accompanist.pager.rememberPagerState
 import com.musify.app.R
-import com.musify.app.domain.models.defaultPlaylist
 import com.musify.app.ui.components.ActionsModelView
 import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
@@ -100,7 +99,7 @@ fun PlayerScreen(
 
             HorizontalPager(
                 itemSpacing = 1.dp,
-                count = defaultPlaylist.songsCount,
+                count = 5,
                 contentPadding = PaddingValues(horizontal = 60.dp),
                 modifier = Modifier.fillMaxWidth().weight(.6f),
                 state = pagerState) { page ->

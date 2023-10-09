@@ -17,7 +17,7 @@ val WhiteTextColor = Color(0xFFD3D3D3)
 val GrayTextColor = Color(0xFF8B8B8B)
 val AlbumCoverBlackBG = Color(0xFF0A0A0A)
 val TransparentColor = Color(0x00FFFFFF)
-val Background = Color(0xFF101010)
+val Background = Color(0xFF0A0A0A)
 val Inactive = Color(0xFF333333)
 val Surface = Color(0xFF292929)
 

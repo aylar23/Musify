@@ -12,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -34,10 +34,11 @@ import com.musify.app.ui.theme.Yellow
 
 @Composable
 fun SearchBar(
-    searchStr :MutableState<String> = mutableStateOf(""),
+    searchStr: State<String> = mutableStateOf(""),
     enabled: Boolean,
     onClick: () -> Unit,
-    onDone: () -> Unit
+    onDone: () -> Unit = {},
+    onValueChange: (String) -> Unit = {}
 ) {
 
 
@@ -54,7 +55,7 @@ fun SearchBar(
         value = searchStr.value,
         shape = MaterialTheme.shapes.medium,
         onValueChange = {
-            searchStr.value = it
+            onValueChange(it)
         },
         enabled = enabled,
         singleLine = true,

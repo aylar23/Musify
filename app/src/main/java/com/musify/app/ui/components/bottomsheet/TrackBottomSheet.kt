@@ -6,9 +6,7 @@ import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.musify.app.R
-import com.musify.app.domain.models.Album
-import com.musify.app.domain.models.Artist
-import com.musify.app.navigation.screen.Screen
+
 import com.musify.app.ui.components.ActionsModelView
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 

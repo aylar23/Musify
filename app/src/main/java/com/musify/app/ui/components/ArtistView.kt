@@ -40,7 +40,7 @@ fun ArtistView(
 ) {
 
     val artistImagePainter = rememberAsyncImagePainter(
-        model = artist.image,
+        model = artist.getArtistImage(),
     )
 
     Row(

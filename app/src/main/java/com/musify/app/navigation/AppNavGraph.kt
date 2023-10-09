@@ -16,7 +16,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.musify.app.domain.models.defaultSong
 import com.musify.app.navigation.screen.NavScreen
 import com.musify.app.presentation.myplaylist.MyPlaylistsScreen
 import com.musify.app.presentation.player.PlayerScreen
@@ -42,11 +41,13 @@ fun AppNavGraph() {
 
         bottomBar = {
             Column {
-                MiniPlayer(
-                    song = defaultSong
-                ) {
-                    playerExpanded = true
-                }
+                HorizontalDivider()
+
+//                MiniPlayer(
+//                    song = defaultSong
+//                ) {
+//                    playerExpanded = true
+//                }
 
                 HorizontalDivider()
                 BottomNavigationBar(navController = navController)
@@ -84,4 +85,5 @@ fun AppNavGraph() {
     }
 
 }
+
 

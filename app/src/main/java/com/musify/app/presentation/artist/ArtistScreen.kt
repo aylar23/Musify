@@ -7,10 +7,13 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
@@ -19,6 +22,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -26,22 +31,24 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
+import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import com.musify.app.R
-import com.musify.app.domain.models.Album
+import androidx.compose.ui.unit.sp
+import coil.compose.rememberAsyncImagePainter
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Song
-import com.musify.app.domain.models.defaultArtist
-import com.musify.app.domain.models.defaultPlaylist
-import com.musify.app.domain.models.mainScreenData
 import com.musify.app.presentation.playlist.components.CollapsingTopAppBar
+import com.musify.app.ui.components.LoadingView
+import com.musify.app.ui.components.NetworkErrorView
 import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.components.listview.AlbumListView
@@ -56,13 +63,22 @@ import com.musify.app.ui.theme.WhiteTextColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ArtistScreen(
+    id: Long,
     paddingValues: PaddingValues,
     artistViewModel: ArtistViewModel,
     navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Album) -> Unit,
+    navigateToAlbum: (Playlist) -> Unit,
     navigateToNewPlaylist: () -> Unit,
     navigateUp: () -> Unit,
 ) {
+
+
+    LaunchedEffect(id) {
+        artistViewModel.getArtistDetail(id)
+
+    }
+
+    val uiState by artistViewModel.uiState.collectAsState()
 
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
@@ -75,22 +91,40 @@ fun ArtistScreen(
         mutableStateOf(false)
     }
 
-    lateinit var selectedSong :  Song
+    lateinit var selectedSong: Song
     val playlistSheetState = rememberModalBottomSheetState()
 
     val songSettingsSheetState = rememberModalBottomSheetState()
+    val density = LocalDensity.current
+    val statusBarTop = WindowInsets.statusBars.getTop(density)
 
-    Scaffold(
-        modifier = Modifier.padding(paddingValues = paddingValues),
-        topBar = {
-            CollapsingTopAppBar(
-                title = defaultArtist.name,
-                scrollBehaviour = scrollBehavior
-            ){
-                navigateUp()
+
+    val toolbarHeight = 100.dp
+    val toolbarHeightPx = with(LocalDensity.current) { toolbarHeight.roundToPx().toFloat() }
+
+    // our offset to collapse toolbar
+    val toolbarOffsetHeightPx = remember { mutableStateOf(0f) }
+
+    val nestedScrollConnection = remember {
+        object : NestedScrollConnection {
+            override fun onPreScroll(available: Offset, source: NestedScrollSource): Offset {
+                val delta = available.y
+                val newOffset = toolbarOffsetHeightPx.value + delta
+                toolbarOffsetHeightPx.value =
+                    newOffset.coerceIn(-(2 * statusBarTop + toolbarHeightPx), 0f)
+                return Offset.Zero
             }
         }
-    ) { padding ->
+    }
+    Scaffold(modifier = Modifier.padding(paddingValues = paddingValues), topBar = {
+        CollapsingTopAppBar(
+            title = uiState.data?.name ?: "", scrollBehaviour = scrollBehavior
+        ) {
+            navigateUp()
+        }
+    }) { padding ->
+
+
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Background)
@@ -98,7 +132,7 @@ fun ArtistScreen(
                 translationY = scrollBehavior.state.contentOffset
             }) {
             Image(
-                painter = painterResource(id = R.drawable.mock_cover),
+                painter = rememberAsyncImagePainter(model = uiState.data?.getArtistImage()),
                 contentDescription = "",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,9 +168,11 @@ fun ArtistScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "TNT Music App",
+                            text = uiState.data?.name ?: "",
                             color = WhiteTextColor,
+                            fontSize = 24.sp,
                             fontFamily = SFFontFamily,
+
                             fontWeight = FontWeight.Bold
                         )
 
@@ -144,35 +180,60 @@ fun ArtistScreen(
                 }
             }
 
-
             item {
-                SongListView(mainScreenData.hitSongs, onMoreClicked = {
-                    selectedSong = it
-                    settingsClicked = true
-                }) {
 
+                when {
+                    uiState.isLoading -> {
+                        LoadingView(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .background(Background)
+                        )
+                    }
+
+                    uiState.isFailure -> {
+                        NetworkErrorView(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .background(Background)
+                        ) {
+                            artistViewModel.getArtistDetail(id)
+                        }
+                    }
+
+                    uiState.isSuccess -> {
+
+                        uiState.data?.let { data ->
+
+
+                            SongListView(data.songs, onMoreClicked = {
+                                selectedSong = it
+                                settingsClicked = true
+                            }) {
+
+                            }
+
+                            AlbumListView(data.albums) { album ->
+                                navigateToAlbum(album)
+                            }
+
+
+                            SongListView(data.songs, onMoreClicked = {
+                                selectedSong = it
+                                settingsClicked = true
+                            }) {
+
+                            }
+                        }
+                    }
                 }
             }
-
-
-            item {
-                AlbumListView(mainScreenData.albums) { album ->
-                    navigateToAlbum(album)
-                }
-            }
-
-
-            item {
-                SongListView(mainScreenData.hitSongs, onMoreClicked = {
-                    selectedSong = it
-                    settingsClicked = true
-                }) {
-
-                }
-            }
-
-
         }
+
+
+
 
 
         if (settingsClicked) {
@@ -186,7 +247,7 @@ fun ArtistScreen(
                     navigateToAlbum(selectedSong.album)
                 },
                 onNavigateToArtist = {
-                    navigateToArtist(selectedSong.artist)
+                    navigateToArtist(selectedSong.getArtist())
                 },
                 onPlayNext = {},
                 onShare = {},
@@ -198,7 +259,7 @@ fun ArtistScreen(
 
 
         if (addToPlaylistClicked) {
-            AddToPlaylistBottomSheet(playlists = mutableListOf(defaultPlaylist),
+            AddToPlaylistBottomSheet(playlists = mutableListOf(),
                 playlistSheetState = playlistSheetState,
                 onCreateNewPlaylist = {
                     navigateToNewPlaylist()

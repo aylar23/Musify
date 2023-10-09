@@ -31,7 +31,7 @@ fun AddToPlaylistBottomSheet(
         sheetState = playlistSheetState,
         onDismissRequest = onDismiss) {
         for(playlist in playlists){
-            ActionsModelView(icon = R.drawable.playlist_add_check, mainText = playlist.name, grayText = playlist.songsCount.toString() + " " + R.string.songs, expandable = false){}
+            ActionsModelView(icon = R.drawable.playlist_add_check, mainText = playlist.name, grayText = playlist.year.toString(), expandable = false){}
         }
         Box(modifier = Modifier.padding(10.dp)){
             CustomButton(

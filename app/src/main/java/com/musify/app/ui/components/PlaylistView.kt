@@ -34,7 +34,7 @@ fun PlaylistView(
 ) {
 
     val playlistImagePainter = rememberAsyncImagePainter(
-        model = playlist.image,
+        model = playlist.getPlaylistImage(),
     )
 
     Column(modifier = Modifier
@@ -70,7 +70,7 @@ fun PlaylistView(
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = playlist.songsCount.toString(),
+                text = playlist.year.toString(),
                 fontFamily = SFFontFamily,
                 fontSize = 12.sp,
                 lineHeight = 12.sp,

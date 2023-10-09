@@ -4,9 +4,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
+import com.musify.app.MainActivity.Companion.ALBUMS
+import com.musify.app.MainActivity.Companion.PLAYLISTS
+import com.musify.app.MainActivity.Companion.TOPS
 import com.musify.app.navigation.screen.NavScreen
 import com.musify.app.navigation.screen.Screen
 import com.musify.app.presentation.artist.ArtistScreen
@@ -41,15 +46,15 @@ fun HomeNavGraph(
                         restoreState = true
                     }
                 },
-                navigateToArtist = {
-                    innerNavController.navigate(Screen.Artist.route)
+                navigateToArtist = {artist->
+                    innerNavController.navigate(Screen.Artist.route+"/${artist.id}")
                 },
-                navigateToAlbum = {
-                    innerNavController.navigate(Screen.Playlist.route)
+                navigateToAlbum = {album ->
+                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.id}")
 
                 },
-                navigateToPlaylist = {
-                    innerNavController.navigate(Screen.Playlist.route)
+                navigateToPlaylist = {playlist ->
+                    innerNavController.navigate(Screen.Playlist.route+"/$TOPS/${playlist.id}")
                 },
                 navigateToSettings = {},
                 navigateToNewPlaylist = {},
@@ -58,35 +63,51 @@ fun HomeNavGraph(
 
         }
 
-        composable(Screen.Artist.route) {
+        composable(route = Screen.Artist.route + "/{id}", arguments = listOf(
+            navArgument("id") { type = NavType.LongType },
+        )
+        ) { entry ->
+            entry.arguments?.getLong("id")?.let { id ->
+                ArtistScreen(
+                    id = id,
+                    paddingValues = paddingValues,
+                    artistViewModel = hiltViewModel(),
+                    navigateToArtist = { artist->
+                            innerNavController.navigate(Screen.Artist.route+"/${artist.id}")
 
-            ArtistScreen(
-                paddingValues = paddingValues,
-                artistViewModel = hiltViewModel(),
-                navigateToArtist = {
-                    innerNavController.navigate(Screen.Artist.route)
-                },
-                navigateToAlbum = {
-                    innerNavController.navigate(Screen.Playlist.route)
-                },
-                navigateToNewPlaylist = {},
-                navigateUp = {innerNavController.navigateUp()}
+                    },
+                    navigateToAlbum = { album ->
+                        innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.id}")
+                    },
+                    navigateToNewPlaylist = {},
+                    navigateUp = { innerNavController.navigateUp() }
 
-            )
-
+                )
+            }
 
         }
 
-        composable(Screen.Playlist.route) {
+        composable(route = Screen.Playlist.route + "/{type}/{id}",
+            arguments = listOf(
+                navArgument("type") { type = NavType.StringType },
+                navArgument("id") { type = NavType.LongType },
+                )
+        ){ entry ->
 
+            val id =  entry.arguments?.getLong("id") ?: 0L
+            val type =  entry.arguments?.getString("type") ?: PLAYLISTS
             PlaylistScreen(
+                id = id,
+                type = type,
                 paddingValues = paddingValues,
+                playlistViewModel = hiltViewModel(),
                 navigateToNewPlaylist = {},
-                navigateToArtist = {
-                    innerNavController.navigate(Screen.Artist.route)
+                navigateToArtist = { artist->
+                    innerNavController.navigate(Screen.Artist.route+"/${artist.id}")
+
                 },
-                navigateToAlbum = {
-                    innerNavController.navigate(Screen.Playlist.route)
+                navigateToAlbum = { album ->
+                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.id}")
                 },
                 navigateUp = {innerNavController.navigateUp()}
             )
@@ -94,5 +115,6 @@ fun HomeNavGraph(
 
         }
     }
+
 
 }

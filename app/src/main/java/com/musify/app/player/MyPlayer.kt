@@ -1,5 +1,6 @@
 package com.musify.app.player
 
+import android.util.Log
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
@@ -14,6 +15,7 @@ import com.musify.app.player.PlayerStates.STATE_PLAYING
 import com.musify.app.player.PlayerStates.STATE_READY
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
+import kotlin.math.log
 
 /**
  * A custom player class that provides several convenience methods for
@@ -97,6 +99,7 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
      */
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
+        Log.e("TAG", "onPlayerError: "+error.message )
         playerState.tryEmit(STATE_ERROR)
     }
 
@@ -133,7 +136,10 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
      * a state to the playerState flow corresponding to the new playback state.
      */
     override fun onPlaybackStateChanged(playbackState: Int) {
+
+        Log.e("TAG", "onPlaybackStateChanged: "+playbackState )
         when (playbackState) {
+
             Player.STATE_IDLE -> {
                 playerState.tryEmit(STATE_IDLE)
             }

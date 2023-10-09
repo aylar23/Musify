@@ -2,61 +2,63 @@ package com.musify.app.di
 
 import android.app.Application
 import android.content.Context
+import androidx.annotation.OptIn
+import androidx.media3.common.util.UnstableApi
+import androidx.media3.datasource.DataSource
+import androidx.media3.datasource.DefaultHttpDataSource
+import androidx.media3.datasource.okhttp.OkHttpDataSource
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.hls.HlsMediaSource
+import androidx.media3.exoplayer.source.DefaultMediaSourceFactory
+import androidx.media3.exoplayer.source.MediaSource
+import androidx.media3.extractor.DefaultExtractorsFactory
 import com.musify.app.player.MyPlayer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
-/**
- * A Hilt module that provides dependencies for the application.
- * Modules are classes that use the @Module annotation and are responsible for providing objects that can be injected.
- * The @InstallIn annotation tells Hilt which Android class to attach the module to.
- * SingletonComponent::class means the module will be installed in the application's singleton component.
- */
+
 @Module
 @InstallIn(SingletonComponent::class)
 class AppModule {
 
-    /**
-     * Provides the [Context] for the application.
-     * The @Provides annotation tells Hilt that this function provides a dependency.
-     * @Singleton means that a single instance of the provided object will be used in the whole app.
-     *
-     * @param application The [Application] instance of the app.
-     * @return The application [Context].
-     */
+
     @Provides
     @Singleton
     fun provideContext(application: Application): Context {
         return application.applicationContext
     }
 
-    /**
-     * Provides an instance of [ExoPlayer].
-     * ExoPlayer is a media player for Android. It's being built with the provided application context.
-     *
-     * @param context The application [Context].
-     * @return An instance of [ExoPlayer].
-     */
-    @Provides
+
+    @OptIn(UnstableApi::class) @Provides
     @Singleton
     fun provideExoPLayer(context: Context): ExoPlayer {
-        return ExoPlayer.Builder(context).build()
+
+
+        val dataSourceFactory: DataSource.Factory = DefaultHttpDataSource.Factory()
+        val httpDataSourceFactory = OkHttpDataSource.Factory(OkHttpClient.Builder().build())
+
+// Create a HLS media source pointing to a playlist uri.
+        val hlsMediaSource =
+            HlsMediaSource.Factory(httpDataSourceFactory)
+//
+//
+//            .setMediaSourceFactory()
+// Create a player instance.
+
+        val player = ExoPlayer.Builder(context).setMediaSourceFactory(hlsMediaSource).build()
+        return player
     }
 
-    /**
-     * Provides an instance of [MyPlayer].
-     * MyPlayer is a custom wrapper class around ExoPlayer.
-     *
-     * @param player An instance of [ExoPlayer].
-     * @return An instance of [MyPlayer].
-     */
+
     @Provides
     @Singleton
     fun provideMyPlayer(player: ExoPlayer): MyPlayer {
         return MyPlayer(player)
     }
+
+
 }

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -25,6 +26,8 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.material3.rememberTopAppBarState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -41,18 +44,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
-import com.musify.app.domain.models.Album
+import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Song
 import com.musify.app.domain.models.defaultArtist
-import com.musify.app.domain.models.defaultPlaylist
-import com.musify.app.domain.models.defaultSong
-import com.musify.app.domain.models.mainScreenData
-import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
-import com.musify.app.ui.components.CustomButton
-import com.musify.app.ui.components.SongView
-import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.presentation.playlist.components.CollapsingTopAppBar
+import com.musify.app.ui.components.CustomButton
+import com.musify.app.ui.components.LoadingView
+import com.musify.app.ui.components.NetworkErrorView
+import com.musify.app.ui.components.SongView
+import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
+import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.Black
@@ -61,19 +63,26 @@ import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
-
+import java.lang.reflect.Type
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistScreen(
+    id:Long,
+    type: String,
     paddingValues: PaddingValues,
-    navigateToNewPlaylist : () ->Unit,
+    playlistViewModel: PlaylistViewModel,
+    navigateToNewPlaylist: () -> Unit,
     navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Album) -> Unit,
-    navigateUp : () ->Unit,
+    navigateToAlbum: (Playlist) -> Unit,
+    navigateUp: () -> Unit,
 ) {
 
+
+    LaunchedEffect(id, type){
+        playlistViewModel.getPlaylist(id, type)
+    }
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
 
@@ -86,6 +95,8 @@ fun PlaylistScreen(
     }
     lateinit var selectedSong: Song
 
+    val uiState by playlistViewModel.uiState.collectAsState()
+
     val playlistSheetState = rememberModalBottomSheetState()
 
     val songSettingsSheetState = rememberModalBottomSheetState()
@@ -96,11 +107,11 @@ fun PlaylistScreen(
             CollapsingTopAppBar(
                 title = defaultArtist.name,
                 scrollBehaviour = scrollBehavior
-            ){
+            ) {
                 navigateUp()
             }
         }
-    ){ padding ->
+    ) { padding ->
         Box(modifier = Modifier
             .fillMaxSize()
             .background(Background)
@@ -195,56 +206,99 @@ fun PlaylistScreen(
 
             }
 
-            items(mainScreenData.hitSongs) { song ->
-                SongView(song = song,
-                    onMoreClicked = {
-                        selectedSong = song
-                        settingsClicked = true
+
+
+            when {
+                uiState.isLoading -> {
+                    item {
+
+                        LoadingView(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .background(Background)
+                        )
                     }
-                ) {
+                }
+
+                uiState.isFailure -> {
+                    item {
+
+                        NetworkErrorView(
+                            Modifier
+                                .fillMaxWidth()
+                                .fillMaxHeight()
+                                .background(Background)
+                        ) {
+//                            playlistViewModel.getArtistDetail(id)
+                        }
+                    }
+                }
+
+                uiState.isSuccess -> {
+                    uiState.data?.let { data ->
+                        items(data.songs) { song ->
+                            SongView(song = song,
+                                onMoreClicked = {
+                                    selectedSong = song
+                                    settingsClicked = true
+                                }
+                            ) {
+
+                            }
+                        }
+                    }
 
                 }
-            }
 
-        }
-
-
-        if (settingsClicked) {
-            TrackBottomSheet(
-                songSettingsSheetState = songSettingsSheetState,
-                onAddToPlaylist = {
-                    settingsClicked = false
-                    addToPlaylistClicked = true
-                },
-                onNavigateToAlbum = {
-                    navigateToAlbum(selectedSong.album)
-                },
-                onNavigateToArtist = {
-                    navigateToArtist(selectedSong.artist)
-                },
-                onPlayNext = {},
-                onShare = {},
-            ) {
-                settingsClicked = false
+//
             }
         }
-
-
-
-        if (addToPlaylistClicked) {
-            AddToPlaylistBottomSheet(
-                playlists = mutableListOf(defaultPlaylist),
-                playlistSheetState = playlistSheetState,
-                onCreateNewPlaylist = {
-                    navigateToNewPlaylist()
-                }
-            ) {
-                addToPlaylistClicked = false
-            }
-        }
-
     }
 
 
+
+
+
+
+
+
+    if (settingsClicked) {
+        TrackBottomSheet(
+            songSettingsSheetState = songSettingsSheetState,
+            onAddToPlaylist = {
+                settingsClicked = false
+                addToPlaylistClicked = true
+            },
+            onNavigateToAlbum = {
+                navigateToAlbum(selectedSong.album)
+            },
+            onNavigateToArtist = {
+                navigateToArtist(selectedSong.getArtist())
+            },
+            onPlayNext = {},
+            onShare = {},
+        ) {
+            settingsClicked = false
+        }
+    }
+
+
+
+    if (addToPlaylistClicked) {
+        AddToPlaylistBottomSheet(
+            playlists = mutableListOf(),
+            playlistSheetState = playlistSheetState,
+            onCreateNewPlaylist = {
+                navigateToNewPlaylist()
+            }
+        ) {
+            addToPlaylistClicked = false
+        }
+    }
+
 }
+
+
+
 

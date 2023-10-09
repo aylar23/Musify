@@ -33,4 +33,7 @@
     <string name="playing_on">Playing on </string>
     <string name="pause">Pause</string>
     <string name="repeat">repeat</string>
+    <string name="network_error">NetworkError</string>
+    <string name="refresh">Refresh</string>
+    <string name="hit_songs">Hit songs</string>
 </resources>

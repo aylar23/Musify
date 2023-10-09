@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
@@ -31,15 +30,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
-import com.musify.app.domain.models.Album
 import com.musify.app.domain.models.Artist
+import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Song
-import com.musify.app.domain.models.defaultPlaylist
-import com.musify.app.domain.models.defaultSong
-import com.musify.app.domain.models.mainScreenData
 import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.components.CustomButton
-import com.musify.app.ui.components.SongView
 import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.theme.AlbumCoverBlackBG
@@ -55,10 +50,9 @@ fun LocalPlaylistScreen(
     paddingValues: PaddingValues,
     navigateToNewPlaylist: () -> Unit,
     navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Album) -> Unit,
+    navigateToAlbum: (Playlist) -> Unit,
     navigateUp: () -> Unit,
 ) {
-    val playlist = defaultPlaylist
 
     lateinit var selectedSong: Song
     val appBarState = rememberTopAppBarState()
@@ -110,7 +104,7 @@ fun LocalPlaylistScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = playlist.name,
+                            text = "",
                             color = WhiteTextColor,
                             fontFamily = SFFontFamily,
                             fontSize = 22.sp,
@@ -149,17 +143,17 @@ fun LocalPlaylistScreen(
 
             }
 
-            items(mainScreenData.hitSongs) { song ->
-                SongView(
-                    song = defaultSong,
-                    onMoreClicked = {
-                        selectedSong = song
-                        settingsClicked = true
-                    }
-                ) {
-
-                }
-            }
+//            items(mainScreenData.songs) { song ->
+//                SongView(
+//                    song = defaultSong,
+//                    onMoreClicked = {
+//                        selectedSong = song
+//                        settingsClicked = true
+//                    }
+//                ) {
+//
+//                }
+//            }
 
         }
 
@@ -174,7 +168,7 @@ fun LocalPlaylistScreen(
                     navigateToAlbum(selectedSong.album)
                 },
                 onNavigateToArtist = {
-                    navigateToArtist(selectedSong.artist)
+                    navigateToArtist(selectedSong.getArtist())
                 },
                 onPlayNext = {},
                 onShare = {},
@@ -187,7 +181,7 @@ fun LocalPlaylistScreen(
 
         if (addToPlaylistClicked){
             AddToPlaylistBottomSheet(
-                playlists = mutableListOf(defaultPlaylist),
+                playlists = mutableListOf(),
                 playlistSheetState = playlistSheetState,
                 onCreateNewPlaylist = {
                     navigateToNewPlaylist()

@@ -1,22 +1,60 @@
 package com.musify.app.di
 
+import android.content.Context
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
+import com.musify.app.domain.service.ApiService
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
-/**
- * A Dagger Hilt module that provides an instance of [TrackService].
- * This module is installed in the [SingletonComponent], meaning that the provided [TrackService]
- * instance will be a singleton.
- */
+
 @Module
 @InstallIn(SingletonComponent::class)
 class DataModule {
 
 
+    companion object{
+        const val BASE_URL = "http://95.85.126.185"
+
+    }
+
+    @Provides
+    fun provideOkHttpClient(): OkHttpClient {
+        return OkHttpClient
+            .Builder()
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(30, TimeUnit.SECONDS)
+            .writeTimeout(30, TimeUnit.SECONDS)
+            .build()
+    }
+
+
+    @Provides
+    fun provideRetrofitServiceBuilder(okHttpClient: OkHttpClient): Retrofit {
+
+        return Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(okHttpClient)
+            .build()
+    }
+
 //    @Provides
-//    @Singleton
-//    fun provideTrackService(retrofit: Retrofit): TrackService {
-//        return retrofit.create(TrackService::class.java)
+//    fun provideSharedPrefs(  @ApplicationContext context: Context): SharedPreferenceHelper {
+//        return SharedPreferenceHelper(context)
 //    }
+
+    @Provides
+    @Singleton
+    fun provideApiService(retrofit: Retrofit): ApiService {
+        return retrofit.create(ApiService::class.java)
+    }
 }

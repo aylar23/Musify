@@ -53,6 +53,9 @@ android {
 dependencies {
 
 
+    implementation 'androidx.media3:media3-exoplayer-hls:1.1.1'
+    implementation 'androidx.media3:media3-datasource-okhttp:1.1.1'
+
     def compose_ui_version = '1.4.3'
     def nav_version = '2.4.1'
     def lifecycle_version = '2.5.0'
@@ -65,8 +68,8 @@ dependencies {
     implementation 'androidx.compose.ui:ui'
     implementation 'androidx.compose.ui:ui-graphics'
     implementation 'androidx.compose.ui:ui-tooling-preview'
-    implementation "androidx.compose.material3:material3:1.2.0-alpha08"
-    implementation "androidx.compose.material3:material3-window-size-class:1.2.0-alpha08"
+    implementation "androidx.compose.material3:material3:1.2.0-alpha09"
+    implementation "androidx.compose.material3:material3-window-size-class:1.2.0-alpha09"
     implementation "androidx.navigation:navigation-compose:2.7.2"
 
     //test
@@ -80,8 +83,7 @@ dependencies {
 
 
     //ExoPlayer
-    implementation "androidx.media3:media3-exoplayer:1.1.1"
-
+    implementation 'androidx.media3:media3-exoplayer:1.2.0-alpha02'
     //DI
     implementation "com.google.dagger:hilt-android:2.46"
     kapt "com.google.dagger:hilt-android-compiler:2.46"

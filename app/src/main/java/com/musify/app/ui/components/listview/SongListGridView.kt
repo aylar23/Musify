@@ -37,7 +37,7 @@ fun SongGridListView(
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp),
-            text = stringResource(id = R.string.new_albums),
+            text = stringResource(id = R.string.hit_songs),
             style = TextStyle(
                 fontSize = 16.sp,
                 lineHeight = 16.sp,
@@ -48,7 +48,7 @@ fun SongGridListView(
 
 
         LazyHorizontalGrid(
-            modifier = Modifier.height(250.dp),
+            modifier = Modifier.height(300.dp),
             rows = GridCells.Fixed(4),
             contentPadding = PaddingValues(20.dp, 15.dp),
 

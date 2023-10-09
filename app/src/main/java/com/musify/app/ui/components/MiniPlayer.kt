@@ -9,8 +9,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonColors
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -43,11 +47,11 @@ fun MiniPlayer(
 
 
     val songImagePainter = rememberAsyncImagePainter(
-        model = song.image,
+        model = song.getSongImage(),
     )
 
     Row(
-        modifier =  Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .clickable { onClick() }
             .background(color = Background)
@@ -70,7 +74,7 @@ fun MiniPlayer(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(
-                text = song.title,
+                text = song.name,
                 fontFamily = SFFontFamily,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -79,7 +83,7 @@ fun MiniPlayer(
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = song.artist.name,
+                text = song.getArtistsName(),
                 fontFamily = SFFontFamily,
                 fontSize = 12.sp,
                 fontWeight = FontWeight.Normal,
@@ -89,15 +93,16 @@ fun MiniPlayer(
             )
         }
 
-        FloatingActionButton(
+        IconButton(
             modifier = Modifier
-                .padding(end = 5.dp)
-                .size(25.dp),
-            containerColor = Yellow,
-            contentColor = Black,
+                .padding(end = 5.dp),
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = Yellow
+            ),
             onClick = {  },
         ) {
             Icon(
+                modifier = Modifier.size(16.dp),
                 painter = painterResource(id = R.drawable.pause),
                 contentDescription = "see more",
                 tint = Black

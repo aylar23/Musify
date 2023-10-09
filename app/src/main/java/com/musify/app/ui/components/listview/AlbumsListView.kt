@@ -1,7 +1,6 @@
 package com.musify.app.ui.components.listview
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -17,9 +16,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
-import com.musify.app.domain.models.Album
 import com.musify.app.domain.models.Playlist
-import com.musify.app.domain.models.defaultAlbum
 import com.musify.app.ui.components.AlbumView
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.SFFontFamily
@@ -27,13 +24,14 @@ import com.musify.app.ui.theme.SFFontFamily
 
 @Composable
 fun AlbumListView(
-    playlists: List<Album>,
-    onClick: (Album)->Unit
+    playlists: List<Playlist>,
+    onClick: (Playlist)->Unit
 ) {
 
     Column(
         modifier = Modifier.background(Background)
     ) {
+
         Text(
             modifier = Modifier.padding(horizontal = 20.dp),
             text = stringResource(id = R.string.new_albums),
