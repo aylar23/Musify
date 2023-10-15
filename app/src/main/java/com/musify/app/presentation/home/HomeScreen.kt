@@ -123,8 +123,8 @@ fun HomeScreen(
                                 selectedSong = it
                                 settingsClicked = true
                             }
-                        ) {
-
+                        ) {song ->
+                            homeViewModel.getPlayerController().init(song, mainScreenData.songs)
                         }
                     }
                 }

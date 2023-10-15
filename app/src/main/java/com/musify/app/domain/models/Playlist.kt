@@ -1,9 +1,14 @@
 package com.musify.app.domain.models
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import com.musify.app.di.DataModule
 
+@Entity
 data class Playlist(
-    val id: Long,
+    @PrimaryKey val id: Long,
     val name: String,
     val artists: List<Artist>,
     val songs: List<Song>,
@@ -11,7 +16,7 @@ data class Playlist(
     val year: Int = 0
 ){
     fun getPlaylistImage(): String {
-        return DataModule.BASE_URL +image
+        return image
     }
 
     fun getArtistsName(): String {

@@ -3,8 +3,15 @@ package com.musify.app.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.media3.exoplayer.offline.DownloadHelper
+import androidx.media3.exoplayer.offline.DownloadRequest
+import com.musify.app.PlayerController
 import com.musify.app.domain.models.MainScreenData
+import com.musify.app.domain.models.Song
 import com.musify.app.domain.repository.SongRepository
+import com.musify.app.player.DownloadTracker
+import com.musify.app.player.MyPlayer
+import com.musify.app.player.PlayerEvents
 import com.musify.app.ui.utils.BaseUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,7 +23,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
-    private val songRepository: SongRepository
+    private val songRepository: SongRepository,
+    private val playerController: PlayerController,
+    private val downloadTracker: DownloadTracker
 ) : ViewModel() {
 
 
@@ -29,21 +38,36 @@ class HomeViewModel @Inject constructor(
     }
 
 
+    fun getPlayerController() = playerController
+
+
     fun getMainPageData() {
         viewModelScope.launch {
             _uiState.update { it.updateToLoading() }
 
                 try {
                     val data = songRepository.getMainScreen()
-                    Log.e("TAG", "getMainPageData: " + data)
                     _uiState.update { it.updateToLoaded(data) }
                 } catch (e: Exception) {
-                    Log.e("TAG", "getMainPageData: " + e.message)
                     _uiState.update { it.updateToFailure() }
                 }
 
 
         }
     }
+
+
+//    private fun buildDownloadRequest(): DownloadRequest {
+//            return DownloadHelper()
+//                .getDownloadRequest(
+//                    Util.getUtf8Bytes(
+//                        Preconditions.checkNotNull(
+//                            mediaItem.mediaMetadata.title.toString()
+//                        )
+//                    )
+//                )
+//                .copyWithKeySetId(keySetId)
+//        }
+//
 
 }

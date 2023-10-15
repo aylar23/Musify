@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.musify.app.PlayerController
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.MainScreenData
 import com.musify.app.domain.repository.SongRepository
@@ -28,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class ArtistViewModel @Inject constructor(
     private val songRepository: SongRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val playerController: PlayerController
 ) : ViewModel() {
 
 
@@ -36,6 +38,7 @@ class ArtistViewModel @Inject constructor(
 
     val uiState = _uiState
 
+    fun getPlayerController() = playerController
 
 
     fun getArtistDetail(id:Long) {

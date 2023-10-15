@@ -1,11 +1,14 @@
 package com.musify.app.domain.models
 
 import android.util.Log
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 import com.musify.app.di.DataModule.Companion.BASE_URL
 import com.musify.app.player.PlayerStates
 
+@Entity
 data class Song(
-    val id: Long,
+    @PrimaryKey val id: Long,
     val name: String,
     val artists: List<Artist>,
     val image: String,
@@ -19,8 +22,8 @@ data class Song(
 ) {
 
     fun getArtistsName(): String {
-        val names = artists.map {it.name }.toMutableList()
-        return names.joinToString( separator = ", ")
+        val names = artists.map { it.name }.toMutableList()
+        return names.joinToString(separator = ", ")
     }
 
     fun getArtist(): Artist {
@@ -29,11 +32,20 @@ data class Song(
     }
 
     fun getSongImage(): String {
-        return BASE_URL+image
+        return image
     }
 
     fun getSongUrl(): String {
-        return "$BASE_URL$audio.m3u8"
+        return "$audio.m3u8"
+    }
+
+
+    fun isPlaying(): Boolean {
+        return state == PlayerStates.STATE_READY
+                || state == PlayerStates.STATE_BUFFERING
+                || state == PlayerStates.STATE_PLAYING
+
+
     }
 }
 

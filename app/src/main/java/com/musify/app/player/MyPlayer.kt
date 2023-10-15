@@ -55,6 +55,10 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
         player.prepare()
     }
 
+
+    fun getPlayer(): ExoPlayer{
+        return player
+    }
     /**
      * Sets up the player to start playback of the track at the specified index.
      *
@@ -91,6 +95,10 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
         player.seekTo(position)
     }
 
+
+    fun emitPlaying(){
+        playerState.tryEmit(STATE_PLAYING)
+    }
     // Overrides for Player.Listener follow...
 
     /**
@@ -118,6 +126,8 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
         }
     }
 
+
+
     /**
      * Called when the player transitions to a new media item. This implementation
      * emits the STATE_NEXT_TRACK and STATE_PLAYING states to the playerState flow
@@ -126,8 +136,14 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
     override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
         super.onMediaItemTransition(mediaItem, reason)
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
+
             playerState.tryEmit(STATE_NEXT_TRACK)
-            playerState.tryEmit(STATE_PLAYING)
+            Log.e("TAG", "onMediaItemTransition: ", )
+//            playerState.tryEmit(STATE_PLAYING)
+
+
+
+
         }
     }
 
@@ -156,6 +172,8 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
                     playerState.tryEmit(STATE_PAUSE)
                 }
             }
+
+
 
             Player.STATE_ENDED -> {
                 playerState.tryEmit(STATE_END)

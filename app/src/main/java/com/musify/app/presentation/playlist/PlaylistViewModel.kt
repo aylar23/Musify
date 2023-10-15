@@ -3,6 +3,7 @@ package com.musify.app.presentation.playlist
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.musify.app.PlayerController
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.SearchData
 import com.musify.app.domain.repository.SongRepository
@@ -16,13 +17,17 @@ import javax.inject.Inject
 
 @HiltViewModel
 class PlaylistViewModel @Inject constructor(
-    private val songRepository: SongRepository
+    private val songRepository: SongRepository,
+    private val playerController: PlayerController
 ) : ViewModel() {
 
 
     private val _uiState = MutableStateFlow(BaseUIState<Playlist>())
 
     val uiState = _uiState
+
+
+    fun getPlayerController() = playerController
 
 
 

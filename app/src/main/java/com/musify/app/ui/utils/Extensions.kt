@@ -1,5 +1,6 @@
 package com.musify.app.ui.utils
 
+import android.net.Uri
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -7,6 +8,7 @@ import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.unit.Velocity
 import androidx.media3.common.MediaItem
+import androidx.media3.common.MediaMetadata
 import androidx.media3.common.MimeTypes
 import com.musify.app.domain.models.Song
 import com.musify.app.player.MyPlayer
@@ -19,7 +21,6 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 
 
-
 fun MutableList<Song>.resetTracks() {
     this.forEach { track ->
         track.isSelected = false
@@ -30,9 +31,23 @@ fun MutableList<Song>.resetTracks() {
 
 fun List<Song>.toMediaItemList(): MutableList<MediaItem> {
 
-    return this.map { MediaItem.Builder()
-        .setUri(it.audio)
-        .build()
+
+    return this.map {
+
+        val mediaMetaData = MediaMetadata.Builder()
+            .setArtworkUri(Uri.parse(it.getSongImage()))
+            .setTitle(it.name)
+            .setDescription(it.getArtistsName())
+            .setAlbumArtist(it.getArtistsName())
+            .build()
+
+        val trackUri = Uri.parse(it.getSongUrl())
+        MediaItem.Builder()
+            .setUri(trackUri)
+            .setMediaId(it.id.toString())
+            .setMediaMetadata(mediaMetaData)
+            .build()
+
     }.toMutableList()
 }
 

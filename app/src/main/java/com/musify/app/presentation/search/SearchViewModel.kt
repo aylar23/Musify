@@ -7,6 +7,7 @@ import androidx.compose.runtime.remember
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.musify.app.PlayerController
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.MainScreenData
 import com.musify.app.domain.models.SearchData
@@ -29,7 +30,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SearchViewModel @Inject constructor(
     private val songRepository: SongRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val playerController: PlayerController
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(BaseUIState<SearchData>())
@@ -38,6 +40,8 @@ class SearchViewModel @Inject constructor(
 
     var searchStr = savedStateHandle.getStateFlow<String>("SEARCH", "")
 
+
+    fun getPlayerController() = playerController
 
     fun search(s: String) {
         viewModelScope.launch {

@@ -30,6 +30,8 @@ interface PlayerEvents {
      */
     fun onTrackClick(song: Song)
 
+
+    fun onTrackClick(song: Int)
     /**
      * Invoked when the position of the seek bar has changed. The new position is provided as a parameter.
      *

@@ -28,8 +28,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.musify.app.PlayerController
 import com.musify.app.R
 import com.musify.app.domain.models.Song
+import com.musify.app.player.PlayerStates
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.Black
 import com.musify.app.ui.theme.DarkGray
@@ -42,7 +44,9 @@ import com.musify.app.ui.theme.Yellow
 @Composable
 fun MiniPlayer(
     song: Song,
-    onClick : () ->Unit
+    onClick : () ->Unit,
+    onPlayPauseClick : () ->Unit,
+
 ) {
 
 
@@ -99,11 +103,11 @@ fun MiniPlayer(
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Yellow
             ),
-            onClick = {  },
+            onClick =  onPlayPauseClick ,
         ) {
             Icon(
                 modifier = Modifier.size(16.dp),
-                painter = painterResource(id = R.drawable.pause),
+                painter = if (song.isPlaying()) painterResource(id = R.drawable.pause) else painterResource(id = R.drawable.play),
                 contentDescription = "see more",
                 tint = Black
             )

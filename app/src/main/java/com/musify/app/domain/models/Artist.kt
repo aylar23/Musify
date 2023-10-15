@@ -13,7 +13,7 @@ data class Artist(
 
 ){
     fun getArtistImage(): String {
-        return DataModule.BASE_URL +image
+        return image
     }
 }
 

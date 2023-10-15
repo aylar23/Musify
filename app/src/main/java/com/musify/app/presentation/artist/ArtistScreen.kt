@@ -211,7 +211,9 @@ fun ArtistScreen(
                             SongListView(data.songs, onMoreClicked = {
                                 selectedSong = it
                                 settingsClicked = true
-                            }) {
+                            }) { song ->
+
+                                artistViewModel.getPlayerController().init(song, data.songs)
 
                             }
 
@@ -220,10 +222,11 @@ fun ArtistScreen(
                             }
 
 
-                            SongListView(data.songs, onMoreClicked = {
+                            SongListView(data.singles, onMoreClicked = {
                                 selectedSong = it
                                 settingsClicked = true
-                            }) {
+                            }) {song ->
+                                artistViewModel.getPlayerController().init(song, data.singles)
 
                             }
                         }

@@ -136,7 +136,8 @@ fun SearchScreen(
                                     selectedSong = it
                                     settingsClicked = true
                                 }
-                            ) {
+                            ) { song ->
+                                searchViewModel.getPlayerController().init(song, mainScreenData.songs)
 
                             }
 

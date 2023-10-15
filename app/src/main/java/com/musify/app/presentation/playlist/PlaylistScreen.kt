@@ -83,6 +83,9 @@ fun PlaylistScreen(
     LaunchedEffect(id, type){
         playlistViewModel.getPlaylist(id, type)
     }
+
+
+
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.exitUntilCollapsedScrollBehavior(appBarState)
 
@@ -244,6 +247,7 @@ fun PlaylistScreen(
                                     settingsClicked = true
                                 }
                             ) {
+                                playlistViewModel.getPlayerController().init(song, data.songs)
 
                             }
                         }

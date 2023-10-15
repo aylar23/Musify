@@ -41,6 +41,7 @@ import com.musify.app.ui.theme.Yellow
 fun SongView(
     @SuppressLint("ModifierParameter") modifier: Modifier? = null,
     song: Song,
+    reorderable: Boolean = false,
     onMoreClicked: () -> Unit,
     onClick: () -> Unit,
 ) {
@@ -55,7 +56,8 @@ fun SongView(
         SubcomposeAsyncImage(
             modifier = Modifier
                 .size(50.dp)
-                .aspectRatio(1f).background(Surface),
+                .aspectRatio(1f)
+                .background(Surface),
             model = song.getSongImage(),
             contentScale = ContentScale.Crop,
             contentDescription = "",
@@ -87,14 +89,26 @@ fun SongView(
                 overflow = TextOverflow.Ellipsis
             )
         }
-        IconButton(
-            onClick = { onMoreClicked() },
-        ) {
+
+        if (reorderable) {
+
             Icon(
-                painter = painterResource(id = R.drawable.song_setting),
+                painter = painterResource(id = R.drawable.two_lines),
                 contentDescription = "song setting",
                 tint = WhiteTextColor
             )
+
+        } else {
+            IconButton(
+                onClick = { onMoreClicked() },
+            ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.song_setting),
+                    contentDescription = "song setting",
+                    tint = WhiteTextColor
+                )
+            }
         }
+
     }
 }
