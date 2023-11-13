@@ -3,17 +3,14 @@ package com.musify.app.presentation.home
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.media3.exoplayer.offline.DownloadHelper
-import androidx.media3.exoplayer.offline.DownloadRequest
 import com.musify.app.PlayerController
 import com.musify.app.domain.models.MainScreenData
-import com.musify.app.domain.models.Song
 import com.musify.app.domain.repository.SongRepository
 import com.musify.app.player.DownloadTracker
-import com.musify.app.player.MyPlayer
-import com.musify.app.player.PlayerEvents
 import com.musify.app.ui.utils.BaseUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -42,15 +39,22 @@ class HomeViewModel @Inject constructor(
 
 
     fun getMainPageData() {
+
+
+        CoroutineScope(Dispatchers.IO).launch() {
+            val data = songRepository.getPlaylistWithSongs(3)
+            Log.e("TAG", "getPlaylistWithSongs: " + data)
+        }
+
         viewModelScope.launch {
             _uiState.update { it.updateToLoading() }
 
-                try {
-                    val data = songRepository.getMainScreen()
-                    _uiState.update { it.updateToLoaded(data) }
-                } catch (e: Exception) {
-                    _uiState.update { it.updateToFailure() }
-                }
+            try {
+                val data = songRepository.getMainScreen()
+                _uiState.update { it.updateToLoaded(data) }
+            } catch (e: Exception) {
+                _uiState.update { it.updateToFailure() }
+            }
 
 
         }

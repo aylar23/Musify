@@ -115,4 +115,6 @@
     to the controller</string>
     <string name="notification_channel_name">Playback cannot be resumed</string>
     <string name="exo_controls_shuffle_on_description" />
+    <string name="main">Main</string>
+    <string name="library">Library</string>
 </resources>

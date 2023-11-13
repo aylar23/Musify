@@ -67,7 +67,7 @@ fun ArtistScreen(
     paddingValues: PaddingValues,
     artistViewModel: ArtistViewModel,
     navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Playlist) -> Unit,
+    navigateToAlbum: (Long) -> Unit,
     navigateToNewPlaylist: () -> Unit,
     navigateUp: () -> Unit,
 ) {
@@ -218,7 +218,7 @@ fun ArtistScreen(
                             }
 
                             AlbumListView(data.albums) { album ->
-                                navigateToAlbum(album)
+                                navigateToAlbum(album.playlistId)
                             }
 
 
@@ -247,7 +247,7 @@ fun ArtistScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    navigateToAlbum(selectedSong.album)
+                    selectedSong.album?.playlistId?.let { navigateToAlbum(it) }
                 },
                 onNavigateToArtist = {
                     navigateToArtist(selectedSong.getArtist())

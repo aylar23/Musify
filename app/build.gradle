@@ -55,7 +55,8 @@ android {
 
 dependencies {
 
-
+    //ExoPlayer
+    implementation 'androidx.media3:media3-exoplayer:1.2.0-alpha02'
     implementation 'androidx.media3:media3-exoplayer-hls:1.1.1'
     implementation 'androidx.media3:media3-datasource-okhttp:1.1.1'
     implementation 'androidx.media3:media3-datasource-cronet:1.1.1'
@@ -88,8 +89,7 @@ dependencies {
     debugImplementation 'androidx.compose.ui:ui-test-manifest'
 
 
-    //ExoPlayer
-    implementation 'androidx.media3:media3-exoplayer:1.2.0-alpha02'
+
     //DI
     implementation "com.google.dagger:hilt-android:2.46"
     kapt "com.google.dagger:hilt-android-compiler:2.46"
@@ -123,6 +123,9 @@ dependencies {
 
     //Coil
     implementation "io.coil-kt:coil-compose:2.4.0"
+
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+    implementation 'androidx.datastore:datastore-core:1.0.0'
 
     implementation("org.jetbrains.compose.ui:ui-util:1.4.0")
 

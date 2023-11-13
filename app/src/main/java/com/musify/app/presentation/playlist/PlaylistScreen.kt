@@ -43,6 +43,7 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import coil.compose.rememberAsyncImagePainter
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Artist
@@ -58,6 +59,7 @@ import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.Black
+import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.TransparentColor
@@ -75,7 +77,7 @@ fun PlaylistScreen(
     playlistViewModel: PlaylistViewModel,
     navigateToNewPlaylist: () -> Unit,
     navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Playlist) -> Unit,
+    navigateToAlbum: (Long) -> Unit,
     navigateUp: () -> Unit,
 ) {
 
@@ -108,7 +110,7 @@ fun PlaylistScreen(
         modifier = Modifier.padding(paddingValues = paddingValues),
         topBar = {
             CollapsingTopAppBar(
-                title = defaultArtist.name,
+                title = uiState.data?.name ?: "",
                 scrollBehaviour = scrollBehavior
             ) {
                 navigateUp()
@@ -122,7 +124,7 @@ fun PlaylistScreen(
                 translationY = scrollBehavior.state.contentOffset
             }) {
             Image(
-                painter = painterResource(id = R.drawable.mock_cover),
+                painter = rememberAsyncImagePainter(model = uiState.data?.image ?: ""),
                 contentDescription = "",
                 modifier = Modifier
                     .fillMaxWidth()
@@ -143,7 +145,7 @@ fun PlaylistScreen(
                 Column(
                     modifier = Modifier.background(
                         brush = Brush.verticalGradient(
-                            startY = 0f, endY = 240f, colors = listOf(
+                            startY = 0f, endY = 250f, colors = listOf(
                                 TransparentColor, AlbumCoverBlackBG
                             )
                         )
@@ -158,13 +160,13 @@ fun PlaylistScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = "TNT Music App",
+                            text = uiState.data?.name ?: "",
                             color = WhiteTextColor,
                             fontFamily = SFFontFamily,
                             fontWeight = FontWeight.Bold
                         )
                         OutlinedIconButton(
-                            onClick = { /*TODO*/ },
+                            onClick = { uiState.data?.let { playlistViewModel.savePlaylist(it) } },
                             shape = RoundedCornerShape(50.dp),
                             border = BorderStroke(
                                 width = 1.dp, color = Inactive
@@ -190,6 +192,8 @@ fun PlaylistScreen(
                             onClick = { },
                             containerColor = Yellow,
                             contentColor = Black,
+//                            leadingIcon = R.drawable.play
+
                         )
 
                         Spacer(modifier = Modifier.weight(.1f))
@@ -198,9 +202,9 @@ fun PlaylistScreen(
                             modifier = Modifier.weight(1f),
                             text = R.string.shuffle,
                             onClick = { },
-                            containerColor = White.copy(alpha = 0.2f),
+                            containerColor = DarkGray,
                             contentColor = WhiteTextColor,
-                            leadingIcon = R.drawable.play
+                            leadingIcon = R.drawable.shuffle
                         )
 
 
@@ -233,21 +237,21 @@ fun PlaylistScreen(
                                 .fillMaxHeight()
                                 .background(Background)
                         ) {
-//                            playlistViewModel.getArtistDetail(id)
+                            playlistViewModel.getPlaylist(id, type)
                         }
                     }
                 }
 
                 uiState.isSuccess -> {
-                    uiState.data?.let { data ->
-                        items(data.songs) { song ->
+                    uiState.data?.songs?.let { data ->
+                        items(data) { song ->
                             SongView(song = song,
                                 onMoreClicked = {
                                     selectedSong = song
                                     settingsClicked = true
                                 }
                             ) {
-                                playlistViewModel.getPlayerController().init(song, data.songs)
+                                playlistViewModel.getPlayerController().init(song, data)
 
                             }
                         }
@@ -275,7 +279,7 @@ fun PlaylistScreen(
                 addToPlaylistClicked = true
             },
             onNavigateToAlbum = {
-                navigateToAlbum(selectedSong.album)
+                selectedSong.album?.playlistId?.let { navigateToAlbum(it) }
             },
             onNavigateToArtist = {
                 navigateToArtist(selectedSong.getArtist())

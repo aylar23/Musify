@@ -23,6 +23,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.musify.app.BuildConfig
 import com.musify.app.R
 import com.musify.app.domain.models.User
 import com.musify.app.presentation.settings.components.SettingsElements
@@ -32,7 +33,11 @@ import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
-fun SettingsScreen(user: User) {
+fun SettingsScreen(
+    settingsViewModel: SettingsViewModel
+) {
+
+    val user = settingsViewModel.currentUser
 
     Scaffold(
         topBar = { SettingsTopAppBar(user = user) }
@@ -72,7 +77,7 @@ fun SettingsScreen(user: User) {
                     icon = R.drawable.version,
                     text = stringResource(id = R.string.version),
                     expandable = false,
-                    endText = "1.0"
+                    endText = BuildConfig.VERSION_NAME
                 ) {
 
                 }

@@ -44,8 +44,8 @@ fun SearchScreen(
     paddingValues: PaddingValues,
     searchViewModel: SearchViewModel,
     navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Playlist) -> Unit,
-    navigateToPlaylist: (Playlist) -> Unit,
+    navigateToAlbum: (Long) -> Unit,
+    navigateToPlaylist: (Long) -> Unit,
     navigateToNewPlaylist: () -> Unit,
 ) {
     lateinit var selectedSong: Song
@@ -159,7 +159,7 @@ fun SearchScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    navigateToAlbum(selectedSong.album)
+                    selectedSong.album?.playlistId?.let { navigateToAlbum(it) }
                 },
                 onNavigateToArtist = {
                     navigateToArtist(selectedSong.getArtist())

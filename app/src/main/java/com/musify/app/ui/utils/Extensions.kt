@@ -44,7 +44,7 @@ fun List<Song>.toMediaItemList(): MutableList<MediaItem> {
         val trackUri = Uri.parse(it.getSongUrl())
         MediaItem.Builder()
             .setUri(trackUri)
-            .setMediaId(it.id.toString())
+            .setMediaId(it.songId.toString())
             .setMediaMetadata(mediaMetaData)
             .build()
 

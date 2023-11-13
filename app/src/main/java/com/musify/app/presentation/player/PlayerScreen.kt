@@ -1,11 +1,9 @@
 package com.musify.app.presentation.player
 
-import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,19 +12,15 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
-import androidx.compose.material3.BottomSheetScaffoldState
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
@@ -36,20 +30,17 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
@@ -61,22 +52,17 @@ import com.google.accompanist.pager.rememberPagerState
 import com.musify.app.PlayerController
 import com.musify.app.R
 import com.musify.app.player.PlaybackState
-import com.musify.app.player.PlayerStates
 import com.musify.app.ui.components.ActionsModelView
 import com.musify.app.ui.components.CollapsingSmallTopAppBar
-import com.musify.app.ui.components.SongView
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
+import com.musify.app.ui.theme.Surface
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
 import com.musify.app.ui.utils.formatTime
-import com.musify.app.ui.utils.reorder.ReorderableItem
-import com.musify.app.ui.utils.reorder.detectReorderAfterLongPress
-import com.musify.app.ui.utils.reorder.rememberReorderableLazyListState
-import com.musify.app.ui.utils.reorder.reorderable
 import kotlin.math.absoluteValue
 
 
@@ -124,7 +110,9 @@ fun PlayerScreen(
 
     val scaffoldState = rememberBottomSheetScaffoldState()
 
-    BottomSheetScaffold(scaffoldState = scaffoldState, sheetPeekHeight = 128.dp, sheetContent = {
+    BottomSheetScaffold(scaffoldState = scaffoldState,
+        sheetContainerColor = Surface,
+        sheetContent = {
         PlaylistBottomSheet(playerController = playerController)
 
     }, content = { innerPadding ->

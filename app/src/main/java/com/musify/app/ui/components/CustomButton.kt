@@ -28,6 +28,7 @@ fun CustomButton(
     containerColor : Color,
     contentColor : Color,
     leadingIcon: Int? = null,
+    trailingIcon: Int? = null,
     shape: Shape = MaterialTheme.shapes.large
 ) {
     Button(
@@ -60,6 +61,14 @@ fun CustomButton(
                 fontWeight = FontWeight.Bold,
                 fontFamily = SFFontFamily
             )
+
+            trailingIcon?.let {
+                Icon(
+                    painter = painterResource(id = trailingIcon),
+                    tint = contentColor,
+                    contentDescription = "Shuffle"
+                )
+            }
         }
 
     }

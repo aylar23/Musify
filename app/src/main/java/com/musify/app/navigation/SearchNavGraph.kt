@@ -35,10 +35,10 @@ fun SearchNavGraph(
                     innerNavController.navigate(Screen.Artist.route+"/${artist.id}")
                 },
                 navigateToAlbum = { album ->
-                    innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.ALBUMS}/${album.id}")
+                    innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.ALBUMS}/${album}")
                 },
                 navigateToPlaylist = {playlist ->
-                    innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.PLAYLISTS}/${playlist.id}")
+                    innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.PLAYLISTS}/${playlist}")
                 },
                 navigateToNewPlaylist = {}
             )
@@ -61,7 +61,7 @@ fun SearchNavGraph(
 
                     },
                     navigateToAlbum = { album ->
-                        innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.ALBUMS}/${album.id}")
+                        innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.ALBUMS}/${album}")
                     },
                     navigateToNewPlaylist = {},
                     navigateUp = {
@@ -93,7 +93,7 @@ fun SearchNavGraph(
                     innerNavController.navigate(Screen.Artist.route+"/${artist.id}")
                 },
                 navigateToAlbum = { album ->
-                    innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.ALBUMS}/${album.id}")
+                    innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.ALBUMS}/${album}")
                 },
                 navigateUp = {
                     innerNavController.navigateUp()

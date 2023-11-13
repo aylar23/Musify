@@ -14,13 +14,16 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.musify.app.MainViewModel
 import com.musify.app.navigation.screen.NavScreen
+import com.musify.app.navigation.screen.Screen
 import com.musify.app.player.PlayerStates
 import com.musify.app.presentation.player.PlayerScreen
+import com.musify.app.presentation.settings.SettingsScreen
 import com.musify.app.ui.components.MiniPlayer
 import kotlinx.coroutines.launch
 
@@ -59,7 +62,7 @@ fun AppNavGraph(
                 }
 
 
-                HorizontalDivider()
+//                HorizontalDivider()
                 BottomNavigationBar(navController = navController)
 
             }
@@ -83,8 +86,15 @@ fun AppNavGraph(
             composable(NavScreen.MyPlaylists.route) {
                 LibraryNavGraph(paddingValues, navController)
             }
-        }
 
+            composable(Screen.Settings.route) {
+                SettingsScreen(
+                    settingsViewModel = hiltViewModel()
+                )
+            }
+
+
+        }
 
 
 

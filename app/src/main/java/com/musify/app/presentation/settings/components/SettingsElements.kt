@@ -42,7 +42,7 @@ fun SettingsElements(icon: Int, text: String, expandable: Boolean, endText: Stri
             )
         } else {
             if (endText != null){
-                Text(modifier = Modifier, text = text, fontSize = 15.sp, fontFamily = SFFontFamily, fontWeight = FontWeight.Normal, color = Yellow)
+                Text(modifier = Modifier, text = endText, fontSize = 15.sp, fontFamily = SFFontFamily, fontWeight = FontWeight.Normal, color = Yellow)
             }
         }
     }

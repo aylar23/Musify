@@ -6,15 +6,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.musify.app.navigation.screen.NavScreen
 import com.musify.app.ui.theme.Background
+import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.NoRippleTheme
 import com.musify.app.ui.theme.Yellow
 
@@ -43,10 +46,16 @@ fun BottomNavigationBar(navController: NavController) {
                     icon = {
                         Icon(
                             painterResource(id = item.icon),
-                            contentDescription = item.route
+                            contentDescription = item.route,
+                            tint = if(selected) Yellow else Color.White
+
                         )
                     },
-
+                    label = {
+                            Text(text = stringResource(id = item.label),
+                                color = if(selected) Yellow else Color.White
+                            )
+                    },
                     alwaysShowLabel = true,
                     selected = selected,
                     onClick = {
@@ -65,6 +74,7 @@ fun BottomNavigationBar(navController: NavController) {
                     colors = NavigationBarItemDefaults
                         .colors(
                             selectedIconColor = Yellow,
+                            selectedTextColor = Yellow,
                             indicatorColor = Background
                         )
                 )

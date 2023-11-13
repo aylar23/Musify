@@ -4,14 +4,16 @@ import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
+import com.google.gson.annotations.SerializedName
 import com.musify.app.di.DataModule
 
 @Entity
 data class Playlist(
-    @PrimaryKey val id: Long,
+    @SerializedName("id")
+    @PrimaryKey val playlistId: Long,
     val name: String,
     val artists: List<Artist>,
-    val songs: List<Song>,
+    val songs: List<Song>?,
     val image: String,
     val year: Int = 0
 ){

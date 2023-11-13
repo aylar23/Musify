@@ -1,5 +1,6 @@
 package com.musify.app.navigation
 
+import android.util.Log
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -50,13 +51,15 @@ fun HomeNavGraph(
                     innerNavController.navigate(Screen.Artist.route+"/${artist.id}")
                 },
                 navigateToAlbum = {album ->
-                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.id}")
+                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.playlistId}")
 
                 },
                 navigateToPlaylist = {playlist ->
-                    innerNavController.navigate(Screen.Playlist.route+"/$TOPS/${playlist.id}")
+                    innerNavController.navigate(Screen.Playlist.route+"/$TOPS/${playlist.playlistId}")
                 },
-                navigateToSettings = {},
+                navigateToSettings = {
+                      navController.navigate(Screen.Settings.route)
+                },
                 navigateToNewPlaylist = {},
             )
 
@@ -77,7 +80,7 @@ fun HomeNavGraph(
 
                     },
                     navigateToAlbum = { album ->
-                        innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.id}")
+                        innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album}")
                     },
                     navigateToNewPlaylist = {},
                     navigateUp = { innerNavController.navigateUp() }
@@ -107,7 +110,7 @@ fun HomeNavGraph(
 
                 },
                 navigateToAlbum = { album ->
-                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.id}")
+                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album}")
                 },
                 navigateUp = {innerNavController.navigateUp()}
             )

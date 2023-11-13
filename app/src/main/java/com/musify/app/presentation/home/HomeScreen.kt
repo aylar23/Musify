@@ -143,7 +143,7 @@ fun HomeScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    navigateToAlbum(selectedSong.album)
+                    navigateToAlbum(selectedSong.album!!)
                 },
                 onNavigateToArtist = {
                     navigateToArtist(selectedSong.getArtist())

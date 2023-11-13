@@ -93,6 +93,7 @@ fun SongView(
         if (reorderable) {
 
             Icon(
+                modifier = Modifier.padding(20.dp),
                 painter = painterResource(id = R.drawable.two_lines),
                 contentDescription = "song setting",
                 tint = WhiteTextColor
