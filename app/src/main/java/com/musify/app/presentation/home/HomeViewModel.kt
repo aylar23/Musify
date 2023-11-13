@@ -40,12 +40,6 @@ class HomeViewModel @Inject constructor(
 
     fun getMainPageData() {
 
-
-        CoroutineScope(Dispatchers.IO).launch() {
-            val data = songRepository.getPlaylistWithSongs(3)
-            Log.e("TAG", "getPlaylistWithSongs: " + data)
-        }
-
         viewModelScope.launch {
             _uiState.update { it.updateToLoading() }
 
