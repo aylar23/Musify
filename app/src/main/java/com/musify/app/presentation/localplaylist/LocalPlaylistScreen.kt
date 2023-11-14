@@ -94,7 +94,6 @@ fun LocalPlaylistScreen(
             AlbumCoverBlackBG
         ),
         topBar = { CollapsingSmallTopAppBar(
-            scrollBehaviour = scrollBehavior,
             trailingIcon = R.drawable.search,
             trailingIconDescription = stringResource(
             id = R.string.search )) {

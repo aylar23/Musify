@@ -192,7 +192,7 @@ fun PlaylistScreen(
                             onClick = { },
                             containerColor = Yellow,
                             contentColor = Black,
-//                            leadingIcon = R.drawable.play
+                            leadingIcon = R.drawable.play
 
                         )
 

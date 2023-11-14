@@ -13,12 +13,15 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,70 +49,85 @@ fun SongView(
     onClick: () -> Unit,
 ) {
 
-    Row(
-        modifier = modifier?.clickable { onClick() }?.padding(5.dp) ?: Modifier
-            .clickable { onClick() }
-            .padding(start = 20.dp, top = 5.dp, bottom = 5.dp),
-        horizontalArrangement = Arrangement.spacedBy(10.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        SubcomposeAsyncImage(
-            modifier = Modifier
-                .size(50.dp)
-                .aspectRatio(1f)
-                .background(Surface),
-            model = song.getSongImage(),
-            contentScale = ContentScale.Crop,
-            contentDescription = "",
-            alignment = Alignment.Center
 
-        )
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.Center
+
+        Row(
+            modifier = modifier?.clickable { onClick() }?.padding(5.dp) ?: Modifier
+                .clickable { onClick() }
+                .padding(start = 20.dp, top = 5.dp, bottom = 5.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp),
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(
-                text = song.name,
-                fontFamily = SFFontFamily,
-                fontSize = 16.sp,
-                lineHeight = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = WhiteTextColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = song.getArtistsName(),
-                fontFamily = SFFontFamily,
-                fontSize = 14.sp,
-                lineHeight = 14.sp,
-                fontWeight = FontWeight.Medium,
-                color = GrayTextColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-        }
+            SubcomposeAsyncImage(
+                modifier = Modifier
+                    .size(50.dp)
+                    .clip(shape = MaterialTheme.shapes.small)
+                    .aspectRatio(1f)
+                    .background(Surface),
+                model = song.getSongImage(),
+                contentScale = ContentScale.Crop,
+                contentDescription = "",
+                alignment = Alignment.Center
 
-        if (reorderable) {
-
-            Icon(
-                modifier = Modifier.padding(20.dp),
-                painter = painterResource(id = R.drawable.two_lines),
-                contentDescription = "song setting",
-                tint = WhiteTextColor
             )
 
-        } else {
-            IconButton(
-                onClick = { onMoreClicked() },
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.song_setting),
-                    contentDescription = "song setting",
-                    tint = WhiteTextColor
-                )
+            Column{
+                 Row{
+                    Column(
+                        modifier = Modifier.weight(1f),
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = song.name,
+                            fontFamily = SFFontFamily,
+                            fontSize = 16.sp,
+                            lineHeight = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = WhiteTextColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                        Text(
+                            text = song.getArtistsName(),
+                            fontFamily = SFFontFamily,
+                            fontSize = 14.sp,
+                            lineHeight = 14.sp,
+                            fontWeight = FontWeight.Medium,
+                            color = GrayTextColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
+
+                    if (reorderable) {
+
+                        Icon(
+                            modifier = Modifier.padding(20.dp),
+                            painter = painterResource(id = R.drawable.two_lines),
+                            contentDescription = "song setting",
+                            tint = WhiteTextColor
+                        )
+
+                    } else {
+                        IconButton(
+                            onClick = { onMoreClicked() },
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.song_setting),
+                                contentDescription = "song setting",
+                                tint = WhiteTextColor
+                            )
+                        }
+                    }
+                }
+
+                HorizontalDivider(modifier = Modifier.padding(end = 20.dp), color = Surface, thickness = 0.5.dp)
             }
+
+
+
         }
 
-    }
+
+
 }

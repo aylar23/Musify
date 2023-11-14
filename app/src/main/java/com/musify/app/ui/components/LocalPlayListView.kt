@@ -34,10 +34,10 @@ import com.musify.app.ui.theme.WhiteTextColor
 fun LocalPlayListView(playlist: Playlist, selectPlaylist: () -> Unit){
     Row(
         modifier = Modifier
-            .clip(shape = MaterialTheme.shapes.large)
+            .clip(shape = MaterialTheme.shapes.small)
             .background(color = DarkGray)
             .clickable { selectPlaylist() }
-            .padding(vertical = 10.dp)
+            .padding(vertical = 16.dp)
             .padding(start = 20.dp)
             .fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(10.dp),
@@ -59,10 +59,10 @@ fun LocalPlayListView(playlist: Playlist, selectPlaylist: () -> Unit){
                 overflow = TextOverflow.Ellipsis
             )
             Text(
-                text = playlist.year.toString() + stringResource(id = R.string.songs),
+                text = stringResource(id = R.string.song_count,  playlist.songsCount.toString()),
                 fontFamily = SFFontFamily,
-                fontSize = 14.sp,
-                lineHeight = 14.sp,
+                fontSize = 12.sp,
+                lineHeight = 12.sp,
                 fontWeight = FontWeight.Medium,
                 color = GrayTextColor,
                 maxLines = 1,

@@ -15,6 +15,8 @@ data class Playlist(
     val artists: List<Artist>,
     val songs: List<Song>?,
     val image: String,
+    @SerializedName("songs_count")
+    val songsCount: Int = 0,
     val year: Int = 0
 ){
     fun getPlaylistImage(): String {

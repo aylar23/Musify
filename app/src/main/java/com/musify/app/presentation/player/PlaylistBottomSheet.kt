@@ -3,6 +3,9 @@ package com.musify.app.presentation.player
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -33,9 +36,10 @@ fun PlaylistBottomSheet(
     LazyColumn(
         state = state.listState,
         modifier = Modifier
+            .fillMaxHeight()
             .reorderable(state)
             .detectReorderAfterLongPress(state)
-            .background(Surface)
+            .background(Surface),
     ) {
 
 
@@ -50,7 +54,13 @@ fun PlaylistBottomSheet(
                         .shadow(elevation.value)
                         .background(MaterialTheme.colorScheme.surface)
                 ) {
-                    SongView(modifier = Modifier.background(Surface),song = song, reorderable = true, onMoreClicked = {}) {
+                    SongView(
+                        modifier = Modifier
+                            .background(Surface)
+                        ,
+                        song = song,
+                        reorderable = true,
+                        onMoreClicked = {}) {
                         playerController.onTrackClick(song)
                     }
                 }
@@ -58,8 +68,6 @@ fun PlaylistBottomSheet(
             }
         }
     }
-
-
 
 
 }

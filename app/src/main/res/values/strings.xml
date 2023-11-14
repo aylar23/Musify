@@ -117,4 +117,5 @@
     <string name="exo_controls_shuffle_on_description" />
     <string name="main">Main</string>
     <string name="library">Library</string>
+    <string name="song_count">%1$s song</string>
 </resources>

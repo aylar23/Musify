@@ -19,8 +19,8 @@
                         <option name="values">
                           <map>
                             <entry key="assetSourceType" value="FILE" />
-                            <entry key="outputName" value="two_lines" />
-                            <entry key="sourceFile" value="$PROJECT_DIR$/../two_lines.svg" />
+                            <entry key="outputName" value="play" />
+                            <entry key="sourceFile" value="$PROJECT_DIR$/../play_arrow.svg" />
                           </map>
                         </option>
                       </PersistentState>

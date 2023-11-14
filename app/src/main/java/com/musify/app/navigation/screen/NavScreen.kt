@@ -13,11 +13,11 @@ sealed class NavScreen(
         "nav_home", R.string.main,R.drawable.ic_home
     )
     object Search : NavScreen(
-        "nav_search", R.string.search, R.drawable.ic_search
+        "nav_search", R.string.search, R.drawable.ic_explore
     )
 
     object MyPlaylists : NavScreen(
-        "nav_my_playlists",R.string.library, R.drawable.ic_grid
+        "nav_my_playlists",R.string.library, R.drawable.ic_library
     )
 
 

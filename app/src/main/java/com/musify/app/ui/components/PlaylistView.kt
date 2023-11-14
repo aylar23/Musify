@@ -15,11 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.DarkGray
@@ -70,7 +72,7 @@ fun PlaylistView(
             Spacer(modifier = Modifier.height(2.dp))
 
             Text(
-                text = playlist.year.toString(),
+                text = stringResource(id = R.string.song_count, playlist.songsCount.toString()),
                 fontFamily = SFFontFamily,
                 fontSize = 12.sp,
                 lineHeight = 12.sp,

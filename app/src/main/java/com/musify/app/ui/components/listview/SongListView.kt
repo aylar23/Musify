@@ -45,7 +45,6 @@ fun SongListView(
         ){
             songs.forEach { song ->
                 SongView(
-                    modifier = Modifier,
                     song = song,
                     onMoreClicked = {onMoreClicked(song)}
                 ) {

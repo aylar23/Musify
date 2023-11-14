@@ -61,7 +61,7 @@ fun MiniPlayer(
 
         Image(
             modifier = Modifier
-                .size(50.dp)
+                .size( 50.dp)
                 .clip(shape = MaterialTheme.shapes.small)
                 .background(DarkGray),
             painter = songImagePainter,
@@ -71,11 +71,12 @@ fun MiniPlayer(
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Text(
                 text = song.name,
                 fontFamily = SFFontFamily,
-                fontSize = 16.sp,
+                fontSize = 18.sp,
+                lineHeight = 18.sp,
                 fontWeight = FontWeight.SemiBold,
                 color = WhiteTextColor,
                 maxLines = 1,
@@ -84,7 +85,8 @@ fun MiniPlayer(
             Text(
                 text = song.getArtistsName(),
                 fontFamily = SFFontFamily,
-                fontSize = 12.sp,
+                fontSize = 15.sp,
+                lineHeight = 15.sp,
                 fontWeight = FontWeight.Normal,
                 color = GrayTextColor,
                 maxLines = 1,
@@ -94,14 +96,13 @@ fun MiniPlayer(
 
         IconButton(
             modifier = Modifier
-                .padding(end = 5.dp),
+                .size(35.dp),
             colors = IconButtonDefaults.iconButtonColors(
                 containerColor = Yellow
             ),
             onClick =  onPlayPauseClick ,
         ) {
             Icon(
-                modifier = Modifier.size(16.dp),
                 painter = if (song.isPlaying()) painterResource(id = R.drawable.pause) else painterResource(id = R.drawable.play),
                 contentDescription = "see more",
                 tint = Black

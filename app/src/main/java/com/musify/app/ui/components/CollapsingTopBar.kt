@@ -27,8 +27,8 @@ import com.musify.app.ui.theme.WhiteTextColor
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CollapsingSmallTopAppBar(
-    scrollBehaviour: TopAppBarScrollBehavior? = null,
     trailingIcon: Int,
+    navigationIcon: Int = R.drawable.left_arrow,
     trailingIconDescription: String,
     goBack: () -> Unit,
 ) {
@@ -40,7 +40,6 @@ fun CollapsingSmallTopAppBar(
             fontWeight = FontWeight.Bold
         )
     },
-//        scrollBehavior = scrollBehaviour,
         modifier = Modifier
             .fillMaxWidth()
             .background(Color.White),
@@ -48,7 +47,7 @@ fun CollapsingSmallTopAppBar(
             IconButton(onClick = {  goBack() }) {
                 Icon(
                     tint = WhiteTextColor,
-                    painter = painterResource(id = R.drawable.left_arrow),
+                    painter = painterResource(id = navigationIcon),
                     contentDescription = stringResource(id = R.string.go_back)
                 )
             }

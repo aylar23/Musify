@@ -3,15 +3,19 @@ package com.musify.app.presentation.player
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.BottomSheetScaffold
@@ -52,6 +56,7 @@ import com.google.accompanist.pager.rememberPagerState
 import com.musify.app.PlayerController
 import com.musify.app.R
 import com.musify.app.player.PlaybackState
+import com.musify.app.player.components.PlayerTopAppBar
 import com.musify.app.ui.components.ActionsModelView
 import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
@@ -67,10 +72,9 @@ import kotlin.math.absoluteValue
 
 
 @OptIn(
-    ExperimentalFoundationApi::class, ExperimentalMaterial3Api::class, ExperimentalPagerApi::class
+    ExperimentalMaterial3Api::class, ExperimentalPagerApi::class
 )
 @Composable
-
 fun PlayerScreen(
     playerController: PlayerController, playerBottomSheet: SheetState, onDismiss: () -> Unit
 ) {
@@ -95,7 +99,7 @@ fun PlayerScreen(
     LaunchedEffect(pagerState.currentPage) {
 
 
-        if (!playerBottomSheet.isVisible)return@LaunchedEffect
+        if (!playerBottomSheet.isVisible) return@LaunchedEffect
         if (playerController.selectedTrackIndex >= 0 && pagerState.currentPage != playerController.selectedTrackIndex) {
             playerController.onTrackClick(pagerState.currentPage)
         }
@@ -113,223 +117,244 @@ fun PlayerScreen(
     BottomSheetScaffold(scaffoldState = scaffoldState,
         sheetContainerColor = Surface,
         sheetContent = {
-        PlaylistBottomSheet(playerController = playerController)
+            PlaylistBottomSheet(playerController = playerController)
 
-    }, content = { innerPadding ->
-
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(AlbumCoverBlackBG)
-        ) {
-            CollapsingSmallTopAppBar(
-                scrollBehaviour = null,
-                trailingIcon = R.drawable.menu,
-                trailingIconDescription = stringResource(id = R.string.menu)
-            ) {
-                onDismiss()
-            }
-
-            HorizontalPager(
-                itemSpacing = 1.dp,
-                count = playerController.tracks.size,
-                contentPadding = PaddingValues(horizontal = 60.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(.6f),
-                state = pagerState
-            ) { page ->
-                Card(
-                    shape = MaterialTheme.shapes.large,
-                    modifier = Modifier.graphicsLayer {
-                        val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
-                        lerp(
-                            start = 0.80f, stop = 1f, fraction = 1f - pageOffset.coerceIn(0f, 1f)
-                        ).also { scale ->
-                            scaleX = scale
-                            scaleY = scale
-                        }
-
-                    },
-
-                    ) {
-                    Image(
-                        painter = rememberAsyncImagePainter(
-                            model = playerController.tracks[page].getSongImage() ?: ""
-                        ),
-                        contentDescription = "",
-                        contentScale = ContentScale.Crop,
-                        modifier = Modifier.fillMaxSize()
-                    )
-                }
-
-            }
+        }, content = { innerPadding ->
 
             Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(20.dp)
-                    .weight(1f),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .fillMaxSize()
+                    .background(AlbumCoverBlackBG)
             ) {
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 7.dp)
+                PlayerTopAppBar(
+                    playerController.selectedTrack?.album,
                 ) {
-                    ActionsModelView(
-                        mainText = playerController.selectedTrack?.name ?: "",
-                        grayText = playerController.selectedTrack?.getArtistsName() ?: "",
-                        expandable = true,
-                        trailingIcon = R.drawable.add,
-                        paddingValues = 0
-                    ) {
-
-                    }
+                    onDismiss()
                 }
 
-
-                Slider(
-                    value = if (currentPosTemp == 0f) currentMediaProgress else currentPosTemp,
-                    onValueChange = { currentPosTemp = it },
-                    onValueChangeFinished = {
-                        currentMediaProgress = currentPosTemp
-                        currentPosTemp = 0f
-                        playerController.onSeekBarPositionChanged(currentMediaProgress.toLong())
-                    },
-                    valueRange = 0f..playbackStateValue.currentTrackDuration.toFloat(),
+                HorizontalPager(
+                    itemSpacing = 2.dp,
+                    count = playerController.tracks.size,
+                    contentPadding = PaddingValues(horizontal = 40.dp),
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    colors = SliderColors(
-                        thumbColor = WhiteTextColor,
-                        activeTickColor = Yellow,
-                        activeTrackColor = Yellow,
-                        inactiveTickColor = GrayTextColor,
-                        inactiveTrackColor = GrayTextColor,
-                        disabledThumbColor = GrayTextColor,
-                        disabledActiveTrackColor = Yellow,
-                        disabledActiveTickColor = Yellow,
-                        disabledInactiveTrackColor = GrayTextColor,
-                        disabledInactiveTickColor = GrayTextColor
-                    ),
-                )
+                        .weight(1f),
+                    state = pagerState
+                ) { page ->
+                    Card(
+                        shape = MaterialTheme.shapes.large,
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .aspectRatio(1f)
+                            .graphicsLayer {
+                                val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
+                                lerp(
+                                    start = 0.90f,
+                                    stop = 1f,
+                                    fraction = 1f - pageOffset.coerceIn(0f, 1f)
+                                ).also { scale ->
+                                    scaleX = scale
+                                    scaleY = scale
+                                }
 
+                            },
+
+                        ) {
+                        Image(
+                            painter = rememberAsyncImagePainter(
+                                model = playerController.tracks[page].getSongImage() ?: ""
+                            ),
+                            contentDescription = "",
+                            contentScale = ContentScale.Crop,
+                            modifier = Modifier.fillMaxSize()
+                        )
+                    }
+
+                }
                 Spacer(modifier = Modifier.height(20.dp))
-                Row(
+
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 7.dp),
-                    horizontalArrangement = Arrangement.SpaceBetween
+                        .padding(horizontal = 20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Text(
+
+                    Row(
                         modifier = Modifier,
-                        text = playbackStateValue.currentPlaybackPosition.formatTime(),
-                        fontSize = 14.sp,
-                        fontFamily = SFFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        color = WhiteTextColor
-                    )
-                    Text(
-                        modifier = Modifier,
-                        text = playbackStateValue.currentTrackDuration.formatTime(),
-                        fontSize = 14.sp,
-                        fontFamily = SFFontFamily,
-                        fontWeight = FontWeight.Medium,
-                        color = WhiteTextColor
-                    )
-                }
+                        horizontalArrangement = Arrangement.Start,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
 
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier
-                        .clip(shape = RoundedCornerShape(50.dp))
-                        .background(DarkGray)
-                        .padding(horizontal = 10.dp, vertical = 4.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.playing_on_device_ic),
-                        contentDescription = "",
-                    )
-                    Text(
-                        modifier = Modifier.padding(horizontal = 10.dp),
-                        text = stringResource(id = R.string.playing_on) + "iPhone",
-                        fontSize = 14.sp,
-                        fontFamily = SFFontFamily,
-                        fontWeight = FontWeight.Thin,
-                        color = WhiteTextColor
-                    )
-                }
-                Spacer(modifier = Modifier.height(20.dp))
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 20.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
+                        Column(
+                            modifier = Modifier
+                                .padding(end = 10.dp)
+                                .fillMaxWidth()
+                                .weight(1f)
+                        ) {
+                            Text(
 
-                    IconButton(modifier = Modifier.weight(.8f), onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.shuffle),
-                            contentDescription = stringResource(id = R.string.shuffle),
-                            tint = if (shuffleEnabled) WhiteTextColor else GrayTextColor
-                        )
+                                text = playerController.selectedTrack?.name ?: "",
+                                fontSize = 16.sp,
+                                fontFamily = SFFontFamily,
+                                fontWeight = FontWeight.Bold,
+                                color = WhiteTextColor
+                            )
+                            Text(
+
+                                text = playerController.selectedTrack?.getArtistsName() ?: "",
+                                fontSize = 15.sp,
+                                lineHeight = 18.sp, fontFamily = SFFontFamily,
+                                fontWeight = FontWeight.Normal,
+                                color = WhiteTextColor
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                tint = WhiteTextColor,
+                                painter = painterResource(id = R.drawable.library_add),
+                                contentDescription = null
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                tint = WhiteTextColor,
+                                painter = painterResource(id = R.drawable.ic_like),
+                                contentDescription = stringResource(id = R.string.go_back)
+                            )
+                        }
+                        IconButton(onClick = { }) {
+                            Icon(
+                                tint = WhiteTextColor,
+                                painter = painterResource(id = R.drawable.ic_more_hor),
+                                contentDescription = stringResource(id = R.string.go_back)
+                            )
+                        }
                     }
-                    IconButton(
-                        modifier = Modifier.weight(.8f), onClick = playerController::onPreviousClick
+
+
+                    Spacer(modifier = Modifier.height(30.dp))
+
+                    Slider(
+                        value = if (currentPosTemp == 0f) currentMediaProgress else currentPosTemp,
+                        onValueChange = { currentPosTemp = it },
+                        onValueChangeFinished = {
+                            currentMediaProgress = currentPosTemp
+                            currentPosTemp = 0f
+                            playerController.onSeekBarPositionChanged(currentMediaProgress.toLong())
+                        },
+                        valueRange = 0f..playbackStateValue.currentTrackDuration.toFloat(),
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        colors = SliderColors(
+                            thumbColor = WhiteTextColor,
+                            activeTickColor = Yellow,
+                            activeTrackColor = Yellow,
+                            inactiveTickColor = GrayTextColor,
+                            inactiveTrackColor = GrayTextColor,
+                            disabledThumbColor = GrayTextColor,
+                            disabledActiveTrackColor = Yellow,
+                            disabledActiveTickColor = Yellow,
+                            disabledInactiveTrackColor = GrayTextColor,
+                            disabledInactiveTickColor = GrayTextColor
+                        ),
+                    )
+
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Icon(
-                            modifier = Modifier.padding(4.dp),
-                            painter = painterResource(id = R.drawable.media_skip_backward),
-                            contentDescription = stringResource(id = R.string.shuffle),
-                            tint = WhiteTextColor
+                        Text(
+                            modifier = Modifier,
+                            text = playbackStateValue.currentPlaybackPosition.formatTime(),
+                            fontSize = 14.sp,
+                            fontFamily = SFFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            color = WhiteTextColor
+                        )
+                        Text(
+                            modifier = Modifier,
+                            text = playbackStateValue.currentTrackDuration.formatTime(),
+                            fontSize = 14.sp,
+                            fontFamily = SFFontFamily,
+                            fontWeight = FontWeight.Medium,
+                            color = WhiteTextColor
                         )
                     }
-                    FloatingActionButton(
-                        modifier = Modifier.clip(shape = CircleShape),
-                        onClick = playerController::onPlayPauseClick,
-                        containerColor = Yellow,
-                        contentColor = AlbumCoverBlackBG,
+
+
+                    Spacer(modifier = Modifier.height(30.dp))
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            modifier = Modifier.padding(20.dp),
-                            painter = if (playerController.selectedTrack?.isPlaying() == true) painterResource(
-                                id = R.drawable.pause
-                            ) else painterResource(id = R.drawable.play),
-                            contentDescription = stringResource(id = R.string.pause),
-                            tint = Background
-                        )
+
+                        IconButton(modifier = Modifier.weight(.8f), onClick = { /*TODO*/ }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.shuffle),
+                                contentDescription = stringResource(id = R.string.shuffle),
+                                tint = if (shuffleEnabled) WhiteTextColor else GrayTextColor
+                            )
+                        }
+                        IconButton(
+                            modifier = Modifier.weight(.8f),
+                            onClick = playerController::onPreviousClick
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(35.dp),
+                                painter = painterResource(id = R.drawable.media_skip_backward),
+                                contentDescription = stringResource(id = R.string.shuffle),
+                                tint = WhiteTextColor
+                            )
+                        }
+                        FloatingActionButton(
+                            modifier = Modifier
+                                .size(62.dp)
+                                .clip(shape = CircleShape),
+                            onClick = playerController::onPlayPauseClick,
+                            containerColor = Yellow,
+                            contentColor = AlbumCoverBlackBG,
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(35.dp),
+                                painter = if (playerController.selectedTrack?.isPlaying() == true) painterResource(
+                                    id = R.drawable.pause
+                                ) else painterResource(id = R.drawable.play),
+                                contentDescription = stringResource(id = R.string.pause),
+                                tint = Background
+                            )
+                        }
+                        IconButton(
+                            modifier = Modifier.weight(.8f), onClick = playerController::onNextClick
+                        ) {
+                            Icon(
+                                modifier = Modifier.size(35.dp),
+                                painter = painterResource(id = R.drawable.media_skip_forward),
+                                contentDescription = stringResource(id = R.string.shuffle),
+                                tint = WhiteTextColor
+                            )
+                        }
+                        IconButton(modifier = Modifier.weight(.8f), onClick = { /*TODO*/ }) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.repeat),
+                                contentDescription = stringResource(id = R.string.repeat),
+                                tint = if (shuffleEnabled) WhiteTextColor else GrayTextColor
+                            )
+                        }
+
                     }
-                    IconButton(
-                        modifier = Modifier.weight(.8f), onClick = playerController::onNextClick
-                    ) {
-                        Icon(
-                            modifier = Modifier.padding(4.dp),
-                            painter = painterResource(id = R.drawable.media_skip_forward),
-                            contentDescription = stringResource(id = R.string.shuffle),
-                            tint = WhiteTextColor
-                        )
-                    }
-                    IconButton(modifier = Modifier.weight(.8f), onClick = { /*TODO*/ }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.repeat),
-                            contentDescription = stringResource(id = R.string.repeat),
-                            tint = if (shuffleEnabled) WhiteTextColor else GrayTextColor
-                        )
-                    }
+
+                    Spacer(modifier = Modifier.height(80.dp))
+
 
                 }
 
             }
-
-
-        }
-
-
-    })
-
+        })
 
 }
+
+

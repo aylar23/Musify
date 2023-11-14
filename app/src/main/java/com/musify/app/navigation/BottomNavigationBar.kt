@@ -13,6 +13,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.musify.app.navigation.screen.NavScreen
@@ -53,7 +54,10 @@ fun BottomNavigationBar(navController: NavController) {
                     },
                     label = {
                             Text(text = stringResource(id = item.label),
-                                color = if(selected) Yellow else Color.White
+                                color = if(selected) Yellow else Color.White,
+                                fontSize = 12.sp,
+                                lineHeight = 12.sp,
+
                             )
                     },
                     alwaysShowLabel = true,
