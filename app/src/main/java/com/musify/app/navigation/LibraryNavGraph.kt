@@ -1,5 +1,8 @@
 package com.musify.app.navigation
 
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -29,7 +32,11 @@ fun LibraryNavGraph(
 
     NavHost(
         navController = innerNavController,
-        startDestination = Screen.MyPlaylist.route
+        startDestination = Screen.MyPlaylist.route,
+        enterTransition = { fadeIn(animationSpec = tween(100)) },
+        exitTransition = { fadeOut(animationSpec = tween(100)) },
+        popEnterTransition = { fadeIn(animationSpec = tween(100)) },
+        popExitTransition = { fadeOut(animationSpec = tween(100)) },
     ) {
         composable(Screen.MyPlaylist.route) {
 

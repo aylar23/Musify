@@ -17,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.musify.app.navigation.screen.NavScreen
+import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.NoRippleTheme
@@ -36,7 +37,7 @@ fun BottomNavigationBar(navController: NavController) {
     )
     CompositionLocalProvider(LocalRippleTheme provides NoRippleTheme) {
         NavigationBar(
-            containerColor = MaterialTheme.colorScheme.background,
+            containerColor = AlbumCoverBlackBG,
             contentColor = Color.Black,
 
             ) {

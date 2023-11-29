@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -45,7 +47,7 @@ fun ArtistView(
     )
 
     Row(
-        modifier =  Modifier
+        modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .clip(shape = MaterialTheme.shapes.large)
@@ -89,13 +91,15 @@ fun ArtistView(
             )
         }
 
-        FloatingActionButton(
+        IconButton(
             modifier = Modifier
                 .padding(end = 5.dp)
                 .size(25.dp),
-            containerColor = Yellow,
-            contentColor = Black,
-            onClick = {  },
+            colors = IconButtonDefaults.iconButtonColors(
+                containerColor = Yellow,
+                contentColor = Black,
+            ),
+            onClick = onClick,
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.right_arrow),

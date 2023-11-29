@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -22,9 +23,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.musify.app.domain.models.Playlist
+import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
+import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
 
 
@@ -41,7 +44,7 @@ fun AlbumView(
 
     Box(modifier = Modifier
         .height(210.dp)
-        .aspectRatio(1.5f)
+        .aspectRatio(1f)
         .clip(shape = MaterialTheme.shapes.large)
         .background(DarkGray)
         .clickable { onClick() }
@@ -52,6 +55,17 @@ fun AlbumView(
             painter = albumImagePainter,
             contentDescription = "Album Image",
             contentScale = ContentScale.Crop)
+
+
+        Box(modifier = Modifier.fillMaxSize()
+            .background(
+            brush = Brush.verticalGradient(
+                colors = listOf(
+                    TransparentColor, AlbumCoverBlackBG
+                )
+            )
+        )
+        )
         Column(
             modifier = Modifier
                 .align(Alignment.BottomStart)

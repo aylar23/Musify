@@ -31,17 +31,20 @@ fun AlbumListView(
     Column(
         modifier = Modifier.background(Background)
     ) {
-
-        Text(
-            modifier = Modifier.padding(horizontal = 20.dp),
-            text = stringResource(id = R.string.new_albums),
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 16.sp,
-                fontFamily = SFFontFamily,
-                fontWeight = FontWeight.Bold,
+        if (playlists.isNotEmpty()){
+            Text(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                text = stringResource(id = R.string.new_albums),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = SFFontFamily,
+                    fontWeight = FontWeight.Bold,
+                )
             )
-        )
+        }
+
+
 
 
         LazyRow(

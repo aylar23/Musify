@@ -41,7 +41,9 @@ data class Song(
     }
 
     fun getSongUrl(): String {
-        return "$audio.m3u8"
+
+        val hslUrl = audio.removeSuffix(".mp3")+".m3u8"
+        return hslUrl
     }
 
 

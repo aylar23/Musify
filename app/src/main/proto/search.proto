@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+option java_package= "com.musify.app";
+option java_multiple_files = true;
+
+message Search {
+    repeated string message = 1;
+}

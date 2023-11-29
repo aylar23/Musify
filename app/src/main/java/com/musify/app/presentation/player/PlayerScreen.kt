@@ -4,6 +4,9 @@ import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.indication
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -18,6 +21,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.BottomSheetScaffold
 import androidx.compose.material3.Card
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -28,6 +32,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Slider
 import androidx.compose.material3.SliderColors
+import androidx.compose.material3.SliderDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberBottomSheetScaffoldState
 import androidx.compose.runtime.Composable
@@ -35,16 +40,21 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.util.lerp
@@ -57,8 +67,6 @@ import com.musify.app.PlayerController
 import com.musify.app.R
 import com.musify.app.player.PlaybackState
 import com.musify.app.player.components.PlayerTopAppBar
-import com.musify.app.ui.components.ActionsModelView
-import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.DarkGray
@@ -131,20 +139,19 @@ fun PlayerScreen(
                 ) {
                     onDismiss()
                 }
+                Spacer(modifier = Modifier.height(20.dp))
 
                 HorizontalPager(
                     itemSpacing = 2.dp,
                     count = playerController.tracks.size,
                     contentPadding = PaddingValues(horizontal = 40.dp),
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
+                        .fillMaxWidth(),
                     state = pagerState
                 ) { page ->
                     Card(
                         shape = MaterialTheme.shapes.large,
                         modifier = Modifier
-                            .fillMaxHeight()
                             .aspectRatio(1f)
                             .graphicsLayer {
                                 val pageOffset = calculateCurrentOffsetForPage(page).absoluteValue
@@ -193,17 +200,23 @@ fun PlayerScreen(
                                 .weight(1f)
                         ) {
                             Text(
-
+                                modifier = Modifier
+                                    .fillMaxWidth(),
                                 text = playerController.selectedTrack?.name ?: "",
                                 fontSize = 16.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 fontFamily = SFFontFamily,
                                 fontWeight = FontWeight.Bold,
                                 color = WhiteTextColor
                             )
                             Text(
-
+                                modifier = Modifier
+                                    .fillMaxWidth(),
                                 text = playerController.selectedTrack?.getArtistsName() ?: "",
                                 fontSize = 15.sp,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
                                 lineHeight = 18.sp, fontFamily = SFFontFamily,
                                 fontWeight = FontWeight.Normal,
                                 color = WhiteTextColor
@@ -235,6 +248,7 @@ fun PlayerScreen(
 
                     Spacer(modifier = Modifier.height(30.dp))
 
+                    val interactionSource = remember { MutableInteractionSource() }
                     Slider(
                         value = if (currentPosTemp == 0f) currentMediaProgress else currentPosTemp,
                         onValueChange = { currentPosTemp = it },
@@ -258,6 +272,25 @@ fun PlayerScreen(
                             disabledInactiveTrackColor = GrayTextColor,
                             disabledInactiveTickColor = GrayTextColor
                         ),
+
+                        thumb = {
+                            SliderDefaults.
+                            Thumb(
+                                modifier = Modifier.padding(vertical = 6.dp ),
+                                interactionSource = interactionSource,
+                                colors = SliderDefaults.colors(),
+                                thumbSize =  DpSize(14.dp, 14.dp)
+                            )
+                        },
+
+                        track = {
+                            SliderDefaults.Track(
+                                sliderState = it,
+                                modifier = Modifier
+                                    .height(5.dp)
+                            )
+                        }
+
                     )
 
                     Row(

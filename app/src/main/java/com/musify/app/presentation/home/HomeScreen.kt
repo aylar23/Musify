@@ -5,12 +5,14 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -33,6 +35,7 @@ import com.musify.app.ui.components.listview.AlbumListView
 import com.musify.app.ui.components.listview.ArtistListView
 import com.musify.app.ui.components.listview.PlaylistListView
 import com.musify.app.ui.components.listview.SongGridListView
+import kotlinx.coroutines.CoroutineScope
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -57,7 +60,6 @@ fun HomeScreen(
     }
 
 
-
     var addToPlaylistClicked by rememberSaveable {
         mutableStateOf(false)
     }
@@ -71,45 +73,45 @@ fun HomeScreen(
     ) { padding ->
 
 
-        Column(
+        LazyColumn(
             Modifier
                 .padding(padding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState()),
+                .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
 
-            HomeTopAppBar { navigateToSettings() }
+            item {
+                HomeTopAppBar { navigateToSettings() }
 
-            SearchBar(
-                enabled = false,
-                onClick = navigateToSearch,
-            ) {}
+            }
+            item {
+                SearchBar(
+                    enabled = false,
+                    onClick = navigateToSearch,
+                ) {}
+            }
+
+            if (uiState.isSuccess) {
+                uiState.data?.let { mainScreenData ->
+                    item {
 
 
-
-            when {
-                uiState.isLoading -> {
-                    LoadingView(Modifier.weight(1f).fillMaxSize(1f))
-                }
-
-                uiState.isFailure -> {
-                    NetworkErrorView(Modifier.weight(1f)) {
-                        homeViewModel.getMainPageData()
-                    }
-                }
-
-                uiState.isSuccess ->{
-
-                    uiState.data?.let { mainScreenData ->
                         PlaylistListView(mainScreenData.tops) { playlist ->
                             navigateToPlaylist(playlist)
                         }
+                    }
+
+                    item {
+
 
                         ArtistListView(
-                            header = R.string.artists,
-                            mainScreenData.artists
-                        ) { artist ->  navigateToArtist(artist) }
+                            header = R.string.artists, mainScreenData.artists
+                        ) { artist -> navigateToArtist(artist) }
+
+
+                    }
+
+                    item {
 
 
                         AlbumListView(mainScreenData.albums) { album ->
@@ -117,23 +119,46 @@ fun HomeScreen(
                         }
 
 
-                        SongGridListView(
-                            mainScreenData.songs,
-                            onMoreClicked = {
-                                selectedSong = it
-                                settingsClicked = true
-                            }
-                        ) {song ->
+                    }
+
+                    item {
+
+
+                        SongGridListView(mainScreenData.songs, onMoreClicked = {
+                            selectedSong = it
+                            settingsClicked = true
+                        }) { song ->
                             homeViewModel.getPlayerController().init(song, mainScreenData.songs)
                         }
+
                     }
+
                 }
+
             }
 
 
-
-
         }
+
+        when {
+
+
+            uiState.isLoading -> {
+
+                LoadingView(Modifier.fillMaxSize(1f))
+
+            }
+
+            uiState.isFailure -> {
+
+                NetworkErrorView(Modifier.fillMaxSize(1f)) {
+                    homeViewModel.getMainPageData()
+                }
+
+
+            }
+        }
+
 
         if (settingsClicked) {
             TrackBottomSheet(
@@ -158,13 +183,11 @@ fun HomeScreen(
 
 
         if (addToPlaylistClicked) {
-            AddToPlaylistBottomSheet(
-                playlists = mutableListOf(),
+            AddToPlaylistBottomSheet(playlists = mutableListOf(),
                 playlistSheetState = playlistSheetState,
                 onCreateNewPlaylist = {
                     navigateToNewPlaylist()
-                }
-            ) {
+                }) {
                 addToPlaylistClicked = false
             }
         }
@@ -172,3 +195,5 @@ fun HomeScreen(
 
     }
 }
+
+

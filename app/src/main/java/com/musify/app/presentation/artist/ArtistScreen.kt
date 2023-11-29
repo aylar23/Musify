@@ -1,5 +1,6 @@
 package com.musify.app.presentation.artist
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -8,14 +9,21 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedIconButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBarDefaults
@@ -33,16 +41,22 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
 import androidx.compose.ui.input.nestedscroll.NestedScrollSource
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Song
@@ -53,8 +67,12 @@ import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.components.listview.AlbumListView
 import com.musify.app.ui.components.listview.SongListView
+import com.musify.app.ui.components.toolbar.CollapsingToolbarScaffold
+import com.musify.app.ui.components.toolbar.ScrollStrategy
+import com.musify.app.ui.components.toolbar.rememberCollapsingToolbarScaffoldState
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Background
+import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
@@ -116,69 +134,98 @@ fun ArtistScreen(
             }
         }
     }
-    Scaffold(modifier = Modifier.padding(paddingValues = paddingValues), topBar = {
-        CollapsingTopAppBar(
-            title = uiState.data?.name ?: "", scrollBehaviour = scrollBehavior
-        ) {
-            navigateUp()
-        }
-    }) { padding ->
+    val state = rememberCollapsingToolbarScaffoldState()
 
-
-        Box(modifier = Modifier
+    CollapsingToolbarScaffold(
+        modifier = Modifier
             .fillMaxSize()
-            .background(Background)
-            .graphicsLayer {
-                translationY = scrollBehavior.state.contentOffset
-            }) {
-            Image(
-                painter = rememberAsyncImagePainter(model = uiState.data?.getArtistImage()),
-                contentDescription = "",
+            .padding(paddingValues),
+        state = state,
+        scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
+        toolbar = {
+
+            val textSize = (22 + (30 - 16) * state.toolbarState.progress).sp
+            val padding = (44 * (1 - state.toolbarState.progress)).dp
+
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(240.dp),
-                contentScale = ContentScale.Crop
+                    .aspectRatio(1f)
+                    .pin()
+                    .background(color = MaterialTheme.colorScheme.background)
             )
-        }
+
+
+            Image(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .parallax(0.5f)
+                    .graphicsLayer {
+                        // change alpha of Image as the toolbar expands
+                        alpha = state.toolbarState.progress
+                    },
+                painter = rememberAsyncImagePainter(model = uiState.data?.getArtistImage()),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                alpha = if (textSize.value == 22f) 0f else 1f
+            )
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .aspectRatio(1f)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            colors = listOf(
+                                TransparentColor,
+                                Background
+                            )
+                        )
+                    )
+            )
+
+            Row(
+                modifier = Modifier
+                    .padding(padding, 16.dp, 16.dp, 16.dp)
+                    .road(whenCollapsed = Alignment.TopStart, whenExpanded = Alignment.BottomStart),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(5.dp)
+
+            ) {
+                Text(
+                    modifier = Modifier.padding(start = 16.dp).weight(1f),
+                    text = uiState.data?.name ?: "",
+                    style = TextStyle(color = Color.White, fontSize = textSize),
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                    )
+
+            }
+
+            IconButton(
+                modifier = Modifier
+                    .pin()
+                    .padding(vertical = 8.dp),
+                onClick = { navigateUp() }) {
+                Icon(
+                    tint = WhiteTextColor,
+                    painter = painterResource(id = R.drawable.left_arrow),
+                    contentDescription = stringResource(id = R.string.go_back)
+                )
+            }
+
+
+        }) {
+
 
 
 
         LazyColumn(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(padding)
-                .nestedScroll(scrollBehavior.nestedScrollConnection),
+                .fillMaxSize(),
+
         ) {
-            item {
-                Column(
-                    modifier = Modifier.background(
-                        brush = Brush.verticalGradient(
-                            startY = 0f, endY = 240f, colors = listOf(
-                                TransparentColor, AlbumCoverBlackBG
-                            )
-                        )
-                    )
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(top = 60.dp)
-                            .padding(vertical = 14.dp, horizontal = 14.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Text(
-                            text = uiState.data?.name ?: "",
-                            color = WhiteTextColor,
-                            fontSize = 24.sp,
-                            fontFamily = SFFontFamily,
 
-                            fontWeight = FontWeight.Bold
-                        )
-
-                    }
-                }
-            }
 
             item {
 
@@ -222,7 +269,8 @@ fun ArtistScreen(
                             }
 
 
-                            SongListView(data.singles, onMoreClicked = {
+                            SongListView(
+                                data.singles, onMoreClicked = {
                                 selectedSong = it
                                 settingsClicked = true
                             }) {song ->

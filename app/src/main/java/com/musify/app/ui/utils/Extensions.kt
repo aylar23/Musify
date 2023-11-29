@@ -1,6 +1,7 @@
 package com.musify.app.ui.utils
 
 import android.net.Uri
+import androidx.compose.animation.EnterTransition
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -73,7 +74,7 @@ fun CoroutineScope.launchPlaybackStateJob(
                 currentTrackDuration = myPlayer.currentTrackDuration
             )
         )
-        delay(1000) // delay for 1 second
+        delay(250) // delay for 1 second
     } while (state == PlayerStates.STATE_PLAYING && isActive)
 }
 
@@ -100,3 +101,5 @@ fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean = true) =
 
 fun Modifier.disabledHorizontalPointerInputScroll(disabled: Boolean = true) =
     if (disabled) this.nestedScroll(HorizontalScrollConsumer) else this
+
+

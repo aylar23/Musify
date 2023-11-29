@@ -40,11 +40,12 @@ class HomeViewModel @Inject constructor(
 
     fun getMainPageData() {
 
-        viewModelScope.launch {
+        CoroutineScope(Dispatchers.IO).launch {
             _uiState.update { it.updateToLoading() }
 
             try {
                 val data = songRepository.getMainScreen()
+
                 _uiState.update { it.updateToLoaded(data) }
             } catch (e: Exception) {
                 _uiState.update { it.updateToFailure() }

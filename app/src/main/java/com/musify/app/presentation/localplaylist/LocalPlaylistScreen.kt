@@ -42,6 +42,7 @@ import com.musify.app.ui.components.CustomButton
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.NetworkErrorView
 import com.musify.app.ui.components.SongView
+import com.musify.app.ui.components.SwipeableSongView
 import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.theme.AlbumCoverBlackBG
@@ -55,7 +56,7 @@ import com.musify.app.ui.theme.Yellow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LocalPlaylistScreen(
-    id:Long,
+    id: Long,
     localPlaylistViewModel: LocalPlaylistViewModel,
     paddingValues: PaddingValues,
     navigateToNewPlaylist: () -> Unit,
@@ -64,7 +65,7 @@ fun LocalPlaylistScreen(
     navigateUp: () -> Unit,
 ) {
 
-    LaunchedEffect(id){
+    LaunchedEffect(id) {
         localPlaylistViewModel.getPlaylist(id)
     }
 
@@ -75,7 +76,7 @@ fun LocalPlaylistScreen(
     val appBarState = rememberTopAppBarState()
     val scrollBehavior = TopAppBarDefaults.enterAlwaysScrollBehavior(appBarState)
 
-    var settingsClicked by remember{
+    var settingsClicked by remember {
         mutableStateOf(false)
     }
 
@@ -92,24 +93,25 @@ fun LocalPlaylistScreen(
         .padding(paddingValues)
         .background(
             AlbumCoverBlackBG
-        ),
-        topBar = { CollapsingSmallTopAppBar(
-            trailingIcon = R.drawable.search,
-            trailingIconDescription = stringResource(
-            id = R.string.search )) {
-            navigateUp() } })
-    { padding ->
+        ), topBar = {
+        CollapsingSmallTopAppBar(
+            trailingIcon = R.drawable.search, trailingIconDescription = stringResource(
+                id = R.string.search
+            )
+        ) {
+            navigateUp()
+        }
+    }) { padding ->
 
         LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .nestedScroll(scrollBehavior.nestedScrollConnection)
         ) {
             item {
                 Column(
                     modifier = Modifier.background(
-                     AlbumCoverBlackBG
+                        AlbumCoverBlackBG
                     )
                 ) {
                     Row(
@@ -120,7 +122,7 @@ fun LocalPlaylistScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(
-                            text = uiState.data?.playlist?.name?:"",
+                            text = uiState.data?.playlist?.name ?: "",
                             color = WhiteTextColor,
                             fontFamily = SFFontFamily,
                             fontSize = 22.sp,
@@ -190,13 +192,13 @@ fun LocalPlaylistScreen(
 
                 uiState.isSuccess -> {
                     uiState.data?.songs?.let { data ->
-                        items(data) { song ->
-                            SongView(song = song,
-                                onMoreClicked = {
-                                    selectedSong = song
-                                    settingsClicked = true
-                                }
-                            ) {
+                        items(data, key = {
+                            it.songId
+                        }) { song ->
+                            SwipeableSongView(song = song, onMoreClicked = {
+                                selectedSong = song
+                                settingsClicked = true
+                            }) {
                                 localPlaylistViewModel.getPlayerController().init(song, data)
 
                             }
@@ -211,7 +213,7 @@ fun LocalPlaylistScreen(
 
         }
 
-        if (settingsClicked){
+        if (settingsClicked) {
             TrackBottomSheet(
                 songSettingsSheetState = songSettingsSheetState,
                 onAddToPlaylist = {
@@ -226,27 +228,24 @@ fun LocalPlaylistScreen(
                 },
                 onPlayNext = {},
                 onShare = {},
-            ){
+            ) {
                 settingsClicked = false
             }
         }
 
 
 
-        if (addToPlaylistClicked){
-            AddToPlaylistBottomSheet(
-                playlists = mutableListOf(),
+        if (addToPlaylistClicked) {
+            AddToPlaylistBottomSheet(playlists = mutableListOf(),
                 playlistSheetState = playlistSheetState,
                 onCreateNewPlaylist = {
                     navigateToNewPlaylist()
-                }
-            ) {
+                }) {
                 addToPlaylistClicked = false
             }
         }
 
     }
-
 
 
 }

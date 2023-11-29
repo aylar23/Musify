@@ -1,10 +1,14 @@
 package com.musify.app.presentation.search
 
 import android.util.Log
+import androidx.datastore.core.DataStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.musify.app.PlayerController
+import com.musify.app.di.DataStoreUtil
+import com.musify.app.di.SearchDataStore
 import com.musify.app.domain.models.SearchData
 import com.musify.app.domain.repository.SongRepository
 import com.musify.app.ui.utils.BaseUIState
@@ -18,14 +22,21 @@ import javax.inject.Inject
 class SearchViewModel @Inject constructor(
     private val songRepository: SongRepository,
     private val savedStateHandle: SavedStateHandle,
-    private val playerController: PlayerController
+    private val playerController: PlayerController,
+    private val dataStoreUtil: DataStoreUtil
 ) : ViewModel() {
+    private val searchDataStore: SearchDataStore = SearchDataStore.getInstance(dataStoreUtil.dataStore)
+
+
 
     private val _uiState = MutableStateFlow(BaseUIState<SearchData>())
 
     val uiState = _uiState
 
     var searchStr = savedStateHandle.getStateFlow<String>("SEARCH", "")
+
+
+    val keys = searchDataStore.searchFlow
 
 
     fun getPlayerController() = playerController
@@ -35,7 +46,6 @@ class SearchViewModel @Inject constructor(
             _uiState.update { it.updateToLoading() }
             try {
                 val data = songRepository.search(s)
-                Log.e("TAG", "search: " + data)
                 _uiState.update { it.updateToLoaded(data) }
             } catch (e: Exception) {
                 Log.e("TAG", "getMainPageData: " + e.message)
@@ -47,6 +57,17 @@ class SearchViewModel @Inject constructor(
     }
 
 
+    fun saveSearchStr(s:String){
+        viewModelScope.launch {
+            searchDataStore.saveNewMsg(s)
+        }
+    }
+
+    fun removeSearchStr(s:String){
+        viewModelScope.launch {
+            searchDataStore.removeMsg(s)
+        }
+    }
     fun setSearch(s:String){
         savedStateHandle["SEARCH"] = s
 

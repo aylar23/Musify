@@ -25,6 +25,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.unit.dp
 import com.musify.app.R
+import com.musify.app.Search
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Song
@@ -67,9 +68,9 @@ fun SearchScreen(
     val focusManager = LocalFocusManager.current
 
     val searchStr = searchViewModel.searchStr.collectAsState()
-    val keys = remember {
-        mutableStateListOf("wer", "wer1", "wer2", "wer3", "wer4")
-    }
+    val keys = searchViewModel.keys.collectAsState(initial = Search.getDefaultInstance())
+
+
     Scaffold(
         modifier = Modifier.padding(paddingValues)
     ) { padding ->
@@ -88,6 +89,7 @@ fun SearchScreen(
                 onDone = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
+                    searchViewModel.saveSearchStr(searchStr.value)
                 }
             ) {
                 searchViewModel.setSearch(it)
@@ -96,8 +98,8 @@ fun SearchScreen(
 
             if (searchStr.value.isEmpty()) {
                 SearchKeysView(
-                    keys = keys,
-                    onDelete = { keys.remove(it) },
+                    keys = keys.value.messageList,
+                    onDelete = { str -> searchViewModel.removeSearchStr(str)},
                     onSearch = {
                        searchViewModel.setSearch(it)
                         searchViewModel.search(it)

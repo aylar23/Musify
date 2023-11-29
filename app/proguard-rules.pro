@@ -19,3 +19,24 @@
 # If you keep the line number information, uncomment this to
 # hide the original source file name.
 #-renamesourcefileattribute SourceFile
+
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
+-dontwarn com.google.common.base.**
+-keep class com.google.common.base.** {*;}
+-dontwarn com.google.errorprone.annotations.**
+-keep class com.google.errorprone.annotations.* {*;}
+-dontwarn   com.google.j2objc.annotations.**
+-keep class com.google.j2objc.annotations.** { *; }
+-keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
+-keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+
+-dontwarn retrofit2.**
+-keep class retrofit2.** { *; }
+
+
+-keep class com.musify.app.domain.models.* { *; }
