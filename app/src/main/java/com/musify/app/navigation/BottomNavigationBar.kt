@@ -1,5 +1,6 @@
 package com.musify.app.navigation
 
+import android.util.Log
 import androidx.compose.material.ripple.LocalRippleTheme
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -25,7 +26,10 @@ import com.musify.app.ui.theme.Yellow
 
 
 @Composable
-fun BottomNavigationBar(navController: NavController) {
+fun BottomNavigationBar(
+    navController: NavController,
+    onSelect: (String) -> Unit
+) {
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
@@ -44,44 +48,44 @@ fun BottomNavigationBar(navController: NavController) {
             items.forEach { item ->
 
                 val selected = currentRoute == item.route
-                NavigationBarItem(
-                    icon = {
-                        Icon(
-                            painterResource(id = item.icon),
-                            contentDescription = item.route,
-                            tint = if(selected) Yellow else Color.White
+                NavigationBarItem(icon = {
+                    Icon(
+                        painterResource(id = if (selected)item.activeIcon else item.icon),
+                        contentDescription = item.route,
+                        tint = if (selected) Yellow else Color.White
+
+                    )
+                }, label = {
+                    Text(
+                        text = stringResource(id = item.label),
+                        color = if (selected) Yellow else Color.White,
+                        fontSize = 12.sp,
+                        lineHeight = 12.sp,
 
                         )
-                    },
-                    label = {
-                            Text(text = stringResource(id = item.label),
-                                color = if(selected) Yellow else Color.White,
-                                fontSize = 12.sp,
-                                lineHeight = 12.sp,
+                }, alwaysShowLabel = true, selected = selected, onClick = {
 
-                            )
-                    },
-                    alwaysShowLabel = true,
-                    selected = selected,
-                    onClick = {
+                    navController.navigate(item.route) {
 
-                        navController.navigate(item.route) {
+                        onSelect(item.route)
 
-                            navController.graph.startDestinationRoute?.let { screen_route ->
-                                popUpTo(screen_route) {
-                                    saveState = true
-                                }
+
+                        navController.graph.startDestinationRoute?.let { screen_route ->
+                            popUpTo(screen_route) {
+                                saveState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
                         }
-                    },
-                    colors = NavigationBarItemDefaults
-                        .colors(
-                            selectedIconColor = Yellow,
-                            selectedTextColor = Yellow,
-                            indicatorColor = Background
-                        )
+                        launchSingleTop = true
+                        restoreState = true
+
+                    }
+
+
+                }, colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = Yellow,
+                    selectedTextColor = Yellow,
+                    indicatorColor = Background
+                )
                 )
             }
         }

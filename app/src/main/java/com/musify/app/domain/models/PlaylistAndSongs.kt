@@ -16,12 +16,12 @@ data class PlaylistWithSongs(
     val songs: List<Song>
 )
 
-//data class SongWithPlaylists(
-//    @Embedded val song: Song,
-//    @Relation(
-//        parentColumn = "songId",
-//        entityColumn = "playlistId",
-//        associateBy = Junction(PlaylistSongCrossRef::class)
-//    )
-//    val playlists: List<Playlist>
-//)
+data class SongWithPlaylists(
+    @Embedded val song: Song,
+    @Relation(
+        parentColumn = "songId",
+        entityColumn = "playlistId",
+        associateBy = Junction(PlaylistSongCrossRef::class)
+    )
+    val playlists: List<Playlist>
+)

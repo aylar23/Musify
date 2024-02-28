@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
@@ -17,6 +18,7 @@
         android:hardwareAccelerated="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:configChanges="uiMode"
         android:theme="@style/Theme.Musify"
         tools:targetApi="31">
         <activity
@@ -32,7 +34,10 @@
         </activity>
 
         <service android:name=".player.DownloadService"
-            android:exported="false">
+            android:exported="false"
+            android:enabled="true"
+            tools:node="merge"
+            android:foregroundServiceType="dataSync|mediaPlayback">
             <!-- This is needed for Scheduler -->
             <intent-filter>
                 <action android:name="com.google.android.exoplayer.downloadService.action.RESTART"/>

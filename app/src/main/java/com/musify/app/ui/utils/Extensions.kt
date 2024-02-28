@@ -1,7 +1,13 @@
 package com.musify.app.ui.utils
 
+import android.content.Context
 import android.net.Uri
+import android.os.Build
+import android.os.Bundle
+import android.util.Log
 import androidx.compose.animation.EnterTransition
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.input.nestedscroll.NestedScrollConnection
@@ -20,6 +26,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
+import timber.log.Timber
+import java.util.Collections
 
 
 fun MutableList<Song>.resetTracks() {
@@ -53,11 +61,17 @@ fun List<Song>.toMediaItemList(): MutableList<MediaItem> {
 }
 
 
+
+
+
 fun CoroutineScope.collectPlayerState(
     myPlayer: MyPlayer, updateState: (PlayerStates) -> Unit
 ) {
+
     this.launch {
         myPlayer.playerState.collect {
+            Timber.e("collectPlayerState: ")
+
             updateState(it)
         }
     }
@@ -67,6 +81,7 @@ fun CoroutineScope.collectPlayerState(
 fun CoroutineScope.launchPlaybackStateJob(
     playbackStateFlow: MutableStateFlow<PlaybackState>, state: PlayerStates, myPlayer: MyPlayer
 ) = launch {
+
     do {
         playbackStateFlow.emit(
             PlaybackState(
@@ -74,7 +89,7 @@ fun CoroutineScope.launchPlaybackStateJob(
                 currentTrackDuration = myPlayer.currentTrackDuration
             )
         )
-        delay(250) // delay for 1 second
+        delay(1000) // delay for 1 second
     } while (state == PlayerStates.STATE_PLAYING && isActive)
 }
 
@@ -102,4 +117,32 @@ fun Modifier.disabledVerticalPointerInputScroll(disabled: Boolean = true) =
 fun Modifier.disabledHorizontalPointerInputScroll(disabled: Boolean = true) =
     if (disabled) this.nestedScroll(HorizontalScrollConsumer) else this
 
+fun Bundle.readable() = buildList {
+    keySet().forEach {
+        add("key=$it, value=${get(it)}")
+    }
+}.joinToString()
 
+
+fun isOreo() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+
+fun <T> Context.systemService(name: String): T {
+    return getSystemService(name) as T
+}
+fun <T> List<T>.swap(fromIdx: Int, toIdx: Int): List<T> {
+    val copy = toMutableList()
+    Collections.swap(copy, fromIdx, toIdx)
+    return copy
+}
+
+fun <T> MutableList<T>.swap(fromIdx: Int, toIdx: Int) {
+    Collections.swap(this, fromIdx, toIdx)
+}
+
+
+fun Modifier.clickWithoutIndication(onClick: () -> Unit): Modifier {
+    return this.clickable(
+        interactionSource = MutableInteractionSource(),
+        indication = null
+    ) { onClick() }
+}

@@ -19,6 +19,11 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.PendingIntent.*
 import android.app.TaskStackBuilder
+import android.content.Context
+import android.media.AudioAttributes
+import android.media.AudioFocusRequest
+import android.media.AudioManager
+import android.os.Handler
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.media3.common.util.Util
@@ -37,6 +42,8 @@ import com.musify.app.PlayerController
 @OptIn(UnstableApi::class)
 class PlaybackService : MediaLibraryService() {
     private val librarySessionCallback = CustomMediaLibrarySessionCallback()
+
+
 
 
 
@@ -59,6 +66,8 @@ class PlaybackService : MediaLibraryService() {
 
         initializeSessionAndPlayer()
         setListener(MediaSessionServiceListener())
+
+
     }
 
     override fun onGetSession(controllerInfo: MediaSession.ControllerInfo): MediaLibrarySession {

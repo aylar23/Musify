@@ -1,18 +1,15 @@
 package com.musify.app
 
-import android.app.Notification
-import android.app.PendingIntent
-import android.content.Context
 import android.util.Log
 import androidx.annotation.OptIn
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.media3.common.MediaItem
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import androidx.media3.common.Player.REPEAT_MODE_ALL
 import androidx.media3.common.util.UnstableApi
-import androidx.media3.session.MediaSession
-import androidx.media3.ui.PlayerNotificationManager
 import com.musify.app.domain.models.Song
 
 import com.musify.app.player.MyPlayer
@@ -22,20 +19,23 @@ import com.musify.app.player.PlayerStates
 import com.musify.app.ui.utils.collectPlayerState
 import com.musify.app.ui.utils.launchPlaybackStateJob
 import com.musify.app.ui.utils.resetTracks
+import com.musify.app.ui.utils.swap
 import com.musify.app.ui.utils.toMediaItemList
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.math.log
 
 
 @OptIn(UnstableApi::class)
+@HiltViewModel
 class PlayerController @Inject constructor(
     private val myPlayer: MyPlayer,
-) : PlayerEvents {
+) :  ViewModel() ,PlayerEvents {
     /**
      * A mutable state list of all tracks.
      */
@@ -98,14 +98,43 @@ class PlayerController @Inject constructor(
 
 
     fun onReorder(from:Int, to:Int){
-
+        
         val song = tracks[from]
-
         _tracks.remove(song)
         _tracks.add(to, song)
+        myPlayer.reOrder(from, to, song.toMediaItem())
 
     }
 
+    fun setRepeatMode(mode:Int) {
+        Log.e("TAG", "getRepeatMode: "+ myPlayer.getRepeatMode())
+        return myPlayer.setRepeatMode(mode)
+
+    }
+
+    fun getRepeatMode(): Int {
+        Log.e("TAG", "getRepeatMode: "+ myPlayer.getRepeatMode())
+       return myPlayer.getRepeatMode()
+
+    }
+    fun getShuffleMode(): Boolean {
+        return myPlayer.getShuffleMode()
+    }
+
+    fun toggleShuffle() {
+
+        return myPlayer.toggleShuffle()
+    }
+
+
+    fun playerCurrentTime(): Long {
+        return myPlayer.currentPlaybackPosition
+    }
+
+
+    fun playerTrackDuration(): Long {
+        return myPlayer.currentTrackDuration
+    }
 
     /**
      * Handles track selection.
@@ -114,7 +143,7 @@ class PlayerController @Inject constructor(
      */
     private fun onTrackSelected(index: Int) {
         if (selectedTrackIndex == -1) isTrackPlay = true
-        Log.e("TAG", "onTrackSelected: ", )
+        Log.e("TAG", "onTrackSelected: "+index)
         if (selectedTrackIndex == -1 || selectedTrackIndex != index) {
             _tracks.resetTracks()
             selectedTrackIndex = index
@@ -134,6 +163,7 @@ class PlayerController @Inject constructor(
      * @param state The new player state.
      */
     private fun updateState(state: PlayerStates) {
+        Log.e("TAG", "updateState: " )
         if (selectedTrackIndex != -1) {
             isTrackPlay = state == PlayerStates.STATE_PLAYING
             _tracks[selectedTrackIndex].state = state
@@ -142,7 +172,6 @@ class PlayerController @Inject constructor(
             selectedTrack = tracks[selectedTrackIndex]
 
             if (state == PlayerStates.STATE_NEXT_TRACK) {
-                Log.e("TAG", "updateState: 1111", )
                 isAuto = true
                 onNextClick()
                 myPlayer.emitPlaying()
@@ -150,19 +179,22 @@ class PlayerController @Inject constructor(
             }
             updatePlaybackState(state)
 
-            if (state == PlayerStates.STATE_END) onTrackSelected(0)
+            if (state == PlayerStates.STATE_END && myPlayer.getRepeatMode() == REPEAT_MODE_ALL) onTrackSelected(0)
         }
     }
 
 
     private fun observePlayerState() {
-        CoroutineScope(Dispatchers.Main).collectPlayerState(myPlayer, ::updateState)
+        viewModelScope.collectPlayerState(myPlayer, ::updateState)
     }
 
     private fun updatePlaybackState(state: PlayerStates) {
         playbackStateJob?.cancel()
-        playbackStateJob =  CoroutineScope(Dispatchers.Main).launchPlaybackStateJob(_playbackState, state, myPlayer)
+        playbackStateJob =  viewModelScope.launchPlaybackStateJob(_playbackState, state, myPlayer)
     }
+
+
+
 
     /**
      * Implementation of [PlayerEvents.onPreviousClick].
@@ -180,6 +212,11 @@ class PlayerController @Inject constructor(
         if (selectedTrackIndex < tracks.size - 1) {
             Log.e("TAG", "onNextClick: ", )
             onTrackSelected(selectedTrackIndex + 1)
+        }else{
+
+            if (tracks.isNotEmpty()&& myPlayer.getRepeatMode() == REPEAT_MODE_ALL){
+                onTrackSelected(0)
+            }
         }
     }
 
@@ -198,12 +235,25 @@ class PlayerController @Inject constructor(
      * @param song The track that was clicked.
      */
     override fun onTrackClick(song: Song) {
+        Log.e("TAG", "onTrackClick: ", )
         onTrackSelected(tracks.indexOf(song))
     }
 
     override fun onTrackClick(song: Int) {
 
-        onTrackSelected(song)
+//        onTrackSelected(song)
+    }
+
+    override fun onPlayNext(song: Song) {
+
+        if (_tracks.contains(song)){
+            if(selectedTrackIndex == _tracks.indexOf(song)) return
+            onReorder( _tracks.indexOf(song), selectedTrackIndex+1)
+        }else{
+            _tracks.add(selectedTrackIndex+1, song)
+            myPlayer.addMediaItem(selectedTrackIndex+1,song.toMediaItem())
+        }
+
     }
 
     /**
@@ -213,34 +263,13 @@ class PlayerController @Inject constructor(
      * @param position The position to seek to.
      */
     override fun onSeekBarPositionChanged(position: Long) {
-        myPlayer.seekToPosition(position)
+        viewModelScope.launch {
+            myPlayer.seekToPosition(position)
+        }
     }
 
 
-//    fun getItem(id: String): MediaItem? {
-//        return tracks.toMediaItemList().findLast { it.mediaId == id }
-//    }
-//
-//    fun getRootItem(): MediaItem {
-//        return MediaItemTree.treeNodes[MediaItemTree.ROOT_ID]!!.item
-//    }
-//
-//    fun getChildren(id: String): List<MediaItem>? {
-//        return MediaItemTree.treeNodes[id]?.getChildren()
-//    }
 
-//    fun getRandomItem(): MediaItem {
-//        var curRoot = getRootItem()
-//        while (curRoot.mediaMetadata.isBrowsable == true) {
-//            val children = getChildren(curRoot.mediaId)!!
-//            curRoot = children.random()
-//        }
-//        return curRoot
-//    }
-
-//    fun getItemFromTitle(title: String): MediaItem? {
-//        return MediaItemTree.titleMap[title]?.item
-//    }
 
 
 }

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
@@ -27,84 +28,40 @@ import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
 fun ActionsModelView(
-    icon: Int? = null,
+    icon: Int,
     mainText: String,
-    grayText: String? = null,
     expandable: Boolean,
     trailingIcon: Int = R.drawable.right_arrow,
-    paddingValues: Int = 14,
     onClick: () -> Unit
 ) {
     Row(modifier = Modifier
         .clickable { onClick() }
-        .padding(paddingValues.dp),
+        .padding(20.dp, 16.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically) {
-        if (icon != null) {
-            Icon(
-                modifier = Modifier.size(24.dp),
-                painter = painterResource(id = icon),
-                contentDescription = mainText + "button",
-                tint = WhiteTextColor
-            )
-        }
-        if (grayText == null) {
-            Text(
-                modifier = Modifier
-                    .padding(
-                        horizontal = if (icon != null) {
-                            10.dp
-                        } else {
-                            0.dp
-                        }
-                    )
-                    .weight(1f),
-                text = mainText,
-                fontSize = 16.sp,
-                fontFamily = SFFontFamily,
-                fontWeight = FontWeight.Bold,
-                color = WhiteTextColor
-            )
-        } else {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-            ) {
-                Text(
-                    modifier = Modifier.padding(
-                        horizontal = if (icon != null) {
-                            10.dp
-                        } else {
-                            0.dp
-                        }
-                    ),
-                    text = mainText,
-                    fontSize = 16.sp,
-                    fontFamily = SFFontFamily,
-                    fontWeight = FontWeight.Bold,
-                    color = WhiteTextColor
+        Icon(
+//                modifier = Modifier.size(24.dp),
+            painter = painterResource(id = icon),
+            contentDescription = mainText + "button",
+            tint = WhiteTextColor
+        )
+        Text(
+            modifier = Modifier
+                .padding(
+                    horizontal = 15.dp
                 )
-                Text(
-                    modifier = Modifier.padding(
-                        horizontal = if (icon != null) {
-                            10.dp
-                        } else {
-                            0.dp
-                        }
-                    ),
-                    text = grayText ?: "",
-                    fontSize = 10.sp,
-                    fontFamily = SFFontFamily,
-                    fontWeight = FontWeight.Normal,
-                    color = WhiteTextColor
-                )
-            }
-        }
+                .weight(1f),
+            text = mainText,
+            fontSize = 16.sp,
+            fontFamily = SFFontFamily,
+            fontWeight = FontWeight.Bold,
+            color = WhiteTextColor
+        )
+
         if (expandable) {
             Icon(
-                modifier = Modifier.size(24.dp),
-                painter = painterResource(id = trailingIcon!!),
+//                modifier = Modifier.size(24.dp),
+                painter = painterResource(id = trailingIcon),
                 contentDescription = "See more icon",
                 tint = WhiteTextColor
             )
@@ -138,7 +95,7 @@ fun LocalPlaylistSelectionView(
             verticalArrangement = Arrangement.spacedBy(3.dp)
         ) {
             Text(
-                text = playlist.name+"qwerteyuiop",
+                text = playlist.name ,
                 fontSize = 16.sp,
                 lineHeight = 16.sp,
                 fontFamily = SFFontFamily,
@@ -159,4 +116,11 @@ fun LocalPlaylistSelectionView(
     }
 }
 
+@Preview
+@Composable
+fun fjnfjfn () {
+    LocalPlaylistSelectionView(Playlist(0L, "name")){
+
+    }
+}
 

@@ -9,10 +9,18 @@ import androidx.lifecycle.viewModelScope
 import com.musify.app.PlayerController
 import com.musify.app.di.DataStoreUtil
 import com.musify.app.di.SearchDataStore
+import com.musify.app.domain.models.Playlist
+import com.musify.app.domain.models.Playlist.Companion.PLAYLIST
+import com.musify.app.domain.models.PlaylistSongCrossRef
 import com.musify.app.domain.models.SearchData
+import com.musify.app.domain.models.Song
 import com.musify.app.domain.repository.SongRepository
+import com.musify.app.player.DownloadTracker
 import com.musify.app.ui.utils.BaseUIState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -23,6 +31,7 @@ class SearchViewModel @Inject constructor(
     private val songRepository: SongRepository,
     private val savedStateHandle: SavedStateHandle,
     private val playerController: PlayerController,
+    private val downloadTracker: DownloadTracker,
     private val dataStoreUtil: DataStoreUtil
 ) : ViewModel() {
     private val searchDataStore: SearchDataStore = SearchDataStore.getInstance(dataStoreUtil.dataStore)
@@ -40,12 +49,14 @@ class SearchViewModel @Inject constructor(
 
 
     fun getPlayerController() = playerController
+    fun getDownloadTracker() = downloadTracker
 
     fun search(s: String) {
         viewModelScope.launch {
             _uiState.update { it.updateToLoading() }
             try {
                 val data = songRepository.search(s)
+                Log.e("TAG", "search: "+data.songs[8] )
                 _uiState.update { it.updateToLoaded(data) }
             } catch (e: Exception) {
                 Log.e("TAG", "getMainPageData: " + e.message)
@@ -58,19 +69,54 @@ class SearchViewModel @Inject constructor(
 
 
     fun saveSearchStr(s:String){
-        viewModelScope.launch {
-            searchDataStore.saveNewMsg(s)
+
+        if (s.isNotEmpty()){
+            viewModelScope.launch {
+                searchDataStore.saveNewMsg(s)
+            }
         }
+
     }
 
-    fun removeSearchStr(s:String){
+    fun clearSearchStr(){
         viewModelScope.launch {
-            searchDataStore.removeMsg(s)
+            searchDataStore.clearAllMyMessages()
         }
     }
     fun setSearch(s:String){
         savedStateHandle["SEARCH"] = s
 
+    }
+
+    fun getAllPlaylists(): Flow<List<Playlist>> {
+
+        return songRepository.getAllPlaylists(PLAYLIST)
+
+    }
+
+
+    fun addNewPlaylist(name:String){
+
+        CoroutineScope(Dispatchers.IO).launch{
+            songRepository.insertPlaylist(Playlist(name = name))
+
+        }
+    }
+
+
+    fun addSongToPlaylist(song: Song, playlist: Playlist){
+
+        CoroutineScope(Dispatchers.IO).launch{
+            songRepository.insertSong(song)
+
+            val crossRef = PlaylistSongCrossRef(playlist.playlistId, song.songId)
+
+            songRepository.insertPlaylistSongCrossRef(crossRef)
+
+        }
+        if (playlist.downloadable){
+            downloadTracker.download(song.toMediaItem())
+        }
     }
 
 }

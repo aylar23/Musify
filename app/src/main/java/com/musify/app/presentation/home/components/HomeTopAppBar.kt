@@ -23,17 +23,21 @@ import com.musify.app.ui.theme.WhiteTextColor
 
 @Composable
 fun HomeTopAppBar(
-    onSettingsClicked : () ->Unit
+    onSettingsClicked: () -> Unit,
+    onSearchClicked: () -> Unit,
 ) {
 
     Row(
         Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .padding(top = 20.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+            .padding(start = 20.dp, end = 10.dp, top = 20.dp),
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+
     ) {
-        Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        Column(
+            modifier = Modifier.weight(1f),
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
             Text(
                 text = stringResource(id = R.string.welcome),
                 style = TextStyle(
@@ -52,6 +56,16 @@ fun HomeTopAppBar(
                     fontFamily = SFFontFamily,
                     fontWeight = FontWeight.Normal,
                 )
+            )
+        }
+
+        IconButton(
+            onClick = onSearchClicked,
+        ) {
+            Icon(
+                painter = painterResource(id = R.drawable.ic_explore),
+                contentDescription = "playlist setting",
+                tint = WhiteTextColor
             )
         }
 

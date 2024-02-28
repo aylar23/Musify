@@ -1,5 +1,7 @@
 package com.musify.app.presentation.search
 
+import android.util.Log
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -11,24 +13,35 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Snackbar
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Dialog
 import com.musify.app.R
 import com.musify.app.Search
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
+import com.musify.app.domain.models.Playlist.Companion.PLAYLIST
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.player.NewPlaylistDialog
 import com.musify.app.ui.components.SearchBar
 import com.musify.app.ui.components.listview.ArtistListView
 import com.musify.app.ui.components.listview.SongListView
@@ -36,8 +49,13 @@ import com.musify.app.presentation.search.components.SearchKeysView
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.NetworkErrorView
 import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
+import com.musify.app.ui.components.bottomsheet.ArtistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
+import com.musify.app.ui.components.listview.AlbumListView
+import com.musify.app.ui.theme.Inactive
+import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.utils.BaseUIState
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -50,15 +68,25 @@ fun SearchScreen(
     navigateToNewPlaylist: () -> Unit,
 ) {
     lateinit var selectedSong: Song
+
     var settingsClicked by remember {
         mutableStateOf(false)
     }
+    val playlists by searchViewModel.getAllPlaylists().collectAsState(initial = emptyList())
 
+    var showNewPlaylistDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
+    var showArtistDialog by rememberSaveable {
+        mutableStateOf(false)
+    }
     var addToPlaylistClicked by rememberSaveable {
         mutableStateOf(false)
     }
 
     val playlistSheetState = rememberModalBottomSheetState()
+
+    val artistsSheetState = rememberModalBottomSheetState()
 
     val songSettingsSheetState = rememberModalBottomSheetState()
     val uiState by searchViewModel.uiState.collectAsState(BaseUIState())
@@ -67,12 +95,36 @@ fun SearchScreen(
     val keyboardController = LocalSoftwareKeyboardController.current
     val focusManager = LocalFocusManager.current
 
-    val searchStr = searchViewModel.searchStr.collectAsState()
+    val searchStr by searchViewModel.searchStr.collectAsState()
     val keys = searchViewModel.keys.collectAsState(initial = Search.getDefaultInstance())
+    val focusRequester = remember { FocusRequester() }
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val snackbarMessage = stringResource(id = R.string.successfully_added)
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     Scaffold(
-        modifier = Modifier.padding(paddingValues)
+        modifier = Modifier
+            .padding(paddingValues)
+            .pointerInput(Unit) {
+                detectTapGestures {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                }
+            },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    containerColor = Inactive,
+                    contentColor = WhiteTextColor,
+                    snackbarData = data
+                )
+            }
+        },
     ) { padding ->
 
 
@@ -82,29 +134,36 @@ fun SearchScreen(
         ) {
             Spacer(modifier = Modifier.height(1.dp))
 
-            SearchBar(
+            SearchBar(focusRequester = focusRequester,
+
                 searchStr = searchStr,
                 enabled = true,
-                onClick = {},
+                onClick = {
+                    focusManager.clearFocus()
+                    keyboardController?.hide()
+                    focusRequester.requestFocus()
+                },
                 onDone = {
                     focusManager.clearFocus()
                     keyboardController?.hide()
-                    searchViewModel.saveSearchStr(searchStr.value)
+                    searchViewModel.saveSearchStr(searchStr.trim())
+                },
+                onClear ={
+                    searchViewModel.setSearch("")
+                    searchViewModel.search("")
                 }
             ) {
                 searchViewModel.setSearch(it)
                 searchViewModel.search(it)
             }
 
-            if (searchStr.value.isEmpty()) {
-                SearchKeysView(
-                    keys = keys.value.messageList,
-                    onDelete = { str -> searchViewModel.removeSearchStr(str)},
+            if (searchStr.isEmpty()) {
+                SearchKeysView(keys = keys.value.messageList,
+                    onDelete = { searchViewModel.clearSearchStr() },
                     onSearch = {
-                       searchViewModel.setSearch(it)
+                        searchViewModel.setSearch(it)
                         searchViewModel.search(it)
-                    }
-                )
+                    })
             } else {
 
 
@@ -113,36 +172,43 @@ fun SearchScreen(
                         LoadingView(
                             Modifier
                                 .weight(1f)
-                                .fillMaxSize(1f))
+                                .fillMaxSize(1f)
+                        )
                     }
 
                     uiState.isFailure -> {
                         NetworkErrorView(Modifier.weight(1f)) {
-                            searchViewModel.search(searchStr.value)
+                            searchViewModel.search(searchStr)
                         }
                     }
 
-                    uiState.isSuccess ->{
+                    uiState.isSuccess -> {
 
                         uiState.data?.let { mainScreenData ->
                             ArtistListView(
-                                header = R.string.artists,
-                                mainScreenData.artists
+                                header = R.string.artists, mainScreenData.artists
                             ) { artist -> navigateToArtist(artist) }
 
 
 
-                            SongListView(
-                                mainScreenData.songs,
+                            SongListView(mainScreenData.songs,
+                                downloadTracker = searchViewModel.getDownloadTracker(),
                                 onMoreClicked = {
                                     selectedSong = it
                                     settingsClicked = true
-                                }
-                            ) { song ->
-                                searchViewModel.getPlayerController().init(song, mainScreenData.songs)
+                                },
+                                onSwipe = { song ->
+                                    searchViewModel.getPlayerController().onPlayNext(song)
+
+                                }) { song ->
+                                searchViewModel.getPlayerController()
+                                    .init(song, mainScreenData.songs)
 
                             }
 
+                            AlbumListView(mainScreenData.albums) { album ->
+                                navigateToAlbum(album.playlistId)
+                            }
                         }
                     }
                 }
@@ -155,18 +221,28 @@ fun SearchScreen(
 
         if (settingsClicked) {
             TrackBottomSheet(
+                selectedSong = selectedSong,
                 songSettingsSheetState = songSettingsSheetState,
                 onAddToPlaylist = {
                     settingsClicked = false
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    selectedSong.album?.playlistId?.let { navigateToAlbum(it) }
                 },
                 onNavigateToArtist = {
-                    navigateToArtist(selectedSong.getArtist())
+                    if(selectedSong.artists.size == 1){
+                        navigateToArtist(selectedSong.getArtist())
+                    }else{
+                        showArtistDialog = true
+                    }
                 },
-                onPlayNext = {},
+                onPlayNext = {
+                    searchViewModel.getPlayerController().selectedTrack?.let {
+                        searchViewModel.getPlayerController().onPlayNext(
+                            it
+                        )
+                    }
+                },
                 onShare = {},
             ) {
                 settingsClicked = false
@@ -175,18 +251,49 @@ fun SearchScreen(
 
 
 
+
         if (addToPlaylistClicked) {
             AddToPlaylistBottomSheet(
-                playlists = mutableListOf(),
+                playlists = playlists,
                 playlistSheetState = playlistSheetState,
                 onCreateNewPlaylist = {
-                    navigateToNewPlaylist()
+                    showNewPlaylistDialog = true
+                },
+                onSelect = { playlist ->
+                    searchViewModel.addSongToPlaylist(selectedSong, playlist)
+                    scope.launch {
+                        snackbarHostState.showSnackbar(snackbarMessage)
+                    }
                 }
             ) {
+
                 addToPlaylistClicked = false
             }
         }
 
+        if (showNewPlaylistDialog) {
+            Dialog(onDismissRequest = { showNewPlaylistDialog = false }) {
+                NewPlaylistDialog() { name ->
+                    showNewPlaylistDialog = false
+                    searchViewModel.addNewPlaylist(name)
+                    scope.launch {
+                        snackbarHostState.showSnackbar(snackbarMessage)
+                    }
+                }
+            }
+
+        }
+
+        if (showArtistDialog) {
+            ArtistBottomSheet(
+                artists = selectedSong.artists ?: emptyList(),
+                sheetState = artistsSheetState,
+                onSelect = { artist-> navigateToArtist(artist) },
+                onDismiss = { showArtistDialog = false}
+
+            )
+
+        }
     }
 }
 

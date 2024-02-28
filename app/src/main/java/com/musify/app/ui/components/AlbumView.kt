@@ -5,8 +5,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
@@ -42,54 +44,61 @@ fun AlbumView(
         model = album.getPlaylistImage(),
     )
 
-    Box(modifier = Modifier
-        .height(210.dp)
+
+    Row(modifier = Modifier
+        .height(250.dp)
         .aspectRatio(1f)
-        .clip(shape = MaterialTheme.shapes.large)
-        .background(DarkGray)
-        .clickable { onClick() }
-    ){
+    ) {
+        Box(modifier = Modifier
 
-        Image(
-            modifier = Modifier.fillMaxSize(),
-            painter = albumImagePainter,
-            contentDescription = "Album Image",
-            contentScale = ContentScale.Crop)
+            .clip(shape = MaterialTheme.shapes.large)
+            .background(DarkGray)
+            .clickable { onClick() }
+        ){
 
+            Image(
+                modifier  = Modifier.fillMaxSize(),
+                painter = albumImagePainter,
+                contentDescription = "Album Image",
+                contentScale = ContentScale.Crop
+            )
 
-        Box(modifier = Modifier.fillMaxSize()
-            .background(
-            brush = Brush.verticalGradient(
-                colors = listOf(
-                    TransparentColor, AlbumCoverBlackBG
+            Box(modifier = Modifier
+                .fillMaxSize()
+                .background(
+                    brush = Brush.verticalGradient(
+                        colors = listOf(
+                            TransparentColor, AlbumCoverBlackBG
+                        )
+                    )
                 )
             )
-        )
-        )
-        Column(
-            modifier = Modifier
-                .align(Alignment.BottomStart)
-                .padding(16.dp)) {
-            Text(
-                text = album.name,
-                fontFamily = SFFontFamily,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Bold,
-                color = WhiteTextColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = album.getArtistsName(),
-                fontFamily = SFFontFamily,
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Medium,
-                color = GrayTextColor,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(16.dp)) {
+                Text(
+                    text = album.name,
+                    fontFamily = SFFontFamily,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = WhiteTextColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
+                Text(
+                    text = album.getArtistsName(),
+                    fontFamily = SFFontFamily,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = GrayTextColor,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
 
+            }
         }
     }
+
 }
 

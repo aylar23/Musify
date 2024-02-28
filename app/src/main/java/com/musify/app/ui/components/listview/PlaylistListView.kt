@@ -22,6 +22,7 @@ import com.musify.app.ui.theme.SFFontFamily
 
 @Composable
 fun PlaylistListView(
+    title:String,
     playlists: List<Playlist>,
     onClick: (Playlist) ->Unit
 ) {
@@ -29,7 +30,7 @@ fun PlaylistListView(
     Column {
         Text(
             modifier = Modifier.padding(horizontal = 20.dp),
-            text = stringResource(id = R.string.top),
+            text = title,
             style = TextStyle(
                 fontSize = 16.sp,
                 lineHeight = 16.sp,

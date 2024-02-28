@@ -71,8 +71,8 @@ class SearchDataStore constructor(private val myMessagesStore: DataStore<Search>
                 myMessages
             } else{
                 existingMessages.add(0, newMsg)
-                if (existingMessages.size > 5){
-                    existingMessages = existingMessages.subList(0,5)
+                if (existingMessages.size > 10){
+                    existingMessages = existingMessages.subList(0,10)
                 }
                 myMessages.toBuilder().clear().addAllMessage(existingMessages).build()
             }

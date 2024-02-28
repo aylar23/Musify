@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Song
+import com.musify.app.player.DownloadTracker
 import com.musify.app.ui.components.SongView
 import com.musify.app.ui.components.SwipeableSongView
 import com.musify.app.ui.components.swipe.SwipeAction
@@ -28,7 +29,9 @@ import com.musify.app.ui.theme.SFFontFamily
 @Composable
 fun SongListView(
     songs: List<Song>,
+    downloadTracker: DownloadTracker? =null,
     onMoreClicked: (Song) -> Unit,
+    onSwipe: (Song) -> Unit,
     onClick: (Song) -> Unit,
 ) {
 
@@ -51,14 +54,17 @@ fun SongListView(
 
         Column(
             Modifier.padding(vertical = 15.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+//            verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             songs.forEach { song ->
 
 
                 SwipeableSongView(
                     song = song,
-                    onMoreClicked = { onMoreClicked(song) }
+                    onMoreClicked = { onMoreClicked(song) },
+                    downloadTracker = downloadTracker,
+
+                    onSwipe = { onSwipe(song) }
                 ) {
                     onClick(song)
                 }

@@ -1,12 +1,18 @@
 package com.musify.app.navigation
 
+import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,8 +25,10 @@ import com.musify.app.presentation.myplaylist.MyPlaylistsScreen
 import com.musify.app.presentation.playlist.PlaylistScreen
 import com.musify.app.presentation.localplaylist.LocalPlaylistScreen
 import com.musify.app.presentation.localplaylist.LocalPlaylistViewModel
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LibraryNavGraph(
     paddingValues: PaddingValues,
@@ -38,6 +46,8 @@ fun LibraryNavGraph(
         popEnterTransition = { fadeIn(animationSpec = tween(100)) },
         popExitTransition = { fadeOut(animationSpec = tween(100)) },
     ) {
+
+
         composable(Screen.MyPlaylist.route) {
 
             MyPlaylistsScreen(
@@ -69,7 +79,6 @@ fun LibraryNavGraph(
                     navigateToAlbum = { album ->
                         innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
                     },
-                    navigateToNewPlaylist = {},
                     navigateUp = {
                         innerNavController.navigateUp()
                     }

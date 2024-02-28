@@ -10,6 +10,7 @@ import androidx.compose.foundation.lazy.grid.LazyHorizontalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.stringResource
@@ -19,12 +20,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.home.HomeViewModel
 import com.musify.app.ui.components.SongView
 import com.musify.app.ui.theme.SFFontFamily
 
 
 @Composable
 fun SongGridListView(
+    homeViewModel: HomeViewModel,
     songs: List<Song>,
     onMoreClicked: (Song) -> Unit,
     onClick: (Song) -> Unit,
@@ -33,6 +36,7 @@ fun SongGridListView(
     val configuration = LocalConfiguration.current
 
     val screenWidth = configuration.screenWidthDp.dp
+
 
     Column {
         Text(
@@ -54,9 +58,11 @@ fun SongGridListView(
 
             ) {
             items(songs) { song ->
+
                 SongView(
                     modifier = Modifier.width(screenWidth*0.90f),
                     song = song,
+                    downloadTracker = homeViewModel.getDownloadTracker(),
                     onMoreClicked = {onMoreClicked(song)}
                 ) {
                     onClick(song)

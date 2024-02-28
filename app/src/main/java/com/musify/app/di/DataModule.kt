@@ -23,6 +23,7 @@ class DataModule {
 
     companion object{
         const val BASE_URL = "https://mono.com.tm"
+//        const val BASE_URL = "http://mono.com.tm:8000"
 
     }
 

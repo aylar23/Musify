@@ -6,18 +6,22 @@ import androidx.room.PrimaryKey
 import androidx.room.TypeConverter
 import com.google.gson.annotations.SerializedName
 import com.musify.app.di.DataModule
+import javax.annotation.concurrent.Immutable
 
 @Entity
+@Immutable
 data class Playlist(
     @SerializedName("id")
-    @PrimaryKey val playlistId: Long,
+    @PrimaryKey(autoGenerate = true) val playlistId: Long = 0L,
     val name: String,
-    val artists: List<Artist>,
-    val songs: List<Song>?,
-    val image: String,
+    val artists: List<Artist> = emptyList(),
+    val songs: List<Song>? = emptyList(),
+    val image: String = "",
     @SerializedName("songs_count")
     val songsCount: Int = 0,
-    val year: Int = 0
+    val year: Int = 0,
+    var type: String = PLAYLIST,
+    val downloadable: Boolean = false
 ){
     fun getPlaylistImage(): String {
         return image
@@ -26,6 +30,15 @@ data class Playlist(
     fun getArtistsName(): String {
         val names = artists.map {it.name }.toMutableList()
         return names.joinToString( separator = ", ")
+    }
+
+
+
+    companion object{
+
+        const val ALL = ""
+        const val PLAYLIST = "playlist"
+        const val ALBUM = "album"
     }
 }
 

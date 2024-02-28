@@ -1,12 +1,17 @@
 package com.musify.app.navigation
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -17,8 +22,10 @@ import com.musify.app.navigation.screen.Screen
 import com.musify.app.presentation.artist.ArtistScreen
 import com.musify.app.presentation.search.SearchScreen
 import com.musify.app.presentation.playlist.PlaylistScreen
+import kotlinx.coroutines.launch
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchNavGraph(
     paddingValues: PaddingValues,
@@ -70,7 +77,6 @@ fun SearchNavGraph(
                     navigateToAlbum = { album ->
                         innerNavController.navigate(Screen.Playlist.route+"/${MainActivity.ALBUMS}/${album}")
                     },
-                    navigateToNewPlaylist = {},
                     navigateUp = {
                         innerNavController.navigateUp()
                     },

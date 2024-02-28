@@ -1,10 +1,19 @@
 package com.musify.app.player
 
+
+import android.content.Context
+import android.media.AudioManager
+import android.os.Build
 import android.util.Log
+import androidx.annotation.OptIn
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.media3.common.MediaItem
 import androidx.media3.common.PlaybackException
 import androidx.media3.common.Player
+import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.ExoPlayer
+import androidx.media3.exoplayer.source.ShuffleOrder
+import androidx.media3.exoplayer.source.ShuffleOrder.DefaultShuffleOrder
 import com.musify.app.player.PlayerStates.STATE_BUFFERING
 import com.musify.app.player.PlayerStates.STATE_END
 import com.musify.app.player.PlayerStates.STATE_ERROR
@@ -15,7 +24,6 @@ import com.musify.app.player.PlayerStates.STATE_PLAYING
 import com.musify.app.player.PlayerStates.STATE_READY
 import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
-import kotlin.math.log
 
 /**
  * A custom player class that provides several convenience methods for
@@ -53,12 +61,47 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
         player.addListener(this)
         player.setMediaItems(trackList)
         player.prepare()
+        if (!player.isPlaying) player.play()
+
+    }
+
+    fun addMediaItem(index: Int, track: MediaItem) {
+        player.addMediaItem(index, track)
+
+
     }
 
 
-    fun getPlayer(): ExoPlayer{
+    fun reOrder(from: Int, to: Int, track: MediaItem) {
+        player.removeMediaItem(from)
+        player.addMediaItem(to, track)
+
+    }
+
+    fun setRepeatMode(mode: Int) {
+        player.repeatMode = mode
+
+    }
+
+    fun getRepeatMode(): Int {
+        return player.repeatMode
+    }
+
+    fun getShuffleMode(): Boolean {
+        return player.shuffleModeEnabled
+    }
+
+    @OptIn(UnstableApi::class)
+    fun toggleShuffle() {
+        val newShuffleOrder = DefaultShuffleOrder(player.mediaItemCount,  /* randomSeed= */5)
+        player.setShuffleOrder(newShuffleOrder)
+        player.shuffleModeEnabled = !player.shuffleModeEnabled
+    }
+
+    fun getPlayer(): ExoPlayer {
         return player
     }
+
     /**
      * Sets up the player to start playback of the track at the specified index.
      *
@@ -76,7 +119,8 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
      */
     fun playPause() {
         if (player.playbackState == Player.STATE_IDLE) player.prepare()
-        player.playWhenReady = !player.playWhenReady
+        if (player.isPlaying) player.pause() else player.play()
+//        player.playWhenReady = !player.playWhenReady
     }
 
     /**
@@ -96,7 +140,7 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
     }
 
 
-    fun emitPlaying(){
+    fun emitPlaying() {
         playerState.tryEmit(STATE_PLAYING)
     }
     // Overrides for Player.Listener follow...
@@ -107,7 +151,7 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
      */
     override fun onPlayerError(error: PlaybackException) {
         super.onPlayerError(error)
-        Log.e("TAG", "onPlayerError: "+error.message )
+        Log.e("TAG", "onPlayerError: " + error.message)
         playerState.tryEmit(STATE_ERROR)
     }
 
@@ -127,7 +171,6 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
     }
 
 
-
     /**
      * Called when the player transitions to a new media item. This implementation
      * emits the STATE_NEXT_TRACK and STATE_PLAYING states to the playerState flow
@@ -138,10 +181,8 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
         if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO) {
 
             playerState.tryEmit(STATE_NEXT_TRACK)
-            Log.e("TAG", "onMediaItemTransition: ", )
+            Log.e("TAG", "onMediaItemTransition: ")
 //            playerState.tryEmit(STATE_PLAYING)
-
-
 
 
         }
@@ -153,7 +194,7 @@ class MyPlayer @Inject constructor(private val player: ExoPlayer) : Player.Liste
      */
     override fun onPlaybackStateChanged(playbackState: Int) {
 
-        Log.e("TAG", "onPlaybackStateChanged: "+playbackState )
+        Log.e("TAG", "onPlaybackStateChanged: " + playbackState)
         when (playbackState) {
 
             Player.STATE_IDLE -> {

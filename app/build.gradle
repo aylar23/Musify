@@ -4,7 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.dagger.hilt.android'
     id 'kotlin-kapt'
-    id 'com.google.protobuf' version "0.9.1"
+    id 'com.google.protobuf' version "0.9.4"
 
 }
 
@@ -27,7 +27,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
 
@@ -38,18 +38,18 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
     }
     kotlinOptions {
-        jvmTarget = '1.8'
+        jvmTarget = '17'
     }
     buildFeatures {
         compose true
         buildConfig true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.3.2'
+        kotlinCompilerExtensionVersion '1.4.0'
     }
     packagingOptions {
         resources {
@@ -63,12 +63,14 @@ android {
 dependencies {
 
     //ExoPlayer
-    implementation 'androidx.media3:media3-exoplayer:1.2.0-alpha02'
-    implementation 'androidx.media3:media3-exoplayer-hls:1.1.1'
-    implementation 'androidx.media3:media3-datasource-okhttp:1.1.1'
-    implementation 'androidx.media3:media3-datasource-cronet:1.1.1'
-    implementation 'androidx.media3:media3-session:1.1.1'
-    implementation 'androidx.media3:media3-ui:1.1.1'
+    implementation 'androidx.media3:media3-exoplayer:1.2.0'
+    implementation 'androidx.media3:media3-exoplayer-hls:1.2.0'
+    implementation 'androidx.media3:media3-datasource-okhttp:1.2.0'
+    implementation 'androidx.media3:media3-datasource-cronet:1.2.0'
+    implementation 'androidx.media3:media3-session:1.2.0'
+    implementation 'androidx.media3:media3-ui:1.2.0'
+    implementation 'androidx.palette:palette-ktx:1.0.0'
+    implementation 'androidx.core:core-ktx:+'
 
     def compose_ui_version = '1.4.3'
     def nav_version = '2.4.1'
@@ -120,9 +122,6 @@ dependencies {
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.2.1'
 
-    //pager
-    implementation "com.google.accompanist:accompanist-pager:0.21.4-beta"
-
     //Paging
     def paging_version = "3.1.0"
     implementation "androidx.paging:paging-runtime-ktx:$paging_version"
@@ -132,15 +131,26 @@ dependencies {
     implementation "io.coil-kt:coil-compose:2.4.0"
 
 
-    implementation("androidx.datastore:datastore:1.0.0")
-    implementation("androidx.datastore:datastore-preferences:1.0.0")
-    implementation  "com.google.protobuf:protobuf-javalite:3.19.4"
+    implementation  "androidx.datastore:datastore:1.0.0"
+    implementation  "com.google.protobuf:protobuf-javalite:3.11.4"
+
+    implementation "androidx.datastore:datastore-preferences:1.0.0"
+
 
     implementation("org.jetbrains.compose.ui:ui-util:1.4.0")
 
     implementation "com.github.bumptech.glide:glide:4.14.0"
     implementation "com.github.bumptech.glide:compose:1.0.0-alpha.1"
     kapt "com.github.bumptech.glide:compiler:4.10.0"
+
+
+
+    implementation 'com.jakewharton.timber:timber:5.0.1'
+
+    implementation "com.github.skydoves:cloudy:0.1.2"
+    implementation("com.github.skydoves:flexible-bottomsheet-material3:0.1.2")
+
+
 }
 protobuf {
     protoc {
@@ -161,21 +171,3 @@ protobuf {
     }
 }
 
-protobuf {
-    protoc {
-        artifact = "com.google.protobuf:protoc:3.19.4"
-    }
-
-    // Generates the java Protobuf-lite code for the Protobufs in this project. See
-    // https://github.com/google/protobuf-gradle-plugin#customizing-protobuf-compilation
-    // for more information.
-    generateProtoTasks {
-        all().each { task ->
-            task.builtins {
-                java {
-                    option 'lite'
-                }
-            }
-        }
-    }
-}

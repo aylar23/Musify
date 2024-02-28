@@ -1,5 +1,5 @@
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Musify</string>
+<resources>
+    <string name="app_name">Mono Music</string>
     <string name="lorem_ipsum">lorem ipsum</string>
     <string name="play_all">Play all</string>
     <string name="shuffle">Shuffle</string>
@@ -36,53 +36,21 @@
     <string name="network_error">NetworkError</string>
     <string name="refresh">Refresh</string>
     <string name="hit_songs">Hit songs</string>
+    <string name="main">Main</string>
+    <string name="library">Library</string>
+    <string name="song_count">%1$s song</string>
+    <string name="swipe_up_for_more">Swipe up for more</string>
+    <string name="new_playlist">New Playlist</string>
+    <string name="edit">Edit</string>
+    <string name="delete">Delete</string>
+    <string name="all">All</string>
 
-
-    <string name="application_name">ExoPlayer</string>
-
-    <string name="track_selection_title">Select tracks</string>
-
-    <string name="unexpected_intent_action">Unexpected intent action: <xliff:g id="action">%1$s</xliff:g></string>
-
-    <string name="error_cleartext_not_permitted">Cleartext HTTP traffic not permitted. See https://developer.android.com/guide/topics/media/issues/cleartext-not-permitted</string>
-
-    <string name="error_generic">Playback failed</string>
-
-    <string name="error_drm_unsupported_before_api_18">DRM content not supported on API levels below 18</string>
-
-    <string name="error_drm_unsupported_scheme">This device does not support the required DRM scheme</string>
-
-    <string name="error_no_decoder">This device does not provide a decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
-
-    <string name="error_no_secure_decoder">This device does not provide a secure decoder for <xliff:g id="mime_type">%1$s</xliff:g></string>
-
-    <string name="error_querying_decoders">Unable to query device decoders</string>
-
-    <string name="error_instantiating_decoder">Unable to instantiate decoder <xliff:g id="decoder_name">%1$s</xliff:g></string>
-
-    <string name="error_unsupported_video">Media includes video tracks, but none are playable by this device</string>
-
-    <string name="error_unsupported_audio">Media includes audio tracks, but none are playable by this device</string>
-
-    <string name="storage_permission_denied">Permission to access storage was denied</string>
-
-    <string name="sample_list_load_error">One or more sample lists failed to load</string>
-
-    <string name="post_notification_not_granted">Notifications suppressed. Grant permission to see download notifications.</string>
 
     <string name="download_start_error">Failed to start download</string>
 
     <string name="download_start_error_offline_license">Failed to obtain offline license</string>
 
-    <string name="download_playlist_unsupported">This demo app does not support downloading playlists</string>
-
-    <string name="download_scheme_unsupported">This demo app only supports downloading http streams</string>
-
     <string name="download_live_unsupported">This demo app does not support downloading live content</string>
-
-    <string name="download_ads_unsupported">IMA does not support offline ads</string>
-
-    <string name="prefer_extension_decoders">Prefer extension decoders</string>
 
 
     <!-- Description for a button that downloads a piece of media content onto the device. [CHAR LIMIT=20] -->
@@ -114,8 +82,14 @@
     is still present, otherwise please open the app to start the playback and re-connect the session
     to the controller</string>
     <string name="notification_channel_name">Playback cannot be resumed</string>
-    <string name="exo_controls_shuffle_on_description" />
-    <string name="main">Main</string>
-    <string name="library">Library</string>
-    <string name="song_count">%1$s song</string>
+    <string name="playlist">Playlist</string>
+    <string name="album">Album</string>
+    <string name="albums">Albums</string>
+    <string name="clear">Clear</string>
+    <string name="cancel">Cancel</string>
+    <string name="successfully_added">Successfully added</string>
+    <string name="successfully_deleted">Successfully deleted</string>
+    <string name="delete_from_playlist">Delete from playlist</string>
+    <string name="latest_release">Latest release</string>
+
 </resources>

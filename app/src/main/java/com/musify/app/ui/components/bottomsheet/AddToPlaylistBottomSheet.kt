@@ -1,5 +1,6 @@
 package com.musify.app.ui.components.bottomsheet
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -42,17 +43,15 @@ import com.musify.app.ui.theme.Yellow
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddToPlaylistBottomSheet(
-    playlistViewModel: MyPlaylistsViewModel = hiltViewModel(),
-    playlists: MutableList<Playlist>,
+    playlists: List<Playlist>,
     playlistSheetState: SheetState,
     onCreateNewPlaylist: () -> Unit,
+    onSelect: (Playlist) -> Unit,
     onDismiss: () -> Unit
 ) {
 
-    val uiState by playlistViewModel.uiState.collectAsState()
 
     ModalBottomSheet(
-//        modifier = Modifier.padding(20.dp),
         containerColor = AlbumCoverBlackBG,
         sheetState = playlistSheetState,
         onDismissRequest = onDismiss,
@@ -68,34 +67,34 @@ fun AddToPlaylistBottomSheet(
             LazyColumn(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.large)
-//                    .weight(1f)
 
             ) {
-                uiState.data?.let { data ->
 
 
-                    items(playlists) { playlist ->
-                        LocalPlaylistSelectionView(
-                            playlist = playlist
-                        ) {
+                items(playlists) { playlist ->
 
-                        }
-                        HorizontalDivider(color = Divider)
+                    LocalPlaylistSelectionView(
+                        playlist = playlist
+                    ) {
+                        onSelect(playlist)
+                        onDismiss()
                     }
                 }
 
 
             }
 
-            Spacer(modifier = Modifier
-                .height(20.dp)
-                .background(
-                    brush = Brush.verticalGradient(
-                        startY = 0f, endY = 250f, colors = listOf(
-                            TransparentColor, AlbumCoverBlackBG
+            Spacer(
+                modifier = Modifier
+                    .height(20.dp)
+                    .background(
+                        brush = Brush.verticalGradient(
+                            startY = 0f, endY = 250f, colors = listOf(
+                                TransparentColor, AlbumCoverBlackBG
+                            )
                         )
                     )
-                ))
+            )
 
             CustomButton(
                 modifier = Modifier.fillMaxWidth(),

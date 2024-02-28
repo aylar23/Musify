@@ -40,3 +40,13 @@
 
 
 -keep class com.musify.app.domain.models.* { *; }
+-keep class com.musify.app.player.* { *; }
+
+-keep class androidx.datastore.*.** {*;}
+-keep class * extends com.google.protobuf.GeneratedMessageLite { *; }
+-keep,allowobfuscation class * extends com.google.protobuf.GeneratedMessageLite { *; }
+
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite { *; }
+-keepclassmembers class * extends com.google.protobuf.GeneratedMessageLite {
+  <fields>;
+}

@@ -1,13 +1,18 @@
 package com.musify.app.navigation
 
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -21,7 +26,9 @@ import com.musify.app.navigation.screen.Screen
 import com.musify.app.presentation.artist.ArtistScreen
 import com.musify.app.presentation.home.HomeScreen
 import com.musify.app.presentation.playlist.PlaylistScreen
+import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeNavGraph(
     paddingValues: PaddingValues,
@@ -57,11 +64,14 @@ fun HomeNavGraph(
                 navigateToArtist = {artist->
                     innerNavController.navigate(Screen.Artist.route+"/${artist.id}")
                 },
-                navigateToAlbum = {album ->
-                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album.playlistId}")
+                navigateToAlbum = {albumId ->
+                    innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${albumId}")
 
                 },
                 navigateToPlaylist = {playlist ->
+                    innerNavController.navigate(Screen.Playlist.route+"/$PLAYLISTS/${playlist.playlistId}")
+                },
+                navigateToTopPlaylist = {playlist ->
                     innerNavController.navigate(Screen.Playlist.route+"/$TOPS/${playlist.playlistId}")
                 },
                 navigateToSettings = {
@@ -89,7 +99,6 @@ fun HomeNavGraph(
                     navigateToAlbum = { album ->
                         innerNavController.navigate(Screen.Playlist.route+"/$ALBUMS/${album}")
                     },
-                    navigateToNewPlaylist = {},
                     navigateUp = { innerNavController.navigateUp() }
 
                 )

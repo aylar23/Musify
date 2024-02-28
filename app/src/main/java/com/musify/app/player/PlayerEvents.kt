@@ -30,6 +30,7 @@ interface PlayerEvents {
      */
     fun onTrackClick(song: Song)
 
+    fun onPlayNext(song: Song)
 
     fun onTrackClick(song: Int)
     /**

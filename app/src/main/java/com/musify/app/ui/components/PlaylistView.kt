@@ -6,6 +6,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -39,10 +40,13 @@ fun PlaylistView(
         model = playlist.getPlaylistImage(),
     )
 
-    Column(modifier = Modifier
+    Column(
+        modifier = Modifier
         .clip(shape = MaterialTheme.shapes.medium)
+        .width(160.dp)
         .clickable { onClick() }
-        .background(AlbumCoverBlackBG)) {
+        .background(AlbumCoverBlackBG)
+    ) {
 
         Image(
             modifier = Modifier
@@ -59,6 +63,7 @@ fun PlaylistView(
             verticalArrangement = Arrangement.Center
         ) {
             Text(
+                modifier = Modifier.fillMaxWidth(),
                 text = playlist.name,
                 fontFamily = SFFontFamily,
                 fontSize = 14.sp,
