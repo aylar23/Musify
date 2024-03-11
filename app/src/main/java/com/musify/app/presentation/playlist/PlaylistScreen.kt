@@ -111,9 +111,9 @@ fun PlaylistScreen(
 
     val playlistSheetState = rememberModalBottomSheetState()
 
-    val songSettingsSheetState = rememberModalBottomSheetState()
+    val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val artistsSheetState = rememberModalBottomSheetState()
+    val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val state = rememberCollapsingToolbarScaffoldState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -328,6 +328,7 @@ fun PlaylistScreen(
                             ) { song ->
 
                                 SwipeableSongView(song = song,
+                                    playerController = playlistViewModel.getPlayerController(),
                                     onMoreClicked = {
                                         selectedSong = it
                                         settingsClicked = true

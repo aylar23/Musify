@@ -56,7 +56,6 @@ class SearchViewModel @Inject constructor(
             _uiState.update { it.updateToLoading() }
             try {
                 val data = songRepository.search(s)
-                Log.e("TAG", "search: "+data.songs[8] )
                 _uiState.update { it.updateToLoaded(data) }
             } catch (e: Exception) {
                 Log.e("TAG", "getMainPageData: " + e.message)

@@ -93,9 +93,9 @@ fun HomeScreen(
     }
 
     val playlistSheetState = rememberModalBottomSheetState()
-    val artistsSheetState = rememberModalBottomSheetState()
+    val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val songSettingsSheetState = rememberModalBottomSheetState()
+    val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val snackbarMessage = stringResource(id = R.string.successfully_added)
@@ -154,7 +154,9 @@ fun HomeScreen(
                     item {
 
 
-                        AlbumListView(mainScreenData.albums) { album ->
+                        AlbumListView(
+                            title = stringResource(id = R.string.new_albums),
+                            mainScreenData.albums) { album ->
                             navigateToAlbum(album.playlistId)
                         }
                     }
@@ -175,7 +177,7 @@ fun HomeScreen(
 
                     items(mainScreenData.playlistCategory) { playlistCategory ->
                         PlaylistListView(
-                            title = stringResource(id = R.string.top),
+                            title = playlistCategory.name,
                             playlists = playlistCategory.playlists
                         ) { playlist ->
                             navigateToPlaylist(playlist)

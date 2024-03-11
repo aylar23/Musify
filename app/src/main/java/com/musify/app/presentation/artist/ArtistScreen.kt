@@ -142,9 +142,9 @@ fun ArtistScreen(
 
     lateinit var selectedSong: Song
     val playlistSheetState = rememberModalBottomSheetState()
-    val artistsSheetState = rememberModalBottomSheetState()
+    val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val songSettingsSheetState = rememberModalBottomSheetState()
+    val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val density = LocalDensity.current
     val statusBarTop = WindowInsets.statusBars.getTop(density)
 
@@ -282,7 +282,7 @@ fun ArtistScreen(
 
 
                 LazyColumn(
-                    modifier = Modifier
+                    modifier = Modifier,
                 ) {
 
 
@@ -317,7 +317,16 @@ fun ArtistScreen(
 
                                 item {
                                     if (data.hasLatestRelease()) {
-                                        LatestReleaseView(data.latestRelease)
+                                        LatestReleaseView(
+                                            latestRelease = data.latestRelease,
+                                            navigateToAlbum = { album ->
+                                                navigateToAlbum(album.playlistId)
+                                            },
+                                            playSong = { song ->
+                                                artistViewModel.getPlayerController()
+                                                    .init(song, listOf(song))
+                                            }
+                                        )
                                     }
 
                                 }
@@ -325,8 +334,12 @@ fun ArtistScreen(
                                 item {
                                     if (data.songs.isNotEmpty()) {
                                         Text(
-                                            modifier = Modifier.padding(horizontal = 20.dp),
-                                            text = stringResource(id = R.string.songs),
+                                            modifier = Modifier.padding(
+                                                start = 20.dp,
+                                                end = 20.dp,
+                                                top = 20.dp,
+                                            ),
+                                            text = stringResource(id = R.string.top_songs),
                                             style = TextStyle(
                                                 fontSize = 16.sp,
                                                 lineHeight = 16.sp,
@@ -340,6 +353,7 @@ fun ArtistScreen(
                                 items(data.songs) { song ->
                                     SwipeableSongView(
                                         song = song,
+                                        playerController = artistViewModel.getPlayerController(),
                                         onMoreClicked = {
                                             selectedSong = it
                                             settingsClicked = true
@@ -357,15 +371,23 @@ fun ArtistScreen(
 
 
                                 item {
-
-                                    AlbumListView(data.albums) { album ->
-                                        navigateToAlbum(album.playlistId)
+                                    Box(
+                                        modifier = Modifier.padding(top = 20.dp),
+                                    ) {
+                                        AlbumListView(playlists = data.albums) { album ->
+                                            navigateToAlbum(album.playlistId)
+                                        }
                                     }
+
                                 }
                                 item {
                                     if (data.singles.isNotEmpty()) {
                                         Text(
-                                            modifier = Modifier.padding(horizontal = 20.dp),
+                                            modifier = Modifier.padding(
+                                                start = 20.dp,
+                                                end = 20.dp,
+                                                top = 20.dp,
+                                            ),
                                             text = stringResource(id = R.string.songs),
                                             style = TextStyle(
                                                 fontSize = 16.sp,
@@ -384,6 +406,7 @@ fun ArtistScreen(
                                             selectedSong = it
                                             settingsClicked = true
                                         },
+                                        playerController = artistViewModel.getPlayerController(),
                                         downloadTracker = artistViewModel.getDownloadTracker(),
 
                                         onSwipe = {
@@ -414,9 +437,9 @@ fun ArtistScreen(
                         selectedSong.albumId?.let { navigateToAlbum(it) }
                     },
                     onNavigateToArtist = {
-                        if(selectedSong.artists.size == 1){
+                        if (selectedSong.artists.size == 1) {
                             selectedSong.getArtist().let { navigateToArtist(it) }
-                        }else{
+                        } else {
                             showArtistDialog = true
                         }
                     },
@@ -471,8 +494,8 @@ fun ArtistScreen(
                 ArtistBottomSheet(
                     artists = selectedSong.artists,
                     sheetState = artistsSheetState,
-                    onSelect = { artist-> navigateToArtist(artist) },
-                    onDismiss = { showArtistDialog = false}
+                    onSelect = { artist -> navigateToArtist(artist) },
+                    onDismiss = { showArtistDialog = false }
 
                 )
 

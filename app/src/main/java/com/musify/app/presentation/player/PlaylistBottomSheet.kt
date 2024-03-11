@@ -43,6 +43,10 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.musify.app.PlayerController
 import com.musify.app.R
 import com.musify.app.domain.models.Song
@@ -66,40 +70,21 @@ import kotlin.math.abs
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PlaylistBottomSheet(
-    playerController: PlayerController,
-    sheetState: FlexibleSheetState
+    playerController: PlayerController, sheetState: FlexibleSheetState
 ) {
 
-    val state = rememberReorderableLazyListState(onMove = { from, to ->
-        playerController.onReorder(from.index, to.index)
-    })
+    val state = rememberReorderableLazyListState(
+        onDragEnd = { from, to ->
+        playerController.onReorder(from, to)
+                    },
+        onMove = { from, to ->
+            playerController.onMove(from.index, to.index)
+
+        })
 
 
     Column(horizontalAlignment = Alignment.CenterHorizontally) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .background(AlbumCoverBlackBG),
-            contentAlignment = Alignment.Center
-
-        ) {
-            Surface(
-                modifier = Modifier
-                    .padding(vertical = 22.dp),
-                color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.4f),
-                shape = MaterialTheme.shapes.extraLarge
-
-            ) {
-                Box(
-                    Modifier
-                        .size(
-                            width = 32.0.dp,
-                            height = 4.0.dp
-                        )
-                )
-            }
-        }
         Box() {
 
             playerController.selectedTrack?.let {
@@ -131,11 +116,10 @@ fun PlaylistBottomSheet(
                             .shadow(elevation.value)
                             .background(MaterialTheme.colorScheme.surface)
                     ) {
-                        SongView(
-                            modifier = Modifier.background(Surface),
+                        SongView(modifier = Modifier.background(Surface),
+                            playerController = playerController,
                             song = song,
                             reorderable = true,
-
                             onMoreClicked = {}) {
 
                             playerController.onTrackClick(song)
@@ -189,11 +173,10 @@ fun MiniPlayer(
             modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
             Text(
-                modifier = Modifier
-                    .basicMarquee(
-                        // Animate forever.
-                        iterations = Int.MAX_VALUE,
-                    ),
+                modifier = Modifier.basicMarquee(
+                    // Animate forever.
+                    iterations = Int.MAX_VALUE,
+                ),
                 text = song.name,
                 fontFamily = SFFontFamily,
                 fontSize = 18.sp,

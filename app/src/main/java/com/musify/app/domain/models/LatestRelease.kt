@@ -5,6 +5,10 @@ data class LatestRelease(
     val album: Playlist?,
 ) {
 
+    fun isAlbum() = album != null
+
+    fun isSong() = album != null
+
     fun getName(): String {
        return album?.name ?: song?.name ?: ""
     }

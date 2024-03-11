@@ -1,18 +1,22 @@
 package com.musify.app
 
 import android.app.Application
+import android.content.ComponentName
+import androidx.media3.session.MediaController
+import androidx.media3.session.SessionToken
+import com.musify.app.player.PlaybackService
 import dagger.hilt.android.HiltAndroidApp
 
 
-/**
- * Custom [Application] class for the project.
- *
- * This class uses Dagger's Hilt library for dependency injection. The [HiltAndroidApp] annotation triggers
- * Hilt's code generation, including a base class for the application that serves as the application-level
- * dependency container.
- *
- * An application container is the parent container in a Hilt application, and other containers in the app
- * can access the dependencies that it provides.
- */
+
 @HiltAndroidApp
-class MyApplication : Application()
+class MyApplication : Application(){
+    override fun onCreate() {
+        super.onCreate()
+
+        val factory = MediaController.Builder(
+            applicationContext,
+            SessionToken(applicationContext, ComponentName(applicationContext, PlaybackService::class.java))
+        ).buildAsync()
+    }
+}

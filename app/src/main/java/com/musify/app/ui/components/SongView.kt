@@ -21,6 +21,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,10 +36,17 @@ import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import coil.compose.SubcomposeAsyncImage
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.animateLottieCompositionAsState
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.google.common.base.Preconditions
+import com.musify.app.PlayerController
 import com.musify.app.R
 import com.musify.app.domain.models.Song
 import com.musify.app.player.DownloadTracker
+import com.musify.app.player.PlayerStates
 import com.musify.app.ui.components.swipe.SwipeAction
 import com.musify.app.ui.components.swipe.SwipeableActionsBox
 import com.musify.app.ui.theme.GrayTextColor
@@ -50,6 +58,7 @@ import com.musify.app.ui.theme.WhiteTextColor
 @Composable
 fun SongView(
     modifier: Modifier? = null,
+    playerController: PlayerController,
     song: Song,
     reorderable: Boolean = false,
     downloadTracker: DownloadTracker? = null,
@@ -59,7 +68,13 @@ fun SongView(
 
 
     val isDownloaded = downloadTracker?.isDownloaded(song.toMediaItem()) ?: false
-
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.equalizer)
+    )
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever,
+    )
     Row(modifier = modifier?.clickable { onClick() }?.padding(5.dp)
         ?: Modifier
             .clickable { onClick() }
@@ -83,18 +98,29 @@ fun SongView(
             Column(
                 modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center
             ) {
-                Text(
-                    text = song.name,
-                    fontFamily = SFFontFamily,
-                    fontSize = 16.sp,
-                    lineHeight = 16.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = WhiteTextColor,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
+
+                    if (song == playerController.selectedTrack) {
+                        LottieAnimation(
+                            composition,
+                            progress,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    Text(
+                        text = song.name,
+                        fontFamily = SFFontFamily,
+                        fontSize = 16.sp,
+                        lineHeight = 16.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = WhiteTextColor,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+
                     if (isDownloaded) {
                         Icon(
                             modifier = Modifier.padding(end = 2.dp),
@@ -151,6 +177,7 @@ fun SongView(
 @Composable
 fun SwipeableSongView(
     @SuppressLint("ModifierParameter") modifier: Modifier? = null,
+    playerController: PlayerController,
     song: Song,
     reorderable: Boolean = false,
     downloadTracker: DownloadTracker? = null,
@@ -165,13 +192,13 @@ fun SwipeableSongView(
         onSwipe = onSwipe,
     )
 
-//    val delete = SwipeAction(
-//        icon = painterResource(id = R.drawable.redo),
-//        background = MaterialTheme.colorScheme.error,
-//        isUndo = false,
-//        onSwipe = {},
-//    )
-
+    val composition by rememberLottieComposition(
+        LottieCompositionSpec.RawRes(R.raw.equalizer)
+    )
+    val progress by animateLottieCompositionAsState(
+        composition,
+        iterations = LottieConstants.IterateForever,
+    )
     val isDownloaded = downloadTracker?.isDownloaded(song.toMediaItem()) ?: false
     val isDownloading = downloadTracker?.isDownloading(song.toMediaItem()) ?: false
 
@@ -235,16 +262,27 @@ fun SwipeableSongView(
                 Column(
                     modifier = Modifier.weight(1f), verticalArrangement = Arrangement.Center
                 ) {
-                    Text(
-                        text = song.name,
-                        fontFamily = SFFontFamily,
-                        fontSize = 16.sp,
-                        lineHeight = 16.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = WhiteTextColor,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+
+                        if (song == playerController.selectedTrack) {
+                            LottieAnimation(
+                                composition,
+                                progress,
+                                modifier = Modifier.size(20.dp)
+                            )
+                        }
+
+                        Text(
+                            text = song.name,
+                            fontFamily = SFFontFamily,
+                            fontSize = 16.sp,
+                            lineHeight = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = WhiteTextColor,
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis
+                        )
+                    }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         if (isDownloaded) {
                             Icon(

@@ -99,9 +99,9 @@ fun LocalPlaylistScreen(
 
     val playlistSheetState = rememberModalBottomSheetState()
 
-    val artistsSheetState = rememberModalBottomSheetState()
+    val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val songSettingsSheetState = rememberModalBottomSheetState()
+    val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
@@ -210,8 +210,8 @@ fun LocalPlaylistScreen(
 
 
                         SwipeableSongView(
-
                             song = song,
+                            playerController = localPlaylistViewModel.getPlayerController(),
                             downloadTracker = localPlaylistViewModel.getDownloadTracker(),
                             onMoreClicked = {
                                 selectedSong = song

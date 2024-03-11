@@ -87,9 +87,8 @@ fun AppNavGraph(
                         playerController = mainViewModel.getPlayerController(),
                         onClick = {
                             scope.launch() {
-
-                                playerBottomSheet.fullyExpand()
                                 showPlayer = true
+                                playerBottomSheet.fullyExpand()
                             }
                         },
                         onPlayPauseClick = mainViewModel.getPlayerController()::onPlayPauseClick
@@ -98,7 +97,6 @@ fun AppNavGraph(
                 }
 
                 BottomNavigationBar(navController = navController) { route ->
-                    Log.e("TAG", "AppNavGraph: " + currentDestination?.route)
                 }
 
             }

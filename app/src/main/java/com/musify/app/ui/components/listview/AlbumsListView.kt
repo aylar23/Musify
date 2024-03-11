@@ -24,6 +24,7 @@ import com.musify.app.ui.theme.SFFontFamily
 
 @Composable
 fun AlbumListView(
+    title:String = stringResource(id = R.string.albums),
     playlists: List<Playlist>,
     onClick: (Playlist)->Unit
 ) {
@@ -34,7 +35,7 @@ fun AlbumListView(
         if (playlists.isNotEmpty()){
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp),
-                text = stringResource(id = R.string.new_albums),
+                text = title,
                 style = TextStyle(
                     fontSize = 16.sp,
                     lineHeight = 16.sp,

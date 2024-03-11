@@ -65,7 +65,7 @@ fun SearchScreen(
     navigateToArtist: (Artist) -> Unit,
     navigateToAlbum: (Long) -> Unit,
     navigateToPlaylist: (Long) -> Unit,
-    navigateToNewPlaylist: () -> Unit,
+    navigateToNewPlaylist: () -> Unit
 ) {
     lateinit var selectedSong: Song
 
@@ -86,9 +86,9 @@ fun SearchScreen(
 
     val playlistSheetState = rememberModalBottomSheetState()
 
-    val artistsSheetState = rememberModalBottomSheetState()
+    val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val songSettingsSheetState = rememberModalBottomSheetState()
+    val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val uiState by searchViewModel.uiState.collectAsState(BaseUIState())
 
 
@@ -148,7 +148,7 @@ fun SearchScreen(
                     keyboardController?.hide()
                     searchViewModel.saveSearchStr(searchStr.trim())
                 },
-                onClear ={
+                onClear = {
                     searchViewModel.setSearch("")
                     searchViewModel.search("")
                 }
@@ -192,6 +192,7 @@ fun SearchScreen(
 
 
                             SongListView(mainScreenData.songs,
+                                playerController = searchViewModel.getPlayerController(),
                                 downloadTracker = searchViewModel.getDownloadTracker(),
                                 onMoreClicked = {
                                     selectedSong = it
@@ -206,7 +207,7 @@ fun SearchScreen(
 
                             }
 
-                            AlbumListView(mainScreenData.albums) { album ->
+                            AlbumListView(playlists = mainScreenData.albums) { album ->
                                 navigateToAlbum(album.playlistId)
                             }
                         }
@@ -230,9 +231,9 @@ fun SearchScreen(
                 onNavigateToAlbum = {
                 },
                 onNavigateToArtist = {
-                    if(selectedSong.artists.size == 1){
+                    if (selectedSong.artists.size == 1) {
                         navigateToArtist(selectedSong.getArtist())
-                    }else{
+                    } else {
                         showArtistDialog = true
                     }
                 },
@@ -288,8 +289,8 @@ fun SearchScreen(
             ArtistBottomSheet(
                 artists = selectedSong.artists ?: emptyList(),
                 sheetState = artistsSheetState,
-                onSelect = { artist-> navigateToArtist(artist) },
-                onDismiss = { showArtistDialog = false}
+                onSelect = { artist -> navigateToArtist(artist) },
+                onDismiss = { showArtistDialog = false }
 
             )
 

@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.sp
 import coil.compose.rememberAsyncImagePainter
 import com.musify.app.R
 import com.musify.app.domain.models.LatestRelease
+import com.musify.app.domain.models.Playlist
+import com.musify.app.domain.models.Song
 import com.musify.app.ui.theme.DarkGray
 import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
@@ -31,7 +33,11 @@ import com.musify.app.ui.theme.WhiteTextColor
 
 
 @Composable
-fun LatestReleaseView(latestRelease: LatestRelease) {
+fun LatestReleaseView(
+    latestRelease: LatestRelease,
+    navigateToAlbum :(Playlist)->Unit,
+    playSong: (Song) ->Unit
+    ) {
 
     val imagePainter = rememberAsyncImagePainter(
         model = latestRelease.getImage(),
@@ -40,9 +46,12 @@ fun LatestReleaseView(latestRelease: LatestRelease) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(start = 20.dp, end = 20.dp, top = 20.dp)
             .clip(shape = MaterialTheme.shapes.large)
-            .clickable { }
+            .clickable {
+                if (latestRelease.isAlbum()) navigateToAlbum(latestRelease.album!!)
+                else if (latestRelease.isSong()) playSong(latestRelease.song!!)
+            }
             .background(color = DarkGray)
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,

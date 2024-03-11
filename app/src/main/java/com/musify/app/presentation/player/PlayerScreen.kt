@@ -146,9 +146,9 @@ fun PlayerScreen(
 
     val playlistSheetState = rememberModalBottomSheetState()
 
-    val artistsSheetState = rememberModalBottomSheetState()
+    val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
-    val songSettingsSheetState = rememberModalBottomSheetState()
+    val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val pagerState =
         androidx.compose.foundation.pager.rememberPagerState(playerController.selectedTrackIndex,
@@ -158,9 +158,8 @@ fun PlayerScreen(
         skipIntermediatelyExpanded = true,
         skipSlightlyExpanded = true,
         containSystemBars = false,
-        allowNestedScroll = true,
+        allowNestedScroll = false,
         isModal = true,
-        flexibleSheetSize = FlexibleSheetSize(1f, 0.5f, 0.09f)
     )
 
 
@@ -213,7 +212,6 @@ fun PlayerScreen(
         },
     ) { innerPadding ->
 
-
         Column(
 
             modifier = Modifier
@@ -222,6 +220,9 @@ fun PlayerScreen(
         ) {
             PlayerTopAppBar(
                 playerController.selectedTrack,
+                onMoreClicked = {
+                    settingsClicked = true
+                }
             ) {
                 onDismiss()
             }
@@ -322,23 +323,8 @@ fun PlayerScreen(
                             contentDescription = null
                         )
                     }
-//                            IconButton(onClick = { }) {
-//                                Icon(
-//                                    tint = WhiteTextColor,
-//                                    painter = painterResource(id = R.drawable.ic_like),
-//                                    contentDescription = stringResource(id = R.string.go_back)
-//                                )
-//                            }
-                    IconButton(onClick = {
-                        settingsClicked = true
+//
 
-                    }) {
-                        Icon(
-                            tint = WhiteTextColor,
-                            painter = painterResource(id = R.drawable.ic_more_hor),
-                            contentDescription = stringResource(id = R.string.go_back)
-                        )
-                    }
                 }
 
 
@@ -535,10 +521,10 @@ fun PlayerScreen(
                     showPlaylistBottomSheet = false
 
                 },
-                dragHandle = {},
+//                dragHandle = {},
                 sheetState = playlistBottomSheet,
-                shape = RoundedCornerShape(0.dp),
-                containerColor = Color.Transparent
+//                shape = RoundedCornerShape(0.dp),
+                containerColor = AlbumCoverBlackBG
             ) {
                 PlaylistBottomSheet(
                     sheetState = playlistBottomSheet, playerController = playerController

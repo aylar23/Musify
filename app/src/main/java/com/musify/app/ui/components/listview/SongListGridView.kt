@@ -61,6 +61,7 @@ fun SongGridListView(
 
                 SongView(
                     modifier = Modifier.width(screenWidth*0.90f),
+                    playerController = homeViewModel.getPlayerController(),
                     song = song,
                     downloadTracker = homeViewModel.getDownloadTracker(),
                     onMoreClicked = {onMoreClicked(song)}

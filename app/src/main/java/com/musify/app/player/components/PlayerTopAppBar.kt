@@ -34,6 +34,7 @@ import com.musify.app.ui.theme.WhiteTextColor
 @Composable
 fun PlayerTopAppBar(
     selectedSong: Song?,
+    onMoreClicked: () -> Unit,
     goBack: () -> Unit,
 ) {
     TopAppBar(title = {
@@ -86,6 +87,15 @@ fun PlayerTopAppBar(
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent),
 
+        actions = {
+            IconButton(onClick = { onMoreClicked() }) {
+                Icon(
+                    tint = WhiteTextColor,
+                    painter = painterResource(id = R.drawable.ic_more_hor),
+                    contentDescription = stringResource(id = R.string.go_back)
+                )
+            }
+        }
     )
 
 

@@ -14,6 +14,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.musify.app.PlayerController
 import com.musify.app.R
 import com.musify.app.domain.models.Song
 import com.musify.app.player.DownloadTracker
@@ -29,6 +30,7 @@ import com.musify.app.ui.theme.SFFontFamily
 @Composable
 fun SongListView(
     songs: List<Song>,
+    playerController: PlayerController,
     downloadTracker: DownloadTracker? =null,
     onMoreClicked: (Song) -> Unit,
     onSwipe: (Song) -> Unit,
@@ -61,6 +63,7 @@ fun SongListView(
 
                 SwipeableSongView(
                     song = song,
+                    playerController = playerController,
                     onMoreClicked = { onMoreClicked(song) },
                     downloadTracker = downloadTracker,
 

@@ -35,11 +35,12 @@ import kotlin.math.log
 @HiltViewModel
 class PlayerController @Inject constructor(
     private val myPlayer: MyPlayer,
-) :  ViewModel() ,PlayerEvents {
+) : ViewModel(), PlayerEvents {
     /**
      * A mutable state list of all tracks.
      */
     private val _tracks = mutableStateListOf<Song>()
+
     /**
      * An immutable snapshot of the current list of tracks.
      */
@@ -56,10 +57,11 @@ class PlayerController @Inject constructor(
      */
     var selectedTrack: Song? by mutableStateOf(null)
         private set
+
     /**
      * A private property backed by mutable state that holds the index of the currently selected track.
      */
-     var selectedTrackIndex: Int by mutableStateOf(-1)
+    var selectedTrackIndex: Int by mutableStateOf(-1)
 
     /**
      * A nullable [Job] instance that represents the ongoing process of updating the playback state.
@@ -71,6 +73,7 @@ class PlayerController @Inject constructor(
      * It is used to emit updates about the playback state to observers.
      */
     private val _playbackState = MutableStateFlow(PlaybackState(0L, 0L))
+
     /**
      * A public property that exposes the [_playbackState] as an immutable [StateFlow] for observers.
      */
@@ -86,8 +89,8 @@ class PlayerController @Inject constructor(
      * and observes the player state.
      */
 
-    fun init(track: Song, songs: List<Song>){
-        if (!_tracks.isEmpty()){
+    fun init(track: Song, songs: List<Song>) {
+        if (!_tracks.isEmpty()) {
             _tracks.removeRange(0, tracks.size)
         }
         _tracks.addAll(songs)
@@ -97,32 +100,30 @@ class PlayerController @Inject constructor(
     }
 
 
-    fun onReorder(from:Int, to:Int){
-        
-        val song = tracks[from]
-        _tracks.remove(song)
-        _tracks.add(to, song)
-        myPlayer.reOrder(from, to, song.toMediaItem())
-
+    fun onReorder(from: Int, to: Int) {
+        selectedTrackIndex = _tracks.indexOf(selectedTrack)
     }
 
-    fun setRepeatMode(mode:Int) {
-        Log.e("TAG", "getRepeatMode: "+ myPlayer.getRepeatMode())
+    fun onMove(from: Int, to: Int) {
+        val song = tracks[from]
+        _tracks.swap(from, to)
+        myPlayer.reOrder(from, to, song.toMediaItem())
+    }
+
+    fun setRepeatMode(mode: Int) {
         return myPlayer.setRepeatMode(mode)
 
     }
 
     fun getRepeatMode(): Int {
-        Log.e("TAG", "getRepeatMode: "+ myPlayer.getRepeatMode())
-       return myPlayer.getRepeatMode()
-
+        return myPlayer.getRepeatMode()
     }
+
     fun getShuffleMode(): Boolean {
         return myPlayer.getShuffleMode()
     }
 
     fun toggleShuffle() {
-
         return myPlayer.toggleShuffle()
     }
 
@@ -143,7 +144,6 @@ class PlayerController @Inject constructor(
      */
     private fun onTrackSelected(index: Int) {
         if (selectedTrackIndex == -1) isTrackPlay = true
-        Log.e("TAG", "onTrackSelected: "+index)
         if (selectedTrackIndex == -1 || selectedTrackIndex != index) {
             _tracks.resetTracks()
             selectedTrackIndex = index
@@ -163,7 +163,7 @@ class PlayerController @Inject constructor(
      * @param state The new player state.
      */
     private fun updateState(state: PlayerStates) {
-        Log.e("TAG", "updateState: " )
+        Log.e("TAG", "updateState: ")
         if (selectedTrackIndex != -1) {
             isTrackPlay = state == PlayerStates.STATE_PLAYING
             _tracks[selectedTrackIndex].state = state
@@ -179,7 +179,9 @@ class PlayerController @Inject constructor(
             }
             updatePlaybackState(state)
 
-            if (state == PlayerStates.STATE_END && myPlayer.getRepeatMode() == REPEAT_MODE_ALL) onTrackSelected(0)
+            if (state == PlayerStates.STATE_END && myPlayer.getRepeatMode() == REPEAT_MODE_ALL) onTrackSelected(
+                0
+            )
         }
     }
 
@@ -190,10 +192,8 @@ class PlayerController @Inject constructor(
 
     private fun updatePlaybackState(state: PlayerStates) {
         playbackStateJob?.cancel()
-        playbackStateJob =  viewModelScope.launchPlaybackStateJob(_playbackState, state, myPlayer)
+        playbackStateJob = viewModelScope.launchPlaybackStateJob(_playbackState, state, myPlayer)
     }
-
-
 
 
     /**
@@ -210,11 +210,11 @@ class PlayerController @Inject constructor(
      */
     override fun onNextClick() {
         if (selectedTrackIndex < tracks.size - 1) {
-            Log.e("TAG", "onNextClick: ", )
+            Log.e("TAG", "onNextClick: ")
             onTrackSelected(selectedTrackIndex + 1)
-        }else{
+        } else {
 
-            if (tracks.isNotEmpty()&& myPlayer.getRepeatMode() == REPEAT_MODE_ALL){
+            if (tracks.isNotEmpty() && myPlayer.getRepeatMode() == REPEAT_MODE_ALL) {
                 onTrackSelected(0)
             }
         }
@@ -235,7 +235,7 @@ class PlayerController @Inject constructor(
      * @param song The track that was clicked.
      */
     override fun onTrackClick(song: Song) {
-        Log.e("TAG", "onTrackClick: ", )
+        Log.e("TAG", "onTrackClick: ")
         onTrackSelected(tracks.indexOf(song))
     }
 
@@ -246,12 +246,12 @@ class PlayerController @Inject constructor(
 
     override fun onPlayNext(song: Song) {
 
-        if (_tracks.contains(song)){
-            if(selectedTrackIndex == _tracks.indexOf(song)) return
-            onReorder( _tracks.indexOf(song), selectedTrackIndex+1)
-        }else{
-            _tracks.add(selectedTrackIndex+1, song)
-            myPlayer.addMediaItem(selectedTrackIndex+1,song.toMediaItem())
+        if (_tracks.contains(song)) {
+            if (selectedTrackIndex == _tracks.indexOf(song)) return
+            onMove(_tracks.indexOf(song), selectedTrackIndex + 1)
+        } else {
+            _tracks.add(selectedTrackIndex + 1, song)
+            myPlayer.addMediaItem(selectedTrackIndex + 1, song.toMediaItem())
         }
 
     }
@@ -267,9 +267,6 @@ class PlayerController @Inject constructor(
             myPlayer.seekToPosition(position)
         }
     }
-
-
-
 
 
 }

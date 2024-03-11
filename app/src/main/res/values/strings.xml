@@ -36,6 +36,7 @@
     <string name="network_error">NetworkError</string>
     <string name="refresh">Refresh</string>
     <string name="hit_songs">Hit songs</string>
+    <string name="top_songs">Hit songs</string>
     <string name="main">Main</string>
     <string name="library">Library</string>
     <string name="song_count">%1$s song</string>
