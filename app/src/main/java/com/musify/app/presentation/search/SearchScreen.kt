@@ -41,6 +41,8 @@ import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Playlist.Companion.PLAYLIST
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.myplaylist.LibraryContentChipsView
+import com.musify.app.presentation.myplaylist.LibrarySection
 import com.musify.app.presentation.player.NewPlaylistDialog
 import com.musify.app.ui.components.SearchBar
 import com.musify.app.ui.components.listview.ArtistListView
@@ -52,6 +54,7 @@ import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
 import com.musify.app.ui.components.bottomsheet.ArtistBottomSheet
 import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.components.listview.AlbumListView
+import com.musify.app.ui.components.listview.PlaylistListView
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.utils.BaseUIState
@@ -84,7 +87,7 @@ fun SearchScreen(
         mutableStateOf(false)
     }
 
-    val playlistSheetState = rememberModalBottomSheetState()
+    val playlistSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -102,6 +105,15 @@ fun SearchScreen(
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val snackbarMessage = stringResource(id = R.string.successfully_added)
+    val type by searchViewModel.type.collectAsState("")
+
+    val sections = listOf(
+        LibrarySection.AllSearch,
+        LibrarySection.Artist,
+        LibrarySection.Playlist,
+        LibrarySection.Album,
+        LibrarySection.Song,
+    )
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
@@ -166,6 +178,12 @@ fun SearchScreen(
                     })
             } else {
 
+                LibraryContentChipsView(
+                    sections = sections,
+                    selected = type) { type ->
+                    searchViewModel.setType(type)
+                    searchViewModel.search(searchStr)
+                }
 
                 when {
                     uiState.isLoading -> {
@@ -185,11 +203,12 @@ fun SearchScreen(
                     uiState.isSuccess -> {
 
                         uiState.data?.let { mainScreenData ->
+
                             ArtistListView(
                                 header = R.string.artists, mainScreenData.artists
-                            ) { artist -> navigateToArtist(artist) }
-
-
+                            ) { artist ->
+                                navigateToArtist(artist)
+                            }
 
                             SongListView(mainScreenData.songs,
                                 playerController = searchViewModel.getPlayerController(),
@@ -207,9 +226,18 @@ fun SearchScreen(
 
                             }
 
+
                             AlbumListView(playlists = mainScreenData.albums) { album ->
                                 navigateToAlbum(album.playlistId)
                             }
+
+                            PlaylistListView(
+                                title = stringResource(id = R.string.playlists),
+                                playlists =  mainScreenData.playlists
+                            ) { playlist ->
+                                navigateToPlaylist(playlist.playlistId)
+                            }
+
                         }
                     }
                 }
@@ -255,6 +283,7 @@ fun SearchScreen(
 
         if (addToPlaylistClicked) {
             AddToPlaylistBottomSheet(
+                selectedSong = selectedSong,
                 playlists = playlists,
                 playlistSheetState = playlistSheetState,
                 onCreateNewPlaylist = {
@@ -287,6 +316,7 @@ fun SearchScreen(
 
         if (showArtistDialog) {
             ArtistBottomSheet(
+                selectedSong = selectedSong,
                 artists = selectedSong.artists ?: emptyList(),
                 sheetState = artistsSheetState,
                 onSelect = { artist -> navigateToArtist(artist) },

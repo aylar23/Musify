@@ -22,31 +22,32 @@ import com.musify.app.ui.theme.SFFontFamily
 
 @Composable
 fun PlaylistListView(
-    title:String,
+    title: String,
     playlists: List<Playlist>,
-    onClick: (Playlist) ->Unit
+    onClick: (Playlist) -> Unit
 ) {
+    if (playlists.isNotEmpty()) {
+        Column {
 
-    Column {
-        Text(
-            modifier = Modifier.padding(horizontal = 20.dp),
-            text = title,
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 16.sp,
-                fontFamily = SFFontFamily,
-                fontWeight = FontWeight.Bold,
+            Text(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                text = title,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = SFFontFamily,
+                    fontWeight = FontWeight.Bold,
+                )
             )
-        )
 
-
-        LazyRow(
-            contentPadding = PaddingValues(20.dp, 15.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            items(playlists) { playlist ->
-                PlaylistView(playlist){
-                    onClick(playlist)
+            LazyRow(
+                contentPadding = PaddingValues(20.dp, 15.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(playlists) { playlist ->
+                    PlaylistView(playlist) {
+                        onClick(playlist)
+                    }
                 }
             }
         }

@@ -60,6 +60,7 @@ class HomeViewModel @Inject constructor(
 
             try {
                 val data = songRepository.getMainScreen()
+                Log.e("TAG", "getMainPageData: "+data)
 
                 _uiState.update { it.updateToLoaded(data) }
             } catch (e: Exception) {

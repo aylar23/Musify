@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_MEDIA_PLAYBACK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
         android:usesCleartextTraffic="true"
@@ -48,7 +49,7 @@
 
         <service
             android:name=".player.PlaybackService"
-            android:foregroundServiceType="mediaPlayback"
+            android:foregroundServiceType="mediaPlayback|dataSync"
             android:exported="true">
             <intent-filter>
                 <action android:name="androidx.media3.session.MediaSessionService"/>

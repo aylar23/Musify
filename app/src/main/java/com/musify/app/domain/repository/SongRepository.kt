@@ -14,6 +14,8 @@ import com.musify.app.domain.models.PlaylistWithSongs
 import com.musify.app.domain.models.SearchData
 import com.musify.app.domain.models.Song
 import com.musify.app.domain.models.SongWithPlaylists
+import com.musify.app.domain.paging.AlbumsPagingSource
+import com.musify.app.domain.paging.SongPagingSource
 import com.musify.app.domain.service.ApiService
 import com.musify.app.domain.utils.Resource
 import kotlinx.coroutines.flow.Flow
@@ -30,8 +32,8 @@ class SongRepository @Inject constructor(
     }
 
 
-    suspend fun search(searchStr: String): SearchData {
-        return apiService.search(searchStr)
+    suspend fun search(searchStr: String, type: String): SearchData {
+        return apiService.search(searchStr, type)
     }
 
     suspend fun getArtist(id: Long): Artist {
@@ -39,29 +41,47 @@ class SongRepository @Inject constructor(
     }
 
 
-    suspend fun getPlaylist(id: Long, type:String): Playlist {
+    suspend fun getPlaylist(id: Long, type: String): Playlist {
         return apiService.getPlaylist(type, id)
     }
 
-     fun getPlaylistWithSongs(id: Long): Flow<PlaylistWithSongs> {
+    fun getPlaylistWithSongs(id: Long): Flow<PlaylistWithSongs> {
         return songDao.getPlaylistWithSongs(id)
     }
 
-     fun getAllPlaylists(type: String): Flow<MutableList<Playlist>> {
+    fun getAllPlaylists(type: String): Flow<MutableList<Playlist>> {
         return songDao.getAllPlaylists(type)
     }
 
-//    fun getAllPlaylists() = Pager(
-//        PagingConfig(
-//            DEFAULT_PAGE_SIZE,
-//            prefetchDistance = 1
-//        )
-//    ){
-//        PlaylistsPagingSource(
-//           songDao = songDao
-//        )
-//    }.flow
+    fun getAlbums(artistId: Long) = Pager(
+        PagingConfig(
+            DEFAULT_PAGE_SIZE,
+            prefetchDistance = 1
+        )
+    ) {
+        AlbumsPagingSource(
+            artistId = artistId,
+            apiService = apiService
+        )
+    }.flow
 
+    fun getSongs(
+        artistId: Long,
+        isTop: Int,
+        isSingle: Int
+    ) = Pager(
+        PagingConfig(
+            DEFAULT_PAGE_SIZE,
+            prefetchDistance = 1
+        )
+    ) {
+        SongPagingSource(
+            artistId = artistId,
+            isTop = isTop,
+            isSingle = isSingle,
+            apiService = apiService
+        )
+    }.flow
 
     suspend fun insertPlaylist(playlist: Playlist) {
         return songDao.insertPlaylist(playlist)
@@ -75,7 +95,7 @@ class SongRepository @Inject constructor(
         return songDao.deletePlaylist(playlist)
     }
 
-    suspend fun deleteSongFromPlaylist(playlistId:Long, songId: Long) {
+    suspend fun deleteSongFromPlaylist(playlistId: Long, songId: Long) {
         return songDao.deleteSongFromPlaylist(playlistId, songId)
     }
 
@@ -89,7 +109,7 @@ class SongRepository @Inject constructor(
     }
 
 
-    suspend fun updateDownloadStatus(id:Long, downloadable: Boolean) {
+    suspend fun updateDownloadStatus(id: Long, downloadable: Boolean) {
         return songDao.updateDownloadStatus(id, downloadable)
     }
 
@@ -98,7 +118,7 @@ class SongRepository @Inject constructor(
 
     }
 
-    suspend fun getSongWithDownloadablePlaylists(id: Long): SongWithPlaylists{
+    suspend fun getSongWithDownloadablePlaylists(id: Long): SongWithPlaylists {
         return songDao.getSongWithDownloadablePlaylists(id)
 
     }

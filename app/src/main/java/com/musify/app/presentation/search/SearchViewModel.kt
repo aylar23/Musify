@@ -1,15 +1,13 @@
 package com.musify.app.presentation.search
 
-import android.util.Log
-import androidx.datastore.core.DataStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.musify.app.PlayerController
 import com.musify.app.di.DataStoreUtil
 import com.musify.app.di.SearchDataStore
 import com.musify.app.domain.models.Playlist
+import com.musify.app.domain.models.Playlist.Companion.ALL_SEARCH
 import com.musify.app.domain.models.Playlist.Companion.PLAYLIST
 import com.musify.app.domain.models.PlaylistSongCrossRef
 import com.musify.app.domain.models.SearchData
@@ -42,7 +40,9 @@ class SearchViewModel @Inject constructor(
 
     val uiState = _uiState
 
-    var searchStr = savedStateHandle.getStateFlow<String>("SEARCH", "")
+    val type = savedStateHandle.getStateFlow("type", ALL_SEARCH)
+
+    var searchStr = savedStateHandle.getStateFlow("SEARCH", "")
 
 
     val keys = searchDataStore.searchFlow
@@ -55,15 +55,12 @@ class SearchViewModel @Inject constructor(
         viewModelScope.launch {
             _uiState.update { it.updateToLoading() }
             try {
-                val data = songRepository.search(s)
+                val data = songRepository.search(s, type.value)
                 _uiState.update { it.updateToLoaded(data) }
             } catch (e: Exception) {
-                Log.e("TAG", "getMainPageData: " + e.message)
                 _uiState.update { it.updateToFailure() }
             }
         }
-
-
     }
 
 
@@ -82,23 +79,24 @@ class SearchViewModel @Inject constructor(
             searchDataStore.clearAllMyMessages()
         }
     }
+
     fun setSearch(s:String){
         savedStateHandle["SEARCH"] = s
 
     }
 
-    fun getAllPlaylists(): Flow<List<Playlist>> {
-
-        return songRepository.getAllPlaylists(PLAYLIST)
-
+    fun setType(type:String){
+        savedStateHandle["type"] = type
     }
 
+    fun getAllPlaylists(): Flow<List<Playlist>> {
+        return songRepository.getAllPlaylists(PLAYLIST)
+    }
 
     fun addNewPlaylist(name:String){
 
         CoroutineScope(Dispatchers.IO).launch{
             songRepository.insertPlaylist(Playlist(name = name))
-
         }
     }
 
@@ -117,6 +115,7 @@ class SearchViewModel @Inject constructor(
             downloadTracker.download(song.toMediaItem())
         }
     }
+
 
 }
 

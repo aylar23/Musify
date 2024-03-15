@@ -18,43 +18,42 @@ import androidx.compose.ui.unit.sp
 import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.ui.components.AlbumView
+import com.musify.app.ui.components.HeaderView
 import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.SFFontFamily
 
 
 @Composable
 fun AlbumListView(
-    title:String = stringResource(id = R.string.albums),
+    title: String = stringResource(id = R.string.albums),
     playlists: List<Playlist>,
-    onClick: (Playlist)->Unit
+    expandable:Boolean = false,
+    navigateToAlbums: () -> Unit = {},
+    onClick: (Playlist) -> Unit,
 ) {
-
-    Column(
-        modifier = Modifier.background(Background)
-    ) {
-        if (playlists.isNotEmpty()){
-            Text(
-                modifier = Modifier.padding(horizontal = 20.dp),
-                text = title,
-                style = TextStyle(
-                    fontSize = 16.sp,
-                    lineHeight = 16.sp,
-                    fontFamily = SFFontFamily,
-                    fontWeight = FontWeight.Bold,
-                )
-            )
-        }
-
-
-
-
-        LazyRow(
-            contentPadding = PaddingValues(20.dp, 15.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp)
+    if (playlists.isNotEmpty()) {
+        Column(
+            modifier = Modifier.background(Background)
         ) {
-            items(playlists) { playlist ->
-                AlbumView(playlist){onClick(playlist)}
+
+            HeaderView(
+                modifier = Modifier.padding(top = 10.dp),
+                mainText = title,
+                expandable = expandable
+            ){
+                navigateToAlbums()
+            }
+
+            LazyRow(
+                contentPadding = PaddingValues(20.dp, 15.dp),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                items(playlists) { playlist ->
+                    AlbumView(playlist) { onClick(playlist) }
+                }
             }
         }
+
+
     }
 }

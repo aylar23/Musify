@@ -49,8 +49,12 @@ import com.musify.app.R
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Playlist.Companion.ALBUM
 import com.musify.app.domain.models.Playlist.Companion.ALL
+import com.musify.app.domain.models.Playlist.Companion.ALL_SEARCH
+import com.musify.app.domain.models.Playlist.Companion.ARTIST
 import com.musify.app.domain.models.Playlist.Companion.PLAYLIST
+import com.musify.app.domain.models.Playlist.Companion.SONG
 import com.musify.app.presentation.player.NewPlaylistDialog
+import com.musify.app.presentation.search.SearchViewModel
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.LocalPlayListView
 import com.musify.app.ui.components.NetworkErrorView
@@ -83,7 +87,11 @@ fun MyPlaylistsScreen(
     val scope = rememberCoroutineScope()
     val snackbarAddMessage = stringResource(id = R.string.successfully_added)
     val snackbarDeleteMessage = stringResource(id = R.string.successfully_deleted)
-
+    val sections = listOf(
+        LibrarySection.All,
+        LibrarySection.Playlist,
+        LibrarySection.Album
+    )
     Scaffold(
         modifier = Modifier.padding(paddingValues = paddingValues),
         topBar = {
@@ -125,8 +133,10 @@ fun MyPlaylistsScreen(
     ) { padding ->
 
 
-        Column(modifier = Modifier.padding(padding)) {
-            LibraryContentChipsView(type) { type ->
+        Column(modifier = Modifier.padding(top = padding.calculateTopPadding())) {
+            LibraryContentChipsView(
+                sections = sections,
+                selected = type) { type ->
                 myPlaylistsViewModel.setType(type)
             }
             LazyColumn(
@@ -189,34 +199,30 @@ fun MyPlaylistsScreen(
 
 @Composable
 fun LibraryContentChipsView(
+    sections: List<LibrarySection>,
     selected: String,
     onClick: (String) -> Unit
 ) {
 
 
-    val sections = listOf(
-        LibrarySection.All,
-        LibrarySection.Playlist,
-        LibrarySection.Album
-    )
 
-    Row(
-        modifier = Modifier.padding(horizontal = 20.dp, vertical = 10.dp),
+    LazyRow(
         horizontalArrangement = Arrangement.spacedBy(8.dp),
+        contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
     ) {
 
-        sections.forEach { section ->
+        items(sections) { section ->
             val containerColor = if (selected == section.value) Yellow else Surface
             val contentColor =
                 if (selected == section.value) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onBackground
+
 
             Text(
                 modifier = Modifier
                     .clip(MaterialTheme.shapes.extraSmall)
                     .background(containerColor)
                     .clickable { onClick(section.value) }
-                    .padding(20.dp, 10.dp)
-                    .weight(1f),
+                    .padding(20.dp, 10.dp),
                 text = stringResource(id = section.title),
                 textAlign = TextAlign.Center,
                 maxLines = 1,
@@ -251,4 +257,15 @@ sealed class LibrarySection(
         R.string.album, ALBUM
     )
 
+    object AllSearch : LibrarySection(
+        R.string.all, ALL_SEARCH
+    )
+
+    object Song : LibrarySection(
+        R.string.song, SONG
+    )
+
+    object Artist : LibrarySection(
+        R.string.artist, ARTIST
+    )
 }

@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -14,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
+import androidx.core.view.WindowCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.musify.app.navigation.AppNavGraph
@@ -30,22 +32,18 @@ var currentInnerNavController: NavHostController? = null
 class MainActivity : ComponentActivity() {
 
 
+    @OptIn(ExperimentalMaterial3Api::class)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         setContent {
             MusifyTheme {
                 // A surface container using the 'background' color from the theme
                 val mainViewModel = hiltViewModel<MainViewModel>()
-                val playerBottomSheet = rememberFlexibleBottomSheetState(
-                    skipIntermediatelyExpanded = true,
-                    skipSlightlyExpanded = true,
-                    containSystemBars = false,
-                    allowNestedScroll = true,
-                    isModal = true,
-                    flexibleSheetSize = FlexibleSheetSize(1f, 0.5f, 0.001f)
-
+                val playerBottomSheet = rememberModalBottomSheetState(
+                    skipPartiallyExpanded = true,
                 )
 
 
@@ -63,6 +61,8 @@ class MainActivity : ComponentActivity() {
             }
 
         }
+
+
     }
 
 

@@ -43,7 +43,8 @@ fun SettingsScreen(
         topBar = { SettingsTopAppBar(user = user) }
     ) { padding ->
         Column(
-            modifier = Modifier.padding(padding).fillMaxSize(), verticalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.padding(top = padding.calculateTopPadding()),
+            verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column(
                 modifier = Modifier

@@ -41,4 +41,12 @@ sealed class Screen(
         "playlist"
     )
 
+    object Songs : Screen(
+        "songs"
+    )
+
+    object Albums : Screen(
+        "albums"
+    )
+
 }

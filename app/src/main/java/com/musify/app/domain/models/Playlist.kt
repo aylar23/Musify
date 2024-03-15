@@ -32,13 +32,13 @@ data class Playlist(
         return names.joinToString( separator = ", ")
     }
 
-
-
     companion object{
-
         const val ALL = ""
         const val PLAYLIST = "playlist"
         const val ALBUM = "album"
+        const val ALL_SEARCH = "all"
+        const val ARTIST = "artist"
+        const val SONG = "song"
     }
 }
 

@@ -45,7 +45,18 @@
     <string name="edit">Edit</string>
     <string name="delete">Delete</string>
     <string name="all">All</string>
-
+    <string name="playlist">Playlist</string>
+    <string name="album">Album</string>
+    <string name="albums">Albums</string>
+    <string name="clear">Clear</string>
+    <string name="cancel">Cancel</string>
+    <string name="successfully_added">Successfully added</string>
+    <string name="successfully_deleted">Successfully deleted</string>
+    <string name="delete_from_playlist">Delete from playlist</string>
+    <string name="latest_release">Latest release</string>
+    <string name="playlists">Playlists</string>
+    <string name="artist">Artist</string>
+    <string name="song">Song</string>
 
     <string name="download_start_error">Failed to start download</string>
 
@@ -83,14 +94,7 @@
     is still present, otherwise please open the app to start the playback and re-connect the session
     to the controller</string>
     <string name="notification_channel_name">Playback cannot be resumed</string>
-    <string name="playlist">Playlist</string>
-    <string name="album">Album</string>
-    <string name="albums">Albums</string>
-    <string name="clear">Clear</string>
-    <string name="cancel">Cancel</string>
-    <string name="successfully_added">Successfully added</string>
-    <string name="successfully_deleted">Successfully deleted</string>
-    <string name="delete_from_playlist">Delete from playlist</string>
-    <string name="latest_release">Latest release</string>
+    <string name="nothing_found">Noting Found</string>
+    <string name="singles">Singles</string>
 
 </resources>

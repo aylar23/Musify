@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -163,40 +164,27 @@ fun MiniPlayer(
                 modifier = Modifier
                     .padding(0.dp)
                     .height(0.dp)
-                    .background(Color.Red)
                     .defaultMinSize(1.dp, 5.dp)
                     .fillMaxWidth(),
-                colors = SliderColors(
-                    thumbColor = WhiteTextColor,
-                    activeTickColor = Yellow,
-                    activeTrackColor = Yellow,
-                    inactiveTickColor = GrayTextColor,
+                colors = SliderDefaults.colors(
+                    activeTrackColor = MaterialTheme.colorScheme.primary,
                     inactiveTrackColor = GrayTextColor,
-                    disabledThumbColor = GrayTextColor,
-                    disabledActiveTrackColor = Yellow,
-                    disabledActiveTickColor = Yellow,
-                    disabledInactiveTrackColor = GrayTextColor,
-                    disabledInactiveTickColor = GrayTextColor
                 ),
-
                 thumb = {
-//                    SliderDefaults.Thumb(
-//                        modifier = Modifier,
-//                        interactionSource = interactionSource,
-//                        colors = SliderDefaults.colors(),
-//                        thumbSize = DpSize(1.dp, 1.dp)
-//                    )
-                },
-
-                track = {
-                    SliderDefaults.Track(
-                        sliderState = it,
-                        modifier = Modifier
-                            .padding(0.dp)
-                            .defaultMinSize(1.dp, 1.dp)
-
-
+                    SliderDefaults.Thumb(
+                        modifier = Modifier.offset(x = 0.dp),
+                        interactionSource = remember { MutableInteractionSource() },
+                        thumbSize = DpSize(0.dp, 0.dp)
                     )
+                },
+                track = {
+                    SliderDefaults.Track(modifier = Modifier
+                        .height(3.dp)
+                        .padding(0.dp)
+                        .defaultMinSize(1.dp, 1.dp),
+                        sliderState = it,
+                        thumbTrackGapSize = 0.dp,
+                        drawStopIndicator = {})
                 }
 
             )

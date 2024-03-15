@@ -37,6 +37,7 @@ import com.musify.app.ui.theme.WhiteTextColor
 @Composable
 fun AlbumView(
     album: Playlist,
+    isGrid : Boolean = false,
     onClick: ()->Unit
 ) {
 
@@ -44,9 +45,11 @@ fun AlbumView(
         model = album.getPlaylistImage(),
     )
 
+    val modifier = if (!isGrid) Modifier
+        .height(250.dp) else Modifier.fillMaxWidth()
 
-    Row(modifier = Modifier
-        .height(250.dp)
+
+    Row(modifier = modifier
         .aspectRatio(1f)
     ) {
         Box(modifier = Modifier

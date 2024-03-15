@@ -31,16 +31,15 @@ import com.musify.app.ui.theme.SFFontFamily
 fun SongListView(
     songs: List<Song>,
     playerController: PlayerController,
-    downloadTracker: DownloadTracker? =null,
+    downloadTracker: DownloadTracker? = null,
     onMoreClicked: (Song) -> Unit,
     onSwipe: (Song) -> Unit,
     onClick: (Song) -> Unit,
 ) {
 
+    if (songs.isNotEmpty()) {
+        Column(modifier = Modifier.background(Background)) {
 
-    Column(modifier = Modifier.background(Background)) {
-
-        if (songs.isNotEmpty()) {
             Text(
                 modifier = Modifier.padding(horizontal = 20.dp),
                 text = stringResource(id = R.string.songs),
@@ -51,32 +50,24 @@ fun SongListView(
                     fontWeight = FontWeight.Bold,
                 )
             )
-        }
 
+            Column(
+                Modifier.padding(vertical = 15.dp),
+            ) {
+                songs.forEach { song ->
 
-        Column(
-            Modifier.padding(vertical = 15.dp),
-//            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            songs.forEach { song ->
+                    SwipeableSongView(
+                        song = song,
+                        playerController = playerController,
+                        onMoreClicked = { onMoreClicked(song) },
+                        downloadTracker = downloadTracker,
 
-
-                SwipeableSongView(
-                    song = song,
-                    playerController = playerController,
-                    onMoreClicked = { onMoreClicked(song) },
-                    downloadTracker = downloadTracker,
-
-                    onSwipe = { onSwipe(song) }
-                ) {
-                    onClick(song)
+                        onSwipe = { onSwipe(song) }
+                    ) {
+                        onClick(song)
+                    }
                 }
-
-
             }
-
         }
-
-
     }
 }

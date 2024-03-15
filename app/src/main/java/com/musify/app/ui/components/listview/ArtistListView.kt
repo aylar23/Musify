@@ -19,30 +19,32 @@ import com.musify.app.ui.theme.SFFontFamily
 
 @Composable
 fun ArtistListView(
-    @StringRes header: Int ,
+    @StringRes header: Int,
     artists: List<Artist>,
-    onClick : (Artist) -> Unit
+    onClick: (Artist) -> Unit
 ) {
+    if (artists.isNotEmpty()) {
+        Column {
 
-    Column {
-        Text(
-            modifier = Modifier.padding(horizontal = 20.dp),
-            text = stringResource(id = header),
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 16.sp,
-                fontFamily = SFFontFamily,
-                fontWeight = FontWeight.Bold,
+            Text(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                text = stringResource(id = header),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = SFFontFamily,
+                    fontWeight = FontWeight.Bold,
+                )
             )
-        )
 
 
-        Column(
-            Modifier.padding(vertical = 15.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
-        ) {
-            for (artist in artists){
-                ArtistView(artist){onClick(artist)}
+            Column(
+                Modifier.padding(vertical = 15.dp),
+                verticalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                for (artist in artists) {
+                    ArtistView(artist) { onClick(artist) }
+                }
             }
         }
     }

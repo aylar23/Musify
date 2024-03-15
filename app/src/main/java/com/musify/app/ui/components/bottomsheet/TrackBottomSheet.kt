@@ -64,14 +64,11 @@ fun TrackBottomSheet(
 
 
     ModalBottomSheet(
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier,
         containerColor = AlbumCoverBlackBG,
         sheetState = songSettingsSheetState,
         dragHandle = {},
         onDismissRequest = onDismiss,
-        windowInsets = WindowInsets(0),
-
         ) {
 
 
@@ -105,7 +102,7 @@ fun TrackBottomSheet(
                 }
                 Text(
                     modifier = Modifier
-                        .padding(top = 10.dp)
+                        .padding(top = 20.dp)
                         .basicMarquee(
                         iterations = Int.MAX_VALUE,
                     ),
@@ -195,7 +192,7 @@ fun TrackBottomSheet(
             }
 
             CustomButton(
-                modifier = Modifier.fillMaxWidth().padding(20.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
                 text = R.string.cancel,
                 onClick = onDismiss,
                 containerColor = SurfaceSecond,
@@ -203,9 +200,6 @@ fun TrackBottomSheet(
                 shape = MaterialTheme.shapes.small
             )
         }
-
-        Spacer(Modifier.navigationBarsPadding())
-
 
     }
 }

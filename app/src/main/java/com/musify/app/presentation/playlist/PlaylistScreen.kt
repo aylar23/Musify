@@ -109,7 +109,7 @@ fun PlaylistScreen(
 
     val uiState by playlistViewModel.uiState.collectAsState()
 
-    val playlistSheetState = rememberModalBottomSheetState()
+    val playlistSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
@@ -387,6 +387,7 @@ fun PlaylistScreen(
 
             if (addToPlaylistClicked) {
                 AddToPlaylistBottomSheet(
+                    selectedSong = selectedSong,
                     playlists = playlists,
                     playlistSheetState = playlistSheetState,
                     onCreateNewPlaylist = {
@@ -419,6 +420,7 @@ fun PlaylistScreen(
 
             if (showArtistDialog) {
                 ArtistBottomSheet(
+                    selectedSong = selectedSong,
                     artists = selectedSong.artists,
                     sheetState = artistsSheetState,
                     onSelect = { artist-> navigateToArtist(artist) },

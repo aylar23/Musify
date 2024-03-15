@@ -34,43 +34,38 @@ fun SongGridListView(
 ) {
 
     val configuration = LocalConfiguration.current
-
     val screenWidth = configuration.screenWidthDp.dp
 
-
-    Column {
-        Text(
-            modifier = Modifier.padding(horizontal = 20.dp),
-            text = stringResource(id = R.string.hit_songs),
-            style = TextStyle(
-                fontSize = 16.sp,
-                lineHeight = 16.sp,
-                fontFamily = SFFontFamily,
-                fontWeight = FontWeight.Bold,
+    if (songs.isNotEmpty()) {
+        Column {
+            Text(
+                modifier = Modifier.padding(horizontal = 20.dp),
+                text = stringResource(id = R.string.hit_songs),
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    lineHeight = 16.sp,
+                    fontFamily = SFFontFamily,
+                    fontWeight = FontWeight.Bold,
+                )
             )
-        )
 
-
-        LazyHorizontalGrid(
-            modifier = Modifier.height(300.dp),
-            rows = GridCells.Fixed(4),
-            contentPadding = PaddingValues(20.dp, 15.dp),
-
+            LazyHorizontalGrid(
+                modifier = Modifier.height(300.dp),
+                rows = GridCells.Fixed(4),
+                contentPadding = PaddingValues(20.dp, 15.dp)
             ) {
-            items(songs) { song ->
-
-                SongView(
-                    modifier = Modifier.width(screenWidth*0.90f),
-                    playerController = homeViewModel.getPlayerController(),
-                    song = song,
-                    downloadTracker = homeViewModel.getDownloadTracker(),
-                    onMoreClicked = {onMoreClicked(song)}
-                ) {
-                    onClick(song)
+                items(songs) { song ->
+                    SongView(
+                        modifier = Modifier.width(screenWidth * 0.90f),
+                        playerController = homeViewModel.getPlayerController(),
+                        song = song,
+                        downloadTracker = homeViewModel.getDownloadTracker(),
+                        onMoreClicked = { onMoreClicked(song) }
+                    ) {
+                        onClick(song)
+                    }
                 }
             }
         }
-
-
     }
 }

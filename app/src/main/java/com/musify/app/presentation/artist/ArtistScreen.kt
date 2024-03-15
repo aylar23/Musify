@@ -53,6 +53,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -79,6 +80,7 @@ import com.musify.app.domain.models.Song
 import com.musify.app.presentation.artist.components.LatestReleaseView
 import com.musify.app.presentation.player.NewPlaylistDialog
 import com.musify.app.presentation.playlist.components.CollapsingTopAppBar
+import com.musify.app.ui.components.HeaderView
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.NetworkErrorView
 import com.musify.app.ui.components.SwipeableSongView
@@ -106,6 +108,9 @@ fun ArtistScreen(
     paddingValues: PaddingValues,
     artistViewModel: ArtistViewModel,
     navigateToArtist: (Artist) -> Unit,
+    navigateToAlbums: (Artist) -> Unit,
+    navigateToTops: (Artist) -> Unit,
+    navigateToSingles: (Artist) -> Unit,
     navigateToAlbum: (Long) -> Unit,
     navigateUp: () -> Unit,
 ) {
@@ -141,7 +146,7 @@ fun ArtistScreen(
 
 
     lateinit var selectedSong: Song
-    val playlistSheetState = rememberModalBottomSheetState()
+    val playlistSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -191,8 +196,8 @@ fun ArtistScreen(
             scrollStrategy = ScrollStrategy.ExitUntilCollapsed,
             toolbar = {
 
-                val textSize = (22 + (50 - 16) * state.toolbarState.progress).sp
-                val padding = (30 * (1 - state.toolbarState.progress)).dp
+                val textSize = (22 + (30 - 16) * state.toolbarState.progress).sp
+                val padding = (44 * (1 - state.toolbarState.progress)).dp
 
                 Box(
                     modifier = Modifier
@@ -228,280 +233,285 @@ fun ArtistScreen(
                                     Background
                                 )
                             )
-                        )
-                )
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(padding, 16.dp, 16.dp, 16.dp)
-                        .road(
-                            whenCollapsed = Alignment.TopStart,
-                            whenExpanded = Alignment.BottomCenter
                         ),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(5.dp)
-
+                    contentAlignment = Alignment.BottomCenter
                 ) {
                     Text(
                         modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(start = 16.dp)
-                            .weight(1f),
+                            .padding(16.dp)
+                            .alpha(state.toolbarState.progress),
                         text = uiState.data?.name ?: "",
-                        style = TextStyle(color = Color.White, fontSize = textSize),
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 35.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
                         maxLines = 1,
-                        fontWeight = FontWeight.Bold,
+                        textAlign = TextAlign.Center,
                         overflow = TextOverflow.Ellipsis,
-                        textAlign = TextAlign.Center
                     )
-
                 }
 
-                IconButton(
+                Row(
                     modifier = Modifier
                         .pin()
                         .padding(vertical = 8.dp),
-                    onClick = { navigateUp() }) {
-                    Icon(
-                        tint = WhiteTextColor,
-                        painter = painterResource(id = R.drawable.left_arrow),
-                        contentDescription = stringResource(id = R.string.go_back)
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.Center
+
+                ) {
+
+                    IconButton(
+                        modifier = Modifier,
+                        onClick = { navigateUp() }) {
+                        Icon(
+                            tint = WhiteTextColor,
+                            painter = painterResource(id = R.drawable.left_arrow),
+                            contentDescription = stringResource(id = R.string.go_back)
+                        )
+                    }
+
+                    Text(
+                        modifier = Modifier.alpha(1 - state.toolbarState.progress),
+                        text = uiState.data?.name ?: "",
+                        style = TextStyle(
+                            color = Color.White,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Medium
+                        ),
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
                     )
+
+
                 }
 
 
-            }) {
+            }
 
 
-            CompositionLocalProvider(
-                LocalOverscrollConfiguration provides OverscrollConfiguration(
-                    glowColor = Color.Red, PaddingValues(10.dp)
-                )
+        ) {
+
+
+            LazyColumn(
+                modifier = Modifier,
             ) {
 
 
-                LazyColumn(
-                    modifier = Modifier,
-                ) {
-
-
-                    when {
-                        uiState.isLoading -> {
-                            item {
-                                LoadingView(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .fillMaxHeight()
-                                        .background(Background)
-                                )
-                            }
-                        }
-
-                        uiState.isFailure -> {
-                            item {
-                                NetworkErrorView(
-                                    Modifier
-                                        .fillMaxWidth()
-                                        .fillMaxHeight()
-                                        .background(Background)
-                                ) {
-                                    artistViewModel.getArtistDetail(id)
-                                }
-                            }
-                        }
-
-                        uiState.isSuccess -> {
-
-                            uiState.data?.let { data ->
-
-                                item {
-                                    if (data.hasLatestRelease()) {
-                                        LatestReleaseView(
-                                            latestRelease = data.latestRelease,
-                                            navigateToAlbum = { album ->
-                                                navigateToAlbum(album.playlistId)
-                                            },
-                                            playSong = { song ->
-                                                artistViewModel.getPlayerController()
-                                                    .init(song, listOf(song))
-                                            }
-                                        )
-                                    }
-
-                                }
-
-                                item {
-                                    if (data.songs.isNotEmpty()) {
-                                        Text(
-                                            modifier = Modifier.padding(
-                                                start = 20.dp,
-                                                end = 20.dp,
-                                                top = 20.dp,
-                                            ),
-                                            text = stringResource(id = R.string.top_songs),
-                                            style = TextStyle(
-                                                fontSize = 16.sp,
-                                                lineHeight = 16.sp,
-                                                fontFamily = SFFontFamily,
-                                                fontWeight = FontWeight.Bold,
-                                            )
-                                        )
-                                    }
-
-                                }
-                                items(data.songs) { song ->
-                                    SwipeableSongView(
-                                        song = song,
-                                        playerController = artistViewModel.getPlayerController(),
-                                        onMoreClicked = {
-                                            selectedSong = it
-                                            settingsClicked = true
-                                        },
-                                        downloadTracker = artistViewModel.getDownloadTracker(),
-
-                                        onSwipe = {
-                                            artistViewModel.getPlayerController().onPlayNext(song)
-                                        }
-                                    ) {
-                                        artistViewModel.getPlayerController().init(song, data.songs)
-                                    }
-
-                                }
-
-
-                                item {
-                                    Box(
-                                        modifier = Modifier.padding(top = 20.dp),
-                                    ) {
-                                        AlbumListView(playlists = data.albums) { album ->
-                                            navigateToAlbum(album.playlistId)
-                                        }
-                                    }
-
-                                }
-                                item {
-                                    if (data.singles.isNotEmpty()) {
-                                        Text(
-                                            modifier = Modifier.padding(
-                                                start = 20.dp,
-                                                end = 20.dp,
-                                                top = 20.dp,
-                                            ),
-                                            text = stringResource(id = R.string.songs),
-                                            style = TextStyle(
-                                                fontSize = 16.sp,
-                                                lineHeight = 16.sp,
-                                                fontFamily = SFFontFamily,
-                                                fontWeight = FontWeight.Bold,
-                                            )
-                                        )
-                                    }
-
-                                }
-                                items(data.singles) { song ->
-                                    SwipeableSongView(
-                                        song = song,
-                                        onMoreClicked = {
-                                            selectedSong = it
-                                            settingsClicked = true
-                                        },
-                                        playerController = artistViewModel.getPlayerController(),
-                                        downloadTracker = artistViewModel.getDownloadTracker(),
-
-                                        onSwipe = {
-                                            artistViewModel.getPlayerController().onPlayNext(song)
-                                        }
-                                    ) {
-                                        artistViewModel.getPlayerController()
-                                            .init(song, data.singles)
-                                    }
-
-                                }
-
-                            }
-                        }
-                    }
-                }
-            }
-
-            if (settingsClicked) {
-                TrackBottomSheet(
-                    selectedSong = selectedSong,
-                    songSettingsSheetState = songSettingsSheetState,
-                    onAddToPlaylist = {
-                        settingsClicked = false
-                        addToPlaylistClicked = true
-                    },
-                    onNavigateToAlbum = {
-                        selectedSong.albumId?.let { navigateToAlbum(it) }
-                    },
-                    onNavigateToArtist = {
-                        if (selectedSong.artists.size == 1) {
-                            selectedSong.getArtist().let { navigateToArtist(it) }
-                        } else {
-                            showArtistDialog = true
-                        }
-                    },
-                    onPlayNext = {
-                        artistViewModel.getPlayerController().selectedTrack?.let {
-                            artistViewModel.getPlayerController().onPlayNext(
-                                it
+                when {
+                    uiState.isLoading -> {
+                        item {
+                            LoadingView(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                                    .background(Background)
                             )
                         }
-                    },
-                    onShare = {},
-                    onDelete = {},
-                ) {
-                    settingsClicked = false
-                }
-            }
+                    }
 
-
-
-            if (addToPlaylistClicked) {
-                AddToPlaylistBottomSheet(
-                    playlists = playlists,
-                    playlistSheetState = playlistSheetState,
-                    onCreateNewPlaylist = {
-                        showNewPlaylistDialog = true
-                    },
-                    onSelect = { playlist ->
-                        artistViewModel.addSongToPlaylist(selectedSong, playlist)
-                        scope.launch {
-                            snackbarHostState.showSnackbar(snackbarMessage)
+                    uiState.isFailure -> {
+                        item {
+                            NetworkErrorView(
+                                Modifier
+                                    .fillMaxWidth()
+                                    .fillMaxHeight()
+                                    .background(Background)
+                            ) {
+                                artistViewModel.getArtistDetail(id)
+                            }
                         }
                     }
-                ) {
-                    addToPlaylistClicked = false
-                }
-            }
 
-            if (showNewPlaylistDialog) {
-                Dialog(onDismissRequest = { showNewPlaylistDialog = false }) {
-                    NewPlaylistDialog() { name ->
-                        showNewPlaylistDialog = false
-                        artistViewModel.addNewPlaylist(name)
-                        scope.launch {
-                            snackbarHostState.showSnackbar(snackbarMessage)
+                    uiState.isSuccess -> {
+
+                        uiState.data?.let { data ->
+
+                            item {
+                                if (data.hasLatestRelease()) {
+                                    LatestReleaseView(
+                                        latestRelease = data.latestRelease,
+                                        navigateToAlbum = { album ->
+                                            navigateToAlbum(album.playlistId)
+                                        },
+                                        playSong = { song ->
+                                            artistViewModel.getPlayerController()
+                                                .init(song, listOf(song))
+                                        }
+                                    )
+                                }
+
+                            }
+
+                            item {
+                                if (data.songs.isNotEmpty()) {
+                                    HeaderView(
+                                        modifier = Modifier.padding(
+                                            top = 20.dp,
+                                            bottom = 10.dp
+                                        ),
+                                        mainText = stringResource(id = R.string.top_songs),
+                                        expandable = true
+                                    ) {
+                                        navigateToTops(data)
+                                    }
+
+                                }
+
+                            }
+                            items(data.songs) { song ->
+                                SwipeableSongView(
+                                    song = song,
+                                    playerController = artistViewModel.getPlayerController(),
+                                    onMoreClicked = {
+                                        selectedSong = it
+                                        settingsClicked = true
+                                    },
+                                    downloadTracker = artistViewModel.getDownloadTracker(),
+
+                                    onSwipe = {
+                                        artistViewModel.getPlayerController().onPlayNext(song)
+                                    }
+                                ) {
+                                    artistViewModel.getPlayerController().init(song, data.songs)
+                                }
+
+                            }
+
+
+                            item {
+                                Box(
+                                    modifier = Modifier.padding(top = 20.dp),
+                                ) {
+                                    AlbumListView(
+                                        playlists = data.albums,
+                                        expandable = true,
+                                        navigateToAlbums = { navigateToAlbums(data) }
+                                    ) { album ->
+                                        navigateToAlbum(album.playlistId)
+                                    }
+                                }
+
+                            }
+                            item {
+                                if (data.singles.isNotEmpty()) {
+                                    HeaderView(
+                                        modifier = Modifier.padding(
+                                            top = 20.dp,
+                                            bottom = 10.dp
+                                        ),
+                                        mainText = stringResource(id = R.string.singles),
+                                        expandable = true
+                                    ) {
+                                        navigateToSingles(data)
+                                    }
+                                }
+
+                            }
+                            items(data.singles) { song ->
+                                SwipeableSongView(
+                                    song = song,
+                                    onMoreClicked = {
+                                        selectedSong = it
+                                        settingsClicked = true
+                                    },
+                                    playerController = artistViewModel.getPlayerController(),
+                                    downloadTracker = artistViewModel.getDownloadTracker(),
+
+                                    onSwipe = {
+                                        artistViewModel.getPlayerController().onPlayNext(song)
+                                    }
+                                ) {
+                                    artistViewModel.getPlayerController()
+                                        .init(song, data.singles)
+                                }
+
+                            }
+
                         }
                     }
                 }
-
-            }
-
-            if (showArtistDialog) {
-                ArtistBottomSheet(
-                    artists = selectedSong.artists,
-                    sheetState = artistsSheetState,
-                    onSelect = { artist -> navigateToArtist(artist) },
-                    onDismiss = { showArtistDialog = false }
-
-                )
-
             }
         }
 
+        if (settingsClicked) {
+            TrackBottomSheet(
+                selectedSong = selectedSong,
+                songSettingsSheetState = songSettingsSheetState,
+                onAddToPlaylist = {
+                    settingsClicked = false
+                    addToPlaylistClicked = true
+                },
+                onNavigateToAlbum = {
+                    selectedSong.albumId?.let { navigateToAlbum(it) }
+                },
+                onNavigateToArtist = {
+                    if (selectedSong.artists.size == 1) {
+                        selectedSong.getArtist().let { navigateToArtist(it) }
+                    } else {
+                        showArtistDialog = true
+                    }
+                },
+                onPlayNext = {
+                    artistViewModel.getPlayerController().selectedTrack?.let {
+                        artistViewModel.getPlayerController().onPlayNext(
+                            it
+                        )
+                    }
+                },
+                onShare = {},
+                onDelete = {},
+            ) {
+                settingsClicked = false
+            }
+        }
+
+
+        if (addToPlaylistClicked) {
+            AddToPlaylistBottomSheet(
+                selectedSong = selectedSong,
+                playlists = playlists,
+                playlistSheetState = playlistSheetState,
+                onCreateNewPlaylist = {
+                    showNewPlaylistDialog = true
+                },
+                onSelect = { playlist ->
+                    artistViewModel.addSongToPlaylist(selectedSong, playlist)
+                    scope.launch {
+                        snackbarHostState.showSnackbar(snackbarMessage)
+                    }
+                }
+            ) {
+                addToPlaylistClicked = false
+            }
+        }
+
+        if (showNewPlaylistDialog) {
+            Dialog(onDismissRequest = { showNewPlaylistDialog = false }) {
+                NewPlaylistDialog() { name ->
+                    showNewPlaylistDialog = false
+                    artistViewModel.addNewPlaylist(name)
+                    scope.launch {
+                        snackbarHostState.showSnackbar(snackbarMessage)
+                    }
+                }
+            }
+
+        }
+
+        if (showArtistDialog) {
+            ArtistBottomSheet(
+                selectedSong = selectedSong,
+                artists = selectedSong.artists,
+                sheetState = artistsSheetState,
+                onSelect = { artist -> navigateToArtist(artist) },
+                onDismiss = { showArtistDialog = false }
+
+            )
+
+        }
     }
+
+
 }
 

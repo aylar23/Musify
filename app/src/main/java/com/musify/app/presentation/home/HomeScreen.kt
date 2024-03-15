@@ -92,7 +92,7 @@ fun HomeScreen(
         mutableStateOf(false)
     }
 
-    val playlistSheetState = rememberModalBottomSheetState()
+    val playlistSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val artistsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val songSettingsSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -116,7 +116,6 @@ fun HomeScreen(
 
         LazyColumn(
             Modifier
-                .padding(padding)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
@@ -188,10 +187,6 @@ fun HomeScreen(
             }
 
         }
-
-
-
-
         when {
 
 
@@ -210,8 +205,6 @@ fun HomeScreen(
 
             }
         }
-
-
         if (settingsClicked) {
             TrackBottomSheet(
                 selectedSong = selectedSong,
@@ -249,6 +242,7 @@ fun HomeScreen(
 
         if (addToPlaylistClicked) {
             AddToPlaylistBottomSheet(
+                selectedSong = selectedSong,
                 playlists = playlists,
                 playlistSheetState = playlistSheetState,
                 onCreateNewPlaylist = {
@@ -281,6 +275,7 @@ fun HomeScreen(
 
         if (showArtistDialog) {
             ArtistBottomSheet(
+                selectedSong = selectedSong,
                 artists = selectedSong.artists,
                 sheetState = artistsSheetState,
                 onSelect = { artist-> navigateToArtist(artist) },
