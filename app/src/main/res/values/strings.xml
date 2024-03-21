@@ -96,5 +96,14 @@
     <string name="notification_channel_name">Playback cannot be resumed</string>
     <string name="nothing_found">Noting Found</string>
     <string name="singles">Singles</string>
+    <string name="enter_phone_number_to_continue">Dowam etmek üçin telefon belgiňizi giriziň.</string>
+    <string name="phone_number">Telefon belgiňiz</string>
+    <string name="continue_string">Continue</string>
+    <string name="invalid_code_desc">Invalid code</string>
+    <string name="enter_verification_code">SMS kody giriziň</string>
+    <string name="enter_verification_code_desc">Belgiňize SMS arkaly ugradylan ýörite kody giriziň.</string>
+    <string name="general_settings">Esasy sazlamalar</string>
+    <string name="control_your_account_easily">Öz hasabyňyzy ýeňillik bilen dolandyryň</string>
+    <string name="enter_promo_code">Enter Promo Code</string>
 
 </resources>

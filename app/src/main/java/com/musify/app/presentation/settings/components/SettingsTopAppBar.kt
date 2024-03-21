@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -31,6 +33,8 @@ fun SettingsTopAppBar (user: User) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
+            .background(DarkGray, MaterialTheme.shapes.extraSmall)
+            .clip(MaterialTheme.shapes.extraSmall)
             .padding(20.dp, 10.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -41,30 +45,32 @@ fun SettingsTopAppBar (user: User) {
         ) {
             Text(
                 modifier = Modifier,
-                text = user.name + " " + user.lastName,
-                lineHeight = 26.sp,
-                fontSize = 22.sp,
+                text = user.name,
+                lineHeight = 16.sp,
+                fontSize = 16.sp,
                 color = WhiteTextColor,
                 fontWeight = FontWeight.Bold
             )
-            Text(
-                modifier = Modifier,
-                text = stringResource(id = R.string.premium_user),
-                lineHeight = 18.sp,
-                fontSize = 15.sp,
-                color = GrayTextColor,
-                fontWeight = FontWeight.Normal
-            )
-        }
-        IconButton(
-            modifier = Modifier.size(24.dp),
-            onClick = { },
-        ) {
-            Icon(
-                painter = painterResource(id = R.drawable.verified),
-                contentDescription = "verified",
-                tint = WhiteTextColor
-            )
+            Row {
+                Text(
+                    modifier = Modifier,
+                    text = stringResource(id = R.string.premium_user),
+                    lineHeight = 12.sp,
+                    fontSize = 12.sp,
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Normal
+                )
+
+                Text(
+                    modifier = Modifier.padding(start = 10.dp),
+                    text = "30 days left",
+                    lineHeight = 12.sp,
+                    fontSize = 12.sp,
+                    color = GrayTextColor,
+                    fontWeight = FontWeight.Normal
+                )
+            }
+
         }
 
 

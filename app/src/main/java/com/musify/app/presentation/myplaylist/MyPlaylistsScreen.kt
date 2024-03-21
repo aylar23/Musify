@@ -43,6 +43,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
 import com.musify.app.R
@@ -53,7 +54,9 @@ import com.musify.app.domain.models.Playlist.Companion.ALL_SEARCH
 import com.musify.app.domain.models.Playlist.Companion.ARTIST
 import com.musify.app.domain.models.Playlist.Companion.PLAYLIST
 import com.musify.app.domain.models.Playlist.Companion.SONG
+import com.musify.app.presentation.destinations.LocalPlaylistScreenDestination
 import com.musify.app.presentation.player.NewPlaylistDialog
+import com.musify.app.presentation.playlist.PlaylistViewModel
 import com.musify.app.presentation.search.SearchViewModel
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.LocalPlayListView
@@ -63,16 +66,17 @@ import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.Surface
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
-
+@Destination
 @Composable
 fun MyPlaylistsScreen(
-    paddingValues: PaddingValues,
-    myPlaylistsViewModel: MyPlaylistsViewModel,
-    navigateToNewPlaylist: () -> Unit,
-    navigateToLocalPlaylist: (Playlist) -> Unit,
+    navigator: DestinationsNavigator
 ) {
+
+    val myPlaylistsViewModel = hiltViewModel<MyPlaylistsViewModel>()
 
     var showNewPlaylistDialog by remember {
         mutableStateOf(false)
@@ -93,9 +97,7 @@ fun MyPlaylistsScreen(
         LibrarySection.Album
     )
     Scaffold(
-        modifier = Modifier.padding(paddingValues = paddingValues),
         topBar = {
-
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -155,7 +157,7 @@ fun MyPlaylistsScreen(
                             snackbarHostState.showSnackbar(snackbarDeleteMessage)
                         }
                     }, selectPlaylist = {
-                        navigateToLocalPlaylist(playlist)
+                        navigator.navigate(LocalPlaylistScreenDestination(playlist.playlistId))
                     })
 
 

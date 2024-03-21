@@ -37,10 +37,16 @@
 
 -dontwarn retrofit2.**
 -keep class retrofit2.** { *; }
+ -keep,allowobfuscation,allowshrinking interface retrofit2.Call
+ -keep,allowobfuscation,allowshrinking class retrofit2.Response
+ -keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
 
 
 -keep class com.musify.app.domain.models.* { *; }
+-keep class com.musify.app.domain.* { *; }
+-keep class com.musify.app.di.* { *; }
 -keep class com.musify.app.player.* { *; }
+-keep class com.musify.app.presentation.destinations.* { *; }
 
 -keep class androidx.datastore.*.** {*;}
 -keep class * extends com.google.protobuf.GeneratedMessageLite { *; }

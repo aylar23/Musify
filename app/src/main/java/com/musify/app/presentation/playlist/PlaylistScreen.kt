@@ -47,11 +47,16 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.musify.app.MainActivity.Companion.ALBUMS
 import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.destinations.ArtistScreenDestination
+import com.musify.app.presentation.destinations.PlaylistScreenDestination
 import com.musify.app.presentation.player.NewPlaylistDialog
+import com.musify.app.presentation.search.SearchViewModel
 import com.musify.app.ui.components.CustomButton
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.NetworkErrorView
@@ -67,21 +72,21 @@ import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
 fun PlaylistScreen(
     id: Long,
     type: String,
-    paddingValues: PaddingValues,
-    playlistViewModel: PlaylistViewModel,
-    navigateToNewPlaylist: () -> Unit,
-    navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Long) -> Unit,
-    navigateUp: () -> Unit,
+    navigator: DestinationsNavigator
 ) {
+
+    val playlistViewModel = hiltViewModel<PlaylistViewModel>()
 
     LaunchedEffect(id, type) {
         playlistViewModel.setPlaylistIdAndType(id, type)
@@ -121,15 +126,15 @@ fun PlaylistScreen(
     val snackbarMessage = stringResource(id = R.string.successfully_added)
 
     Scaffold(
-        modifier = Modifier
-            .padding(paddingValues),
-        snackbarHost = { SnackbarHost(snackbarHostState) { data ->
-            Snackbar(
-                containerColor = Inactive,
-                contentColor = WhiteTextColor,
-                snackbarData = data
-            )
-        } },
+        snackbarHost = {
+            SnackbarHost(snackbarHostState) { data ->
+                Snackbar(
+                    containerColor = Inactive,
+                    contentColor = WhiteTextColor,
+                    snackbarData = data
+                )
+            }
+        },
     ) { _ ->
 
 
@@ -226,7 +231,7 @@ fun PlaylistScreen(
                     modifier = Modifier
                         .pin()
                         .padding(vertical = 8.dp),
-                    onClick = { navigateUp() }) {
+                    onClick = {  navigator.navigateUp() }) {
                     Icon(
                         tint = WhiteTextColor,
                         painter = painterResource(id = R.drawable.left_arrow),
@@ -360,12 +365,20 @@ fun PlaylistScreen(
                         addToPlaylistClicked = true
                     },
                     onNavigateToAlbum = {
-                        selectedSong.albumId?.let { navigateToAlbum(it) }
+                        selectedSong.albumId?.let {
+                            navigator.navigate(
+                                PlaylistScreenDestination(it, ALBUMS)
+                            )
+                        }
                     },
                     onNavigateToArtist = {
-                        if(selectedSong.artists.size == 1){
-                            navigateToArtist(selectedSong.getArtist())
-                        }else{
+                        if (selectedSong.artists.size == 1) {
+                            selectedSong.getArtist().id.let {
+                                navigator.navigate(
+                                    ArtistScreenDestination(it)
+                                )
+                            }
+                        } else {
                             showArtistDialog = true
                         }
                     },
@@ -423,8 +436,8 @@ fun PlaylistScreen(
                     selectedSong = selectedSong,
                     artists = selectedSong.artists,
                     sheetState = artistsSheetState,
-                    onSelect = { artist-> navigateToArtist(artist) },
-                    onDismiss = { showArtistDialog = false}
+                    onSelect = { artist -> navigator.navigate(ArtistScreenDestination(artist.id)) },
+                    onDismiss = { showArtistDialog = false }
 
                 )
 

@@ -4,6 +4,7 @@ import android.content.Context
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.musify.app.domain.service.ApiService
+import com.musify.app.domain.service.UserService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -57,5 +58,11 @@ class DataModule {
     @Singleton
     fun provideApiService(retrofit: Retrofit): ApiService {
         return retrofit.create(ApiService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserService(retrofit: Retrofit): UserService {
+        return retrofit.create(UserService::class.java)
     }
 }

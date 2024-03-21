@@ -32,9 +32,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.musify.app.MainActivity
 import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.destinations.ArtistScreenDestination
+import com.musify.app.presentation.destinations.PlaylistScreenDestination
+import com.musify.app.presentation.myplaylist.MyPlaylistsViewModel
 import com.musify.app.presentation.player.NewPlaylistDialog
 import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.components.CustomButton
@@ -48,19 +53,19 @@ import com.musify.app.ui.theme.Background
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.theme.Yellow
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Destination
 fun LocalPlaylistScreen(
     id: Long,
-    localPlaylistViewModel: LocalPlaylistViewModel,
-    paddingValues: PaddingValues,
-    navigateToNewPlaylist: () -> Unit,
-    navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Long) -> Unit,
-    navigateUp: () -> Unit,
+    navigator: DestinationsNavigator
 ) {
+
+    val localPlaylistViewModel = hiltViewModel<LocalPlaylistViewModel>()
 
     val playlist by localPlaylistViewModel.getPlaylist(id).collectAsState(initial = null)
 
@@ -101,7 +106,6 @@ fun LocalPlaylistScreen(
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
-        .padding(paddingValues)
         .background(
             AlbumCoverBlackBG
         ),
@@ -130,7 +134,7 @@ fun LocalPlaylistScreen(
                     }
 
                 }) {
-                navigateUp()
+                navigator.navigateUp()
             }
         }) { padding ->
 
@@ -246,11 +250,19 @@ fun LocalPlaylistScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    selectedSong.albumId?.let { navigateToAlbum(it) }
+                    selectedSong.albumId?.let {
+                        navigator.navigate(
+                            PlaylistScreenDestination(it, MainActivity.ALBUMS)
+                        )
+                    }
                 },
                 onNavigateToArtist = {
                     if (selectedSong.artists.size == 1) {
-                        navigateToArtist(selectedSong.getArtist())
+                        selectedSong.getArtist().id.let {
+                            navigator.navigate(
+                                ArtistScreenDestination(it)
+                            )
+                        }
                     } else {
                         showArtistDialog = true
                     }
@@ -315,7 +327,7 @@ fun LocalPlaylistScreen(
                 selectedSong = selectedSong,
                 artists = selectedSong.artists,
                 sheetState = artistsSheetState,
-                onSelect = { artist -> navigateToArtist(artist) },
+                onSelect = { artist -> navigator.navigate(ArtistScreenDestination(artist.id)) },
                 onDismiss = { showArtistDialog = false }
 
             )

@@ -14,24 +14,29 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import com.musify.app.R
+import com.musify.app.presentation.home.HomeViewModel
 import com.musify.app.ui.components.AlbumView
 import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.NetworkErrorView
 import com.musify.app.ui.components.NotFoundView
 import com.musify.app.ui.theme.AlbumCoverBlackBG
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 
 @Composable
+@Destination
 fun AlbumsScreen(
     artistId: Long,
-    paddingValues: PaddingValues,
-    albumsViewModel: AlbumsViewModel,
-    navigateUp: () -> Unit
+    navigator: DestinationsNavigator,
 ) {
+
+    val albumsViewModel = hiltViewModel<AlbumsViewModel>()
 
     LaunchedEffect(artistId) {
         albumsViewModel.setArtistId(artistId)
@@ -41,7 +46,6 @@ fun AlbumsScreen(
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
-        .padding(paddingValues)
         .background(
             AlbumCoverBlackBG
         ),
@@ -50,7 +54,7 @@ fun AlbumsScreen(
             CollapsingSmallTopAppBar(
                 title = stringResource(id = R.string.albums)
             ) {
-                navigateUp()
+                navigator.navigateUp()
             }
 
         }

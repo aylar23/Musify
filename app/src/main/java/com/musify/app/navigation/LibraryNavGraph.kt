@@ -37,168 +37,168 @@ fun LibraryNavGraph(
     navController: NavController
 ) {
 
-    val innerNavController = rememberNavController()
-
-
-    NavHost(
-        navController = innerNavController,
-        startDestination = Screen.MyPlaylist.route,
-        enterTransition = { fadeIn(animationSpec = tween(100)) },
-        exitTransition = { fadeOut(animationSpec = tween(100)) },
-        popEnterTransition = { fadeIn(animationSpec = tween(100)) },
-        popExitTransition = { fadeOut(animationSpec = tween(100)) },
-    ) {
-
-
-        composable(Screen.MyPlaylist.route) {
-
-            MyPlaylistsScreen(
-                paddingValues = paddingValues,
-                myPlaylistsViewModel = hiltViewModel(),
-                navigateToNewPlaylist = {},
-                navigateToLocalPlaylist = {playlist ->
-                    innerNavController.navigate(Screen.LocalPlaylist.route+ "/${playlist.playlistId}")
-
-                }
-            )
-
-        }
-
-        composable(
-            route = Screen.Artist.route + "/{id}", arguments = listOf(
-                navArgument("id") { type = NavType.LongType },
-            )
-        ) { entry ->
-            entry.arguments?.getLong("id")?.let { id ->
-                ArtistScreen(
-                    id = id,
-                    paddingValues = paddingValues,
-                    artistViewModel = hiltViewModel(),
-                    navigateToArtist = { artist ->
-                        innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
-
-                    },
-                    navigateToAlbum = { album ->
-                        innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
-                    },
-                    navigateToAlbums = { artist ->
-                        innerNavController.navigate(Screen.Albums.route + "/${artist.id}")
-                    },
-                    navigateToTops = { artist ->
-                        innerNavController.navigate(Screen.Songs.route + "/${artist.id}/1/0")
-                    },
-                    navigateToSingles = { artist ->
-                        innerNavController.navigate(Screen.Songs.route + "/${artist.id}/0/1")
-                    },
-                    navigateUp = {
-                        innerNavController.navigateUp()
-                    }
-                )
-            }
-
-        }
-
-        composable(
-            route = Screen.Playlist.route + "/{type}/{id}",
-            arguments = listOf(
-                navArgument("type") { type = NavType.StringType },
-                navArgument("id") { type = NavType.LongType },
-            )
-        ) { entry ->
-
-            val id = entry.arguments?.getLong("id") ?: 0L
-            val type = entry.arguments?.getString("type") ?: MainActivity.PLAYLISTS
-            PlaylistScreen(
-                id = id,
-                type = type,
-                paddingValues = paddingValues,
-                playlistViewModel = hiltViewModel(),
-                navigateToNewPlaylist = {},
-                navigateToArtist = { artist ->
-                    innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
-
-                },
-                navigateToAlbum = { album ->
-                    innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
-                },
-                navigateUp = { innerNavController.navigateUp() }
-            )
-
-
-        }
-
-        composable(
-            route = Screen.LocalPlaylist.route + "/{id}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.LongType },
-            )
-        )
-        { entry ->
-            val id = entry.arguments?.getLong("id") ?: 0L
-
-            LocalPlaylistScreen(
-                id = id,
-                localPlaylistViewModel = hiltViewModel(),
-                paddingValues = paddingValues,
-                navigateToNewPlaylist = {},
-                navigateToArtist = { artist ->
-                    innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
-
-                },
-                navigateToAlbum = { album ->
-                    innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
-                },
-                navigateUp = { innerNavController.navigateUp() }
-            )
-
-
-        }
-
-        composable(
-            route = Screen.Albums.route + "/{id}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.LongType },
-            )
-        ) { entry ->
-            val id = entry.arguments?.getLong("id") ?: 0L
-
-            AlbumsScreen(
-                artistId = id,
-                paddingValues = paddingValues,
-                albumsViewModel = hiltViewModel(),
-                navigateUp = { innerNavController.navigateUp() },
-            )
-        }
-
-        composable(
-            route = Screen.Songs.route + "/{id}/{isTop}/{isSingle}",
-            arguments = listOf(
-                navArgument("id") { type = NavType.LongType },
-                navArgument("isTop") { type = NavType.IntType },
-                navArgument("isSingle") { type = NavType.IntType },
-            )
-        ) { entry ->
-
-            val id = entry.arguments?.getLong("id") ?: 0L
-            val isTop = entry.arguments?.getInt("isTop") ?: 0
-            val isSingle = entry.arguments?.getInt("isSingle") ?: 0
-
-            SongsScreen(
-                artistId = id,
-                isTop = isTop,
-                isSingle = isSingle ,
-                paddingValues = paddingValues,
-                songsViewModel = hiltViewModel(),
-                navigateToArtist = { artist ->
-                    innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
-                },
-                navigateToAlbum = { album ->
-                    innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
-                }
-            ) { innerNavController.navigateUp() }
-
-
-        }
-    }
+//    val innerNavController = rememberNavController()
+//
+//
+//    NavHost(
+//        navController = innerNavController,
+//        startDestination = Screen.MyPlaylist.route,
+//        enterTransition = { fadeIn(animationSpec = tween(100)) },
+//        exitTransition = { fadeOut(animationSpec = tween(100)) },
+//        popEnterTransition = { fadeIn(animationSpec = tween(100)) },
+//        popExitTransition = { fadeOut(animationSpec = tween(100)) },
+//    ) {
+//
+//
+//        composable(Screen.MyPlaylist.route) {
+//
+//            MyPlaylistsScreen(
+//                paddingValues = paddingValues,
+//                myPlaylistsViewModel = hiltViewModel(),
+//                navigateToNewPlaylist = {},
+//                navigateToLocalPlaylist = {playlist ->
+//                    innerNavController.navigate(Screen.LocalPlaylist.route+ "/${playlist.playlistId}")
+//
+//                }
+//            )
+//
+//        }
+//
+//        composable(
+//            route = Screen.Artist.route + "/{id}", arguments = listOf(
+//                navArgument("id") { type = NavType.LongType },
+//            )
+//        ) { entry ->
+//            entry.arguments?.getLong("id")?.let { id ->
+//                ArtistScreen(
+//                    id = id,
+//                    paddingValues = paddingValues,
+//                    artistViewModel = hiltViewModel(),
+//                    navigateToArtist = { artist ->
+//                        innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
+//
+//                    },
+//                    navigateToAlbum = { album ->
+//                        innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
+//                    },
+//                    navigateToAlbums = { artist ->
+//                        innerNavController.navigate(Screen.Albums.route + "/${artist.id}")
+//                    },
+//                    navigateToTops = { artist ->
+//                        innerNavController.navigate(Screen.Songs.route + "/${artist.id}/1/0")
+//                    },
+//                    navigateToSingles = { artist ->
+//                        innerNavController.navigate(Screen.Songs.route + "/${artist.id}/0/1")
+//                    },
+//                    navigateUp = {
+//                        innerNavController.navigateUp()
+//                    }
+//                )
+//            }
+//
+//        }
+//
+//        composable(
+//            route = Screen.Playlist.route + "/{type}/{id}",
+//            arguments = listOf(
+//                navArgument("type") { type = NavType.StringType },
+//                navArgument("id") { type = NavType.LongType },
+//            )
+//        ) { entry ->
+//
+//            val id = entry.arguments?.getLong("id") ?: 0L
+//            val type = entry.arguments?.getString("type") ?: MainActivity.PLAYLISTS
+//            PlaylistScreen(
+//                id = id,
+//                type = type,
+//                paddingValues = paddingValues,
+//                playlistViewModel = hiltViewModel(),
+//                navigateToNewPlaylist = {},
+//                navigateToArtist = { artist ->
+//                    innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
+//
+//                },
+//                navigateToAlbum = { album ->
+//                    innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
+//                },
+//                navigateUp = { innerNavController.navigateUp() }
+//            )
+//
+//
+//        }
+//
+//        composable(
+//            route = Screen.LocalPlaylist.route + "/{id}",
+//            arguments = listOf(
+//                navArgument("id") { type = NavType.LongType },
+//            )
+//        )
+//        { entry ->
+//            val id = entry.arguments?.getLong("id") ?: 0L
+//
+//            LocalPlaylistScreen(
+//                id = id,
+//                localPlaylistViewModel = hiltViewModel(),
+//                paddingValues = paddingValues,
+//                navigateToNewPlaylist = {},
+//                navigateToArtist = { artist ->
+//                    innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
+//
+//                },
+//                navigateToAlbum = { album ->
+//                    innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
+//                },
+//                navigateUp = { innerNavController.navigateUp() }
+//            )
+//
+//
+//        }
+//
+//        composable(
+//            route = Screen.Albums.route + "/{id}",
+//            arguments = listOf(
+//                navArgument("id") { type = NavType.LongType },
+//            )
+//        ) { entry ->
+//            val id = entry.arguments?.getLong("id") ?: 0L
+//
+//            AlbumsScreen(
+//                artistId = id,
+//                paddingValues = paddingValues,
+//                albumsViewModel = hiltViewModel(),
+//                navigateUp = { innerNavController.navigateUp() },
+//            )
+//        }
+//
+//        composable(
+//            route = Screen.Songs.route + "/{id}/{isTop}/{isSingle}",
+//            arguments = listOf(
+//                navArgument("id") { type = NavType.LongType },
+//                navArgument("isTop") { type = NavType.IntType },
+//                navArgument("isSingle") { type = NavType.IntType },
+//            )
+//        ) { entry ->
+//
+//            val id = entry.arguments?.getLong("id") ?: 0L
+//            val isTop = entry.arguments?.getInt("isTop") ?: 0
+//            val isSingle = entry.arguments?.getInt("isSingle") ?: 0
+//
+//            SongsScreen(
+//                artistId = id,
+//                isTop = isTop,
+//                isSingle = isSingle ,
+//                paddingValues = paddingValues,
+//                songsViewModel = hiltViewModel(),
+//                navigateToArtist = { artist ->
+//                    innerNavController.navigate(Screen.Artist.route + "/${artist.id}")
+//                },
+//                navigateToAlbum = { album ->
+//                    innerNavController.navigate(Screen.Playlist.route + "/${MainActivity.ALBUMS}/${album}")
+//                }
+//            ) { innerNavController.navigateUp() }
+//
+//
+//        }
+//    }
 
 }

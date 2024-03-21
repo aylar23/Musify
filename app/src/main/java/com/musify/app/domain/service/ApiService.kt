@@ -1,5 +1,6 @@
 package com.musify.app.domain.service
 
+import android.provider.ContactsContract.Profile
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.MainScreenData
 import com.musify.app.domain.models.Paging

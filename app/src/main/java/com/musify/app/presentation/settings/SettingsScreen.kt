@@ -11,54 +11,93 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.musify.app.BuildConfig
 import com.musify.app.R
 import com.musify.app.domain.models.User
 import com.musify.app.presentation.settings.components.SettingsElements
 import com.musify.app.presentation.settings.components.SettingsTopAppBar
+import com.musify.app.presentation.settings.components.SubscriptionOptionsView
+import com.musify.app.presentation.song.SongsViewModel
 import com.musify.app.ui.theme.DarkGray
+import com.musify.app.ui.theme.GrayTextColor
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.WhiteTextColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
 @Composable
+@Destination
 fun SettingsScreen(
-    settingsViewModel: SettingsViewModel
+    navigator: DestinationsNavigator
 ) {
+
+    val settingsViewModel = hiltViewModel<SettingsViewModel>()
 
     val user = settingsViewModel.currentUser
 
     Scaffold(
-        topBar = { SettingsTopAppBar(user = user) }
+
     ) { padding ->
         Column(
-            modifier = Modifier.padding(top = padding.calculateTopPadding()),
+            modifier = Modifier
+                .verticalScroll(rememberScrollState())
+                .padding(20.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
+
+            SettingsTopAppBar(user = user)
+
+            Text(
+                modifier = Modifier
+                    .padding(top = 32.dp),
+                text = stringResource(R.string.general_settings),
+                color = WhiteTextColor,
+                lineHeight = 6.25.em,
+                style = TextStyle(
+                    fontSize = 16.sp,
+                    fontFamily = SFFontFamily,
+                    fontWeight = FontWeight.Bold
+                ),
+            )
+            Text(
+                modifier = Modifier
+                    .padding(top = 4.dp),
+                text = stringResource(R.string.control_your_account_easily),
+                color = GrayTextColor,
+                lineHeight = 8.33.em,
+                style = TextStyle(
+                    fontSize = 12.sp,
+                    fontFamily = SFFontFamily,
+                )
+            )
+
             Column(
                 modifier = Modifier
+                    .padding(top = 12.dp)
                     .fillMaxWidth()
-                    .weight(1f)
+                    .background(DarkGray, MaterialTheme.shapes.extraSmall)
+                    .clip(MaterialTheme.shapes.extraSmall)
             ) {
 
-                HorizontalDivider(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .background(DarkGray)
-                        .padding(horizontal = 14.dp)
-                )
-                Spacer(modifier = Modifier.height(5.dp))
                 SettingsElements(
                     icon = R.drawable.account_circle,
                     text = stringResource(id = R.string.my_account),
@@ -91,6 +130,9 @@ fun SettingsScreen(
                 }
 
             }
+
+            SubscriptionOptionsView()
+
             Column {
                 Row(modifier = Modifier
                     .clickable { }

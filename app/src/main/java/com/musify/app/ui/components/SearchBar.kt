@@ -100,7 +100,7 @@ fun SearchBar(
                 )
             }else{
                 Icon(
-                    painter = painterResource(id = R.drawable.search),
+                    painter = painterResource(id = R.drawable.ic_search),
                     contentDescription = "song setting",
                     tint = GrayTextColor
                 )

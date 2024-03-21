@@ -72,12 +72,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.rememberAsyncImagePainter
+import com.musify.app.MainActivity
 import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Song
 import com.musify.app.presentation.artist.components.LatestReleaseView
+import com.musify.app.presentation.destinations.AlbumsScreenDestination
+import com.musify.app.presentation.destinations.ArtistScreenDestination
+import com.musify.app.presentation.destinations.PlaylistScreenDestination
+import com.musify.app.presentation.destinations.SongsScreenDestination
+import com.musify.app.presentation.home.HomeViewModel
 import com.musify.app.presentation.player.NewPlaylistDialog
 import com.musify.app.presentation.playlist.components.CollapsingTopAppBar
 import com.musify.app.ui.components.HeaderView
@@ -98,23 +105,21 @@ import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
 import com.musify.app.ui.theme.TransparentColor
 import com.musify.app.ui.theme.WhiteTextColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalFoundationApi::class)
 @Composable
+@Destination
 fun ArtistScreen(
     id: Long,
-    paddingValues: PaddingValues,
-    artistViewModel: ArtistViewModel,
-    navigateToArtist: (Artist) -> Unit,
-    navigateToAlbums: (Artist) -> Unit,
-    navigateToTops: (Artist) -> Unit,
-    navigateToSingles: (Artist) -> Unit,
-    navigateToAlbum: (Long) -> Unit,
-    navigateUp: () -> Unit,
+    navigator: DestinationsNavigator
 ) {
 
+    val artistViewModel = hiltViewModel<ArtistViewModel>()
 
     LaunchedEffect(id) {
         artistViewModel.setID(id)
@@ -177,8 +182,6 @@ fun ArtistScreen(
     val snackbarMessage = stringResource(id = R.string.successfully_added)
 
     Scaffold(
-        modifier = Modifier
-            .padding(paddingValues),
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
                 Snackbar(
@@ -263,7 +266,7 @@ fun ArtistScreen(
 
                     IconButton(
                         modifier = Modifier,
-                        onClick = { navigateUp() }) {
+                        onClick = { navigator.navigateUp() }) {
                         Icon(
                             tint = WhiteTextColor,
                             painter = painterResource(id = R.drawable.left_arrow),
@@ -332,7 +335,9 @@ fun ArtistScreen(
                                     LatestReleaseView(
                                         latestRelease = data.latestRelease,
                                         navigateToAlbum = { album ->
-                                            navigateToAlbum(album.playlistId)
+                                            navigator.navigate(
+                                                AlbumsScreenDestination(album.playlistId)
+                                            )
                                         },
                                         playSong = { song ->
                                             artistViewModel.getPlayerController()
@@ -353,7 +358,13 @@ fun ArtistScreen(
                                         mainText = stringResource(id = R.string.top_songs),
                                         expandable = true
                                     ) {
-                                        navigateToTops(data)
+                                        navigator.navigate(
+                                            SongsScreenDestination(
+                                                artistId = data.id,
+                                                isTop = 1,
+                                                isSingle = 0
+                                            )
+                                        )
                                     }
 
                                 }
@@ -386,9 +397,18 @@ fun ArtistScreen(
                                     AlbumListView(
                                         playlists = data.albums,
                                         expandable = true,
-                                        navigateToAlbums = { navigateToAlbums(data) }
+                                        navigateToAlbums = {
+                                            navigator.navigate(
+                                                AlbumsScreenDestination(id)
+                                            )
+                                        }
                                     ) { album ->
-                                        navigateToAlbum(album.playlistId)
+                                        navigator.navigate(
+                                            PlaylistScreenDestination(
+                                                album.playlistId,
+                                                MainActivity.ALBUMS
+                                            )
+                                        )
                                     }
                                 }
 
@@ -403,7 +423,13 @@ fun ArtistScreen(
                                         mainText = stringResource(id = R.string.singles),
                                         expandable = true
                                     ) {
-                                        navigateToSingles(data)
+                                        navigator.navigate(
+                                            SongsScreenDestination(
+                                                artistId = data.id,
+                                                isTop = 1,
+                                                isSingle = 0
+                                            )
+                                        )
                                     }
                                 }
 
@@ -443,11 +469,19 @@ fun ArtistScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    selectedSong.albumId?.let { navigateToAlbum(it) }
+                    selectedSong.albumId?.let {
+                        navigator.navigate(
+                            PlaylistScreenDestination(it, MainActivity.ALBUMS)
+                        )
+                    }
                 },
                 onNavigateToArtist = {
                     if (selectedSong.artists.size == 1) {
-                        selectedSong.getArtist().let { navigateToArtist(it) }
+                        selectedSong.getArtist().id.let {
+                            navigator.navigate(
+                                ArtistScreenDestination(it)
+                            )
+                        }
                     } else {
                         showArtistDialog = true
                     }
@@ -504,7 +538,7 @@ fun ArtistScreen(
                 selectedSong = selectedSong,
                 artists = selectedSong.artists,
                 sheetState = artistsSheetState,
-                onSelect = { artist -> navigateToArtist(artist) },
+                onSelect = { artist -> navigator.navigate(ArtistScreenDestination(artist.id)) },
                 onDismiss = { showArtistDialog = false }
 
             )

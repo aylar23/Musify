@@ -24,7 +24,7 @@ fun SettingsElements(icon: Int, text: String, expandable: Boolean, endText: Stri
 
     Row(modifier = Modifier
         .clickable { onClick() }
-        .padding(14.dp),
+        .padding(15.dp, 12.dp),
         horizontalArrangement = Arrangement.Start,
         verticalAlignment = Alignment.CenterVertically) {
         Icon(modifier = Modifier

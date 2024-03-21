@@ -35,12 +35,17 @@ import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.musify.app.MainActivity
 import com.musify.app.R
 import com.musify.app.Search
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Playlist.Companion.PLAYLIST
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.artist.ArtistScreen
+import com.musify.app.presentation.destinations.ArtistScreenDestination
+import com.musify.app.presentation.destinations.PlaylistScreenDestination
 import com.musify.app.presentation.myplaylist.LibraryContentChipsView
 import com.musify.app.presentation.myplaylist.LibrarySection
 import com.musify.app.presentation.player.NewPlaylistDialog
@@ -48,6 +53,7 @@ import com.musify.app.ui.components.SearchBar
 import com.musify.app.ui.components.listview.ArtistListView
 import com.musify.app.ui.components.listview.SongListView
 import com.musify.app.presentation.search.components.SearchKeysView
+import com.musify.app.presentation.settings.SettingsViewModel
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.NetworkErrorView
 import com.musify.app.ui.components.bottomsheet.AddToPlaylistBottomSheet
@@ -58,18 +64,19 @@ import com.musify.app.ui.components.listview.PlaylistListView
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.WhiteTextColor
 import com.musify.app.ui.utils.BaseUIState
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
+@Destination
 fun SearchScreen(
-    paddingValues: PaddingValues,
-    searchViewModel: SearchViewModel,
-    navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Long) -> Unit,
-    navigateToPlaylist: (Long) -> Unit,
-    navigateToNewPlaylist: () -> Unit
+    navigator: DestinationsNavigator
 ) {
+
+    val searchViewModel = hiltViewModel<SearchViewModel>()
+
     lateinit var selectedSong: Song
 
     var settingsClicked by remember {
@@ -116,12 +123,13 @@ fun SearchScreen(
     )
 
     LaunchedEffect(Unit) {
-        focusRequester.requestFocus()
+
+            focusRequester.requestFocus()
+
     }
 
     Scaffold(
         modifier = Modifier
-            .padding(paddingValues)
             .pointerInput(Unit) {
                 detectTapGestures {
                     focusManager.clearFocus()
@@ -207,7 +215,9 @@ fun SearchScreen(
                             ArtistListView(
                                 header = R.string.artists, mainScreenData.artists
                             ) { artist ->
-                                navigateToArtist(artist)
+                                navigator.navigate(
+                                    ArtistScreenDestination(artist.id)
+                                )
                             }
 
                             SongListView(mainScreenData.songs,
@@ -228,14 +238,19 @@ fun SearchScreen(
 
 
                             AlbumListView(playlists = mainScreenData.albums) { album ->
-                                navigateToAlbum(album.playlistId)
+                                    navigator.navigate(
+                                        PlaylistScreenDestination(album.playlistId, MainActivity.ALBUMS)
+                                    )
+
                             }
 
                             PlaylistListView(
                                 title = stringResource(id = R.string.playlists),
                                 playlists =  mainScreenData.playlists
                             ) { playlist ->
-                                navigateToPlaylist(playlist.playlistId)
+                                navigator.navigate(
+                                    PlaylistScreenDestination(playlist.playlistId, MainActivity.PLAYLISTS)
+                                )
                             }
 
                         }
@@ -257,10 +272,17 @@ fun SearchScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
+                    selectedSong.albumId?.let {
+                        navigator.navigate(
+                            PlaylistScreenDestination(it, MainActivity.ALBUMS)
+                        )
+                    }
                 },
                 onNavigateToArtist = {
                     if (selectedSong.artists.size == 1) {
-                        navigateToArtist(selectedSong.getArtist())
+                        selectedSong.getArtist().id.let { navigator.navigate(
+                            ArtistScreenDestination(it)
+                        )}
                     } else {
                         showArtistDialog = true
                     }
@@ -319,7 +341,7 @@ fun SearchScreen(
                 selectedSong = selectedSong,
                 artists = selectedSong.artists ?: emptyList(),
                 sheetState = artistsSheetState,
-                onSelect = { artist -> navigateToArtist(artist) },
+                onSelect = { artist -> navigator.navigate(ArtistScreenDestination(artist.id)) },
                 onDismiss = { showArtistDialog = false }
 
             )

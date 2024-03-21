@@ -30,15 +30,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.MediaItem
 import androidx.media3.common.util.UnstableApi
 import androidx.media3.exoplayer.offline.Download
 import com.google.common.base.Preconditions
+import com.musify.app.MainActivity
 import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Playlist
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.artist.ArtistViewModel
+import com.musify.app.presentation.destinations.ArtistScreenDestination
+import com.musify.app.presentation.destinations.PlaylistScreenDestination
+import com.musify.app.presentation.destinations.SearchScreenDestination
+import com.musify.app.presentation.destinations.SettingsScreenDestination
 import com.musify.app.presentation.home.components.HomeTopAppBar
+import com.musify.app.presentation.myplaylist.MyPlaylistsViewModel
 import com.musify.app.presentation.player.NewPlaylistDialog
 import com.musify.app.ui.components.LoadingView
 import com.musify.app.ui.components.NetworkErrorView
@@ -52,25 +60,24 @@ import com.musify.app.ui.components.listview.PlaylistListView
 import com.musify.app.ui.components.listview.SongGridListView
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.WhiteTextColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
+import com.ramcosta.composedestinations.navigation.navigate
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+@RootNavGraph(start = true)
+@Destination
 @Composable
 fun HomeScreen(
-    paddingValues: PaddingValues,
-    homeViewModel: HomeViewModel,
-    navigateToSearch: () -> Unit,
-    navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Long) -> Unit,
-    navigateToPlaylist: (Playlist) -> Unit,
-    navigateToTopPlaylist: (Playlist) -> Unit,
-    navigateToSettings: () -> Unit,
-    navigateToNewPlaylist: () -> Unit,
+    navigator: DestinationsNavigator
 ) {
 
+    val homeViewModel = hiltViewModel<HomeViewModel>()
 
     val uiState by homeViewModel.uiState.collectAsState()
 
@@ -101,7 +108,6 @@ fun HomeScreen(
     val snackbarMessage = stringResource(id = R.string.successfully_added)
 
     Scaffold(
-        modifier = Modifier.padding(paddingValues),
         snackbarHost = {
             SnackbarHost(snackbarHostState) { data ->
                 Snackbar(
@@ -123,8 +129,8 @@ fun HomeScreen(
             item {
 
                 HomeTopAppBar(
-                    onSearchClicked = { navigateToSearch() },
-                    onSettingsClicked = { navigateToSettings() }
+                    onSearchClicked = { navigator.navigate(SearchScreenDestination) },
+                    onSettingsClicked = { navigator.navigate(SettingsScreenDestination) }
                 )
             }
 
@@ -136,7 +142,9 @@ fun HomeScreen(
                             title = stringResource(id = R.string.top),
                             playlists = mainScreenData.tops
                         ) { playlist ->
-                            navigateToTopPlaylist(playlist)
+                            navigator.navigate(
+                                PlaylistScreenDestination(playlist.playlistId, MainActivity.TOPS)
+                            )
                         }
                     }
 
@@ -145,7 +153,11 @@ fun HomeScreen(
 
                         ArtistListView(
                             header = R.string.artists, mainScreenData.artists
-                        ) { artist -> navigateToArtist(artist) }
+                        ) { artist ->
+                            navigator.navigate(
+                                ArtistScreenDestination(artist.id)
+                            )
+                        }
 
 
                     }
@@ -155,8 +167,11 @@ fun HomeScreen(
 
                         AlbumListView(
                             title = stringResource(id = R.string.new_albums),
-                            mainScreenData.albums) { album ->
-                            navigateToAlbum(album.playlistId)
+                            mainScreenData.albums
+                        ) { album ->
+                            navigator.navigate(
+                                PlaylistScreenDestination(album.playlistId, MainActivity.ALBUMS)
+                            )
                         }
                     }
 
@@ -179,7 +194,9 @@ fun HomeScreen(
                             title = playlistCategory.name,
                             playlists = playlistCategory.playlists
                         ) { playlist ->
-                            navigateToPlaylist(playlist)
+                            navigator.navigate(
+                                PlaylistScreenDestination(playlist.playlistId, MainActivity.PLAYLISTS)
+                            )
                         }
 
                     }
@@ -214,12 +231,20 @@ fun HomeScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    selectedSong.albumId?.let { navigateToAlbum(it) }
+                    selectedSong.albumId?.let {
+                        navigator.navigate(
+                            PlaylistScreenDestination(it, MainActivity.ALBUMS)
+                        )
+                    }
                 },
                 onNavigateToArtist = {
-                    if(selectedSong.artists.size == 1){
-                        navigateToArtist(selectedSong.getArtist())
-                    }else{
+                    if (selectedSong.artists.size == 1) {
+                        selectedSong.getArtist().id.let {
+                            navigator.navigate(
+                                ArtistScreenDestination(it)
+                            )
+                        }
+                    } else {
                         showArtistDialog = true
                     }
                 },
@@ -278,8 +303,8 @@ fun HomeScreen(
                 selectedSong = selectedSong,
                 artists = selectedSong.artists,
                 sheetState = artistsSheetState,
-                onSelect = { artist-> navigateToArtist(artist) },
-                onDismiss = { showArtistDialog = false}
+                onSelect = { artist -> navigator.navigate(ArtistScreenDestination(artist.id)) },
+                onDismiss = { showArtistDialog = false }
 
             )
 

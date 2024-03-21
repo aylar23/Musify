@@ -17,7 +17,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.SFFontFamily
+import com.musify.app.ui.theme.Surface
 
 
 @Composable
@@ -27,6 +29,7 @@ fun CustomButton(
     onClick :()->Unit,
     containerColor : Color,
     contentColor : Color,
+    enabled:Boolean = true,
     leadingIcon: Int? = null,
     trailingIcon: Int? = null,
     shape: Shape = MaterialTheme.shapes.large
@@ -35,6 +38,7 @@ fun CustomButton(
         modifier = modifier,
         shape = shape,
         onClick = onClick,
+        enabled = enabled,
         contentPadding = PaddingValues(vertical = 16.dp),
         colors = ButtonColors(
             containerColor = containerColor,

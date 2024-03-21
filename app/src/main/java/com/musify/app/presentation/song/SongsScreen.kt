@@ -23,12 +23,16 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.paging.LoadState
 import androidx.paging.compose.collectAsLazyPagingItems
 import androidx.paging.compose.items
+import com.musify.app.MainActivity
 import com.musify.app.R
 import com.musify.app.domain.models.Artist
 import com.musify.app.domain.models.Song
+import com.musify.app.presentation.destinations.ArtistScreenDestination
+import com.musify.app.presentation.destinations.PlaylistScreenDestination
 import com.musify.app.presentation.player.NewPlaylistDialog
 import com.musify.app.ui.components.CollapsingSmallTopAppBar
 import com.musify.app.ui.components.LoadingView
@@ -41,21 +45,22 @@ import com.musify.app.ui.components.bottomsheet.TrackBottomSheet
 import com.musify.app.ui.theme.AlbumCoverBlackBG
 import com.musify.app.ui.theme.Inactive
 import com.musify.app.ui.theme.WhiteTextColor
+import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
+@Destination
 @Composable
 fun SongsScreen(
     artistId: Long,
     isTop: Int,
     isSingle: Int,
-    paddingValues: PaddingValues,
-    songsViewModel: SongsViewModel,
-    navigateToArtist: (Artist) -> Unit,
-    navigateToAlbum: (Long) -> Unit,
-    navigateUp: () -> Unit
+    navigator: DestinationsNavigator
 ) {
+
+    val songsViewModel = hiltViewModel<SongsViewModel>()
 
     LaunchedEffect(artistId) {
         songsViewModel.setArtistId(artistId)
@@ -95,7 +100,6 @@ fun SongsScreen(
 
     Scaffold(modifier = Modifier
         .fillMaxSize()
-        .padding(paddingValues)
         .background(
             AlbumCoverBlackBG
         ),
@@ -114,7 +118,7 @@ fun SongsScreen(
             CollapsingSmallTopAppBar(
                 title = stringResource(id = R.string.songs)
             ) {
-                navigateUp()
+                navigator.navigateUp()
             }
 
         }
@@ -163,11 +167,17 @@ fun SongsScreen(
                     addToPlaylistClicked = true
                 },
                 onNavigateToAlbum = {
-                    selectedSong.albumId?.let { navigateToAlbum(it) }
+                    selectedSong.albumId?.let {
+                        navigator.navigate(
+                            PlaylistScreenDestination(it, MainActivity.ALBUMS)
+                        )
+                    }
                 },
                 onNavigateToArtist = {
                     if (selectedSong.artists.size == 1) {
-                        navigateToArtist(selectedSong.getArtist())
+                        selectedSong.getArtist().id.let { navigator.navigate(
+                            ArtistScreenDestination(it)
+                        )}
                     } else {
                         showArtistDialog = true
                     }
@@ -226,7 +236,7 @@ fun SongsScreen(
                 selectedSong = selectedSong,
                 artists = selectedSong.artists,
                 sheetState = artistsSheetState,
-                onSelect = { artist -> navigateToArtist(artist) },
+                onSelect = { artist -> navigator.navigate(ArtistScreenDestination(artist.id)) },
                 onDismiss = { showArtistDialog = false }
 
             )

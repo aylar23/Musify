@@ -4,6 +4,7 @@ plugins {
     id 'org.jetbrains.kotlin.android'
     id 'com.google.dagger.hilt.android'
     id 'kotlin-kapt'
+    id 'com.google.devtools.ksp' version "1.9.20-1.0.14" // Depends on your kotlin version
     id 'com.google.protobuf' version "0.9.4"
 
 }
@@ -33,7 +34,7 @@ android {
         }
 
         debug{
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
 
         }
@@ -50,14 +51,18 @@ android {
         buildConfig true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion '1.4.0'
+        kotlinCompilerExtensionVersion '1.5.4'
     }
     packagingOptions {
         resources {
             excludes += '/META-INF/{AL2.0,LGPL2.1}'
         }
     }
-
+    applicationVariants.all { variant ->
+        variant.addJavaSourceFoldersToModel(
+                new File(buildDir, "generated/ksp/${variant.name}/kotlin")
+        )
+    }
 
 }
 
@@ -153,6 +158,9 @@ dependencies {
 
     implementation "com.airbnb.android:lottie-compose:4.0.0"
 
+    implementation "io.github.raamcosta.compose-destinations:core:1.9.57"
+    implementation "io.github.raamcosta.compose-destinations:animations-core:1.9.57"
+    ksp "io.github.raamcosta.compose-destinations:ksp:1.9.57"
 
 
 }
